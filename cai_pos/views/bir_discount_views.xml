@@ -99,12 +99,7 @@
         </field>
     </record>
 
-    <!-- Menu Items -->
-    <menuitem id="menu_bir_discount_type"
-              name="Discount Types"
-              parent="menu_pos_bir_root"
-              action="action_bir_discount_type"
-              sequence="25"/>
+   
 
 </odoo>
 

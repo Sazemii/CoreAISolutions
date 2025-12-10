@@ -2,7 +2,13 @@
 <odoo>
     <menuitem id="menu_pos_bir_root" name="BIR Compliance" 
               parent="point_of_sale.menu_point_root" sequence="2"/>
-    
+        <!-- Menu Items -->
+    <menuitem id="menu_bir_discount_type"
+              name="Discount Types"
+              parent="menu_pos_bir_root"
+              action="action_bir_discount_type"
+              sequence="25"/>
+
     <menuitem id="menu_pos_bir_config" name="BIR Configurations"
               parent="menu_pos_bir_root" action="action_bir_config" sequence="1"/>
     
