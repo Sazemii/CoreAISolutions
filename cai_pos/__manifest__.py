@@ -4,29 +4,34 @@
     'depends': ['point_of_sale', 'account', 'mail'],
     'data': [
         'security/ir.model.access.csv',
+        # === DATA FILES (sequences, default records) ===
         'data/ph_bir_taxes.xml',
-        # 'data/bir_discount_type.xml',  # Removed: Duplicate of ph_bir_taxes.xml discount types
         'data/pos_void_sequence.xml',
         'data/pos_xreading_sequence.xml',
         'data/pos_zreading_sequence.xml',
+        # === ROOT MENUS (must load first - no action references) ===
+        'views/menu_root.xml',
+        # === VIEW & ACTION FILES (define forms, lists, and actions) ===
         'views/account_taxes_views.xml',
         'views/bir_discount_views.xml',
         'views/bir_config_views.xml',
         'views/pos_config_views.xml',
         'views/product_template_views.xml',
-        'views/pos_order_void_views_simple.xml',  # Simple test form (higher priority)
+        'views/pos_order_void_views_simple.xml',
         'views/pos_order_void_views.xml',
         'data/pos_void_action_views.xml',
         'views/pos_xreading_views.xml',
-        'wizard/generate_zreading_wizard_views.xml',  # Must be loaded BEFORE pos_zreading_views.xml
+        'wizard/generate_zreading_wizard_views.xml',
         'views/pos_zreading_views.xml',
         'wizard/generate_esales_wizard_views.xml',
         'views/pos_esales_views.xml',
         'views/pos_session_views.xml',
+        # === REPORTS ===
         'report/pos_void_receipt_template.xml',
         'report/pos_xreading_template.xml',
         'report/pos_zreading_template.xml',
-        'views/menu_views.xml',  # Must be loaded AFTER views to reference actions
+        # === CHILD MENUS (load last - references actions defined above) ===
+        'views/menu_views.xml',
     ],
     'assets': {
         'point_of_sale._assets_pos': [
