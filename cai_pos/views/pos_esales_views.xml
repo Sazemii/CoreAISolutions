@@ -157,7 +157,6 @@
                                     <field name="or_count" string="OR#" sum="Total" optional="hide"/>
                                     <field name="begin_or" string="Begin OR" optional="hide"/>
                                     <field name="end_or" string="End OR" optional="hide"/>
-                                    <field name="currency_id" column_invisible="1"/>
                                 </list>
                                 <form string="Daily Sales">
                                     <group>
