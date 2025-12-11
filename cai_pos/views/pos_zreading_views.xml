@@ -138,17 +138,18 @@
                                 </group>
                             </group>
                             <div class="alert alert-info" role="alert" invisible="voided_amount == 0">
-                                <i class="fa fa-info-circle"/> 
+                                <i class="fa fa-info-circle" title="Information"/> 
                                 <strong>Voided transactions</strong> are excluded from sales totals as per BIR requirements.
                             </div>
                             <div class="alert alert-warning" role="alert" invisible="refund_amount == 0">
-                                <i class="fa fa-exclamation-triangle"/> 
+                                <i class="fa fa-exclamation-triangle" title="Warning"/> 
                                 <strong>Refund transactions</strong> reduce the net sales and are tracked separately for BIR reporting.
                             </div>
                         </page>
                     </notebook>
 
-                    <field name="currency_id" invisible="1"/>
+                    <!-- Currency field for monetary widgets -->
+                    <field name="currency_id" column_invisible="1"/>
                 </sheet>
             </form>
         </field>

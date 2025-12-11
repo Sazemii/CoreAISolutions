@@ -80,7 +80,8 @@
                             <field name="amount_voided" readonly="1"/>
                             <field name="amount_tax" readonly="1"/>
                             <field name="amount_discount" readonly="1"/>
-                            <field name="currency_id" invisible="1"/>
+                            <!-- Currency field for monetary widgets -->
+                            <field name="currency_id" column_invisible="1"/>
                         </group>
                         <group name="bir_discount" string="BIR Discount (if applicable)">
                             <field name="had_bir_discount" widget="boolean_toggle" readonly="1"/>
@@ -95,7 +96,8 @@
                             <field name="requires_supervisor_approval" readonly="1" widget="boolean_toggle"/>
                             <field name="supervisor_approval_id" readonly="1"/>
                             <field name="supervisor_approval_date" readonly="1"/>
-                            <field name="can_approve" invisible="1"/>
+                            <!-- Hidden field for button visibility -->
+                            <field name="can_approve" column_invisible="1"/>
                         </group>
                         <group name="bir_config" string="BIR Configuration">
                             <field name="bir_config_id" readonly="1"/>
@@ -187,7 +189,8 @@
                         <field name="order_name" readonly="1"/>
                         <field name="order_date" readonly="1"/>
                         <field name="amount_total" readonly="1"/>
-                        <field name="currency_id" invisible="1"/>
+                        <!-- Currency field for monetary widgets -->
+                        <field name="currency_id" column_invisible="1"/>
                         <field name="session_id" readonly="1"/>
                     </group>
                     <group string="Void Reason">
@@ -235,10 +238,11 @@
             
             <!-- Add void info in form -->
             <xpath expr="//field[@name='state']" position="after">
-                <field name="can_be_voided" invisible="1"/>
-                <field name="is_voided" invisible="1"/>
-                <field name="void_id" invisible="1"/>
-                <field name="void_date" invisible="1"/>
+                <!-- Hidden fields for button visibility and smart button -->
+                <field name="can_be_voided" column_invisible="1"/>
+                <field name="is_voided" column_invisible="1"/>
+                <field name="void_id" column_invisible="1"/>
+                <field name="void_date" column_invisible="1"/>
             </xpath>
             
             <!-- Show void banner if voided -->

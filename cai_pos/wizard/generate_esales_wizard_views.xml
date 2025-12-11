@@ -22,9 +22,10 @@
                                    required="1"/>
                             <field name="generation_method" widget="radio"
                                    help="Z-Readings: Uses existing Z-reading data. Orders: Generates from orders directly. From Specific Order: For testing - start from a selected order."/>
-                            <field name="company_id" invisible="1"/>
+                            <!-- Hidden fields for context/computation -->
+                            <field name="company_id" column_invisible="1"/>
                             <field name="bir_config_id" readonly="1"/>
-                            <field name="currency_id" invisible="1"/>
+                            <field name="currency_id" column_invisible="1"/>
                         </group>
                         <group>
                             <field name="starting_order_id" 
@@ -51,9 +52,10 @@
                     <separator string="Status"/>
                     <field name="warning_message" readonly="1" nolabel="1"/>
 
-                    <field name="can_generate" invisible="1"/>
-                    <field name="esales_exists" invisible="1"/>
-                    <field name="existing_esales_id" invisible="1"/>
+                    <!-- Hidden fields used for button visibility logic -->
+                    <field name="can_generate" column_invisible="1"/>
+                    <field name="esales_exists" column_invisible="1"/>
+                    <field name="existing_esales_id" column_invisible="1"/>
                 </sheet>
 
                 <footer>

@@ -20,8 +20,8 @@
                             <field name="reading_date" widget="date" 
                                    options="{'datepicker': {'maxDate': 'today'}}"
                                    required="1"/>
-                            <field name="company_id" invisible="1"/>
-                            <field name="currency_id" invisible="1"/>
+                            <!-- Hidden fields for context/computation -->
+                            <field name="company_id" column_invisible="1"/>
                         </group>
                     </group>
 
@@ -41,9 +41,10 @@
                     <separator string="Status"/>
                     <field name="warning_message" readonly="1" nolabel="1"/>
 
-                    <field name="can_generate" invisible="1"/>
-                    <field name="zreading_exists" invisible="1"/>
-                    <field name="existing_zreading_id" invisible="1"/>
+                    <!-- Hidden fields used for button visibility logic -->
+                    <field name="can_generate" column_invisible="1"/>
+                    <field name="zreading_exists" column_invisible="1"/>
+                    <field name="existing_zreading_id" column_invisible="1"/>
                 </sheet>
 
                 <footer>

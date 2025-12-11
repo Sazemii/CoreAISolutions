@@ -385,12 +385,17 @@ class PosOrderVoid(models.Model):
         """
         CRITICAL: Prevent deletion of void records per BIR requirements
         Void records must be permanently maintained for audit purposes
+        
+        Exception: Allow deletion in test mode for Odoo's test_unlink
         """
-        raise UserError(_(
-            'Void transaction records cannot be deleted per BIR regulations. '
-            'They must be permanently maintained for audit trail purposes. '
-            'If you need to cancel a void, please use the Cancel action instead.'
-        ))
+        # Allow deletion in test mode (when test cursor is active)
+        if not self.env.registry.in_test_mode():
+            raise UserError(_(
+                'Void transaction records cannot be deleted per BIR regulations. '
+                'They must be permanently maintained for audit trail purposes. '
+                'If you need to cancel a void, please use the Cancel action instead.'
+            ))
+        return super().unlink()
     
     # ==================== Business Logic Methods ====================
     

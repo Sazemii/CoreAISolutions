@@ -129,7 +129,8 @@
                             <field name="total_gross_sales" widget="monetary"/>
                             <field name="total_discounts" widget="monetary"/>
                             <field name="total_net_sales" widget="monetary"/>
-                            <field name="currency_id" invisible="1"/>
+                            <!-- Currency field for monetary widgets -->
+                            <field name="currency_id" column_invisible="1"/>
                         </group>
                         <group>
                             <field name="total_vatable_sales" widget="monetary"/>
@@ -166,7 +167,8 @@
                                             <field name="date" widget="date"/>
                                             <field name="old_grand_total" widget="monetary"/>
                                             <field name="new_grand_total" widget="monetary"/>
-                                            <field name="currency_id" invisible="1"/>
+                                            <!-- Currency field for monetary widgets -->
+                                            <field name="currency_id" column_invisible="1"/>
                                         </group>
                                         <group string="Receipt Range">
                                             <field name="begin_or"/>
