@@ -4,10 +4,25 @@ import { PosStore } from "@point_of_sale/app/store/pos_store";
 import { patch } from "@web/core/utils/patch";
 import { PosOrder } from "@point_of_sale/app/models/pos_order";
 
+// Store BIR discount data separately to avoid conflicts with Odoo's reactive model system
+const birDiscountData = new WeakMap();
+
+function getBirData(order) {
+    if (!birDiscountData.has(order)) {
+        birDiscountData.set(order, {
+            discount_type_id: null,
+            discount_amount: 0,
+            discount_id_number: '',
+            discount_id_type: '',
+            discountable_gross_sales: 0,
+        });
+    }
+    return birDiscountData.get(order);
+}
+
 patch(PosStore.prototype, {
     getBIRDiscountTypes() {
         if (!this.models || !this.models["bir.discount.type"]) {
-            console.warn('[POS BIR] Discount types model not loaded');
             return [];
         }
         const birDiscounts = this.models["bir.discount.type"];
@@ -16,7 +31,6 @@ patch(PosStore.prototype, {
     
     getBIRConfig() {
         if (!this.models || !this.models["bir.config"]) {
-            console.warn('[POS BIR] Config model not loaded');
             return null;
         }
         const birConfigModel = this.models["bir.config"];
@@ -30,16 +44,57 @@ patch(PosOrder.prototype, {
     setup(vals) {
         super.setup(...arguments);
         
-        // Initialize BIR discount properties directly on the order object
-        this.bir_discount_type_id = vals.bir_discount_type_id || null;
-        this.bir_discount_amount = vals.bir_discount_amount || 0;
-        this.bir_discount_id_number = vals.bir_discount_id_number || '';
-        this.bir_discount_id_type = vals.bir_discount_id_type || '';
-        this.bir_discountable_gross_sales = vals.bir_discountable_gross_sales || 0;
+        // Initialize BIR discount data in separate storage (doesn't interfere with model system)
+        const birData = getBirData(this);
+        birData.discount_type_id = vals.bir_discount_type_id || null;
+        birData.discount_amount = vals.bir_discount_amount || 0;
+        birData.discount_id_number = vals.bir_discount_id_number || '';
+        birData.discount_id_type = vals.bir_discount_id_type || '';
+        birData.discountable_gross_sales = vals.bir_discountable_gross_sales || 0;
+    },
+    
+    // Getter/setter for bir_discount_type_id
+    get bir_discount_type_id() {
+        return getBirData(this).discount_type_id;
+    },
+    set bir_discount_type_id(value) {
+        getBirData(this).discount_type_id = value;
+    },
+    
+    // Getter/setter for bir_discount_amount
+    get bir_discount_amount() {
+        return getBirData(this).discount_amount;
+    },
+    set bir_discount_amount(value) {
+        getBirData(this).discount_amount = value;
+    },
+    
+    // Getter/setter for bir_discount_id_number
+    get bir_discount_id_number() {
+        return getBirData(this).discount_id_number;
+    },
+    set bir_discount_id_number(value) {
+        getBirData(this).discount_id_number = value;
+    },
+    
+    // Getter/setter for bir_discount_id_type
+    get bir_discount_id_type() {
+        return getBirData(this).discount_id_type;
+    },
+    set bir_discount_id_type(value) {
+        getBirData(this).discount_id_type = value;
+    },
+    
+    // Getter/setter for bir_discountable_gross_sales
+    get bir_discountable_gross_sales() {
+        return getBirData(this).discountable_gross_sales;
+    },
+    set bir_discountable_gross_sales(value) {
+        getBirData(this).discountable_gross_sales = value;
     },
     
     /**
-     * Apply BIR discount to a single NEW line (used when adding products to an order with active discount)
+     * Apply BIR discount to a single NEW line
      */
     applyBIRDiscountToLine(line) {
         const typeId = this.bir_discount_type_id;
@@ -57,16 +112,18 @@ patch(PosOrder.prototype, {
             return false;
         }
         
-        const product = line.get_product();
+        const product = line.get_product ? line.get_product() : line.product_id;
+        if (!product) {
+            return false;
+        }
         
-        // Check if product is discountable (default true if field doesn't exist)
+        // Check if product is discountable
         if (product.is_bir_discountable === false) {
             return false;
         }
         
         // Apply discount based on type (VAT-exempt or regular)
         if (discountType.is_vat_exempt) {
-            // For VAT-exempt discounts (PWD/SC):
             const priceUnit = line.price_unit;
             const priceWithoutVAT = priceUnit / 1.12;
             const finalPrice = priceWithoutVAT * (1 - discountType.discount_percent / 100);
@@ -81,10 +138,8 @@ patch(PosOrder.prototype, {
                 }
             }
             
-            // Apply the calculated effective discount percentage
             line.discount = effectiveDiscountPercent;
         } else {
-            // For non-VAT-exempt discounts
             line.discount = discountType.discount_percent;
         }
         
@@ -114,12 +169,11 @@ patch(PosOrder.prototype, {
             let totalDiscountAmount = 0;
             let totalGrossSales = 0;
             
-            const orderlines = this.get_orderlines ? this.get_orderlines() : (this.lines || []);
+            const orderlines = this.get_orderlines ? this.get_orderlines() : [];
             for (const line of orderlines) {
                 const product = line.get_product ? line.get_product() : line.product_id;
                 if (!product) continue;
                 
-                // Only calculate discount for discountable items
                 if (product.is_bir_discountable === false) {
                     continue;
                 }
@@ -127,30 +181,22 @@ patch(PosOrder.prototype, {
                 const prices = line.get_all_prices ? line.get_all_prices() : {};
                 
                 if (discountType.is_vat_exempt) {
-                    // For VAT-exempt: discount is on the base amount (without tax)
                     const lineDiscountAmount = (prices.priceWithoutTaxBeforeDiscount || 0) - (prices.priceWithoutTax || 0);
                     totalDiscountAmount += lineDiscountAmount;
                     totalGrossSales += prices.priceWithTaxBeforeDiscount || 0;
                 } else {
-                    // For regular discounts: calculate from price with tax
                     const lineDiscountAmount = (prices.priceWithTaxBeforeDiscount || 0) - (prices.priceWithTax || 0);
                     totalDiscountAmount += lineDiscountAmount;
                     totalGrossSales += prices.priceWithTaxBeforeDiscount || 0;
                 }
             }
             
-            // Use direct property assignment to avoid breaking reactive system
             this.bir_discount_amount = totalDiscountAmount;
             this.bir_discountable_gross_sales = totalGrossSales;
         } catch (e) {
             // Silently fail - don't break POS operation
-            console.warn('[BIR] Error recalculating discount:', e);
         }
     },
-    
-    // NOTE: We intentionally do NOT override removeOrderline or delete methods
-    // as this breaks Odoo 18's reactive model system (causes recordToDisconnect undefined error)
-    // BIR discount recalculation is triggered via recomputeOrderData instead
     
     export_as_JSON() {
         const json = super.export_as_JSON(...arguments);
@@ -195,7 +241,6 @@ patch(PosOrder.prototype, {
                     };
                 }
             } else {
-                // Fallback: use stored data
                 result.bir_discount = {
                     name: 'BIR Discount',
                     code: 'DISC',
@@ -239,9 +284,6 @@ patch(PosOrder.prototype, {
         return result;
     },
     
-    /**
-     * Calculate BIR-compliant VAT breakdown from order tax totals
-     */
     _calculateBIRVATBreakdown(printData) {
         const breakdown = {
             vatable_sales: 0,
@@ -319,7 +361,7 @@ patch(PosOrder.prototype, {
         }
         
         try {
-            const orderlines = this.get_orderlines ? this.get_orderlines() : (this.lines || []);
+            const orderlines = this.get_orderlines ? this.get_orderlines() : [];
             
             for (const line of orderlines) {
                 line.discount = 0;
@@ -328,14 +370,13 @@ patch(PosOrder.prototype, {
                 }
             }
             
-            // Use direct property assignment to avoid breaking reactive system
             this.bir_discount_type_id = null;
             this.bir_discount_amount = 0;
             this.bir_discount_id_number = '';
             this.bir_discount_id_type = '';
             this.bir_discountable_gross_sales = 0;
         } catch (e) {
-            console.warn('[BIR] Error removing discount:', e);
+            // Silently fail
         }
         
         return true;
