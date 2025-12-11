@@ -14,7 +14,7 @@ patch(PosStore.prototype, {
         const order = this.get_order();
         
         // Check if BIR discount is active BEFORE adding the line
-        const hasBIRDiscount = order && order.bir_discount_type_id;
+        const hasBIRDiscount = order && order.getBirDiscountTypeId && order.getBirDiscountTypeId();
         
         // Call the original method to add the line
         const line = await super.addLineToCurrentOrder(...arguments);

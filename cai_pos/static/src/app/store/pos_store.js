@@ -53,43 +53,39 @@ patch(PosOrder.prototype, {
         birData.discountable_gross_sales = vals.bir_discountable_gross_sales || 0;
     },
     
-    // Getter/setter for bir_discount_type_id
-    get bir_discount_type_id() {
+    // Access BIR discount data via methods (not getters/setters to avoid reactive tracking)
+    getBirDiscountTypeId() {
         return getBirData(this).discount_type_id;
     },
-    set bir_discount_type_id(value) {
+    setBirDiscountTypeId(value) {
         getBirData(this).discount_type_id = value;
     },
     
-    // Getter/setter for bir_discount_amount
-    get bir_discount_amount() {
+    getBirDiscountAmount() {
         return getBirData(this).discount_amount;
     },
-    set bir_discount_amount(value) {
+    setBirDiscountAmount(value) {
         getBirData(this).discount_amount = value;
     },
     
-    // Getter/setter for bir_discount_id_number
-    get bir_discount_id_number() {
+    getBirDiscountIdNumber() {
         return getBirData(this).discount_id_number;
     },
-    set bir_discount_id_number(value) {
+    setBirDiscountIdNumber(value) {
         getBirData(this).discount_id_number = value;
     },
     
-    // Getter/setter for bir_discount_id_type
-    get bir_discount_id_type() {
+    getBirDiscountIdType() {
         return getBirData(this).discount_id_type;
     },
-    set bir_discount_id_type(value) {
+    setBirDiscountIdType(value) {
         getBirData(this).discount_id_type = value;
     },
     
-    // Getter/setter for bir_discountable_gross_sales
-    get bir_discountable_gross_sales() {
+    getBirDiscountableGrossSales() {
         return getBirData(this).discountable_gross_sales;
     },
-    set bir_discountable_gross_sales(value) {
+    setBirDiscountableGrossSales(value) {
         getBirData(this).discountable_gross_sales = value;
     },
     
@@ -97,7 +93,7 @@ patch(PosOrder.prototype, {
      * Apply BIR discount to a single NEW line
      */
     applyBIRDiscountToLine(line) {
-        const typeId = this.bir_discount_type_id;
+        const typeId = this.getBirDiscountTypeId();
         if (!typeId || !this.models) {
             return false;
         }
@@ -151,7 +147,7 @@ patch(PosOrder.prototype, {
      */
     recalculateBIRDiscount() {
         try {
-            const typeId = this.bir_discount_type_id;
+            const typeId = this.getBirDiscountTypeId();
             if (!typeId || !this.models) {
                 return;
             }
@@ -191,8 +187,8 @@ patch(PosOrder.prototype, {
                 }
             }
             
-            this.bir_discount_amount = totalDiscountAmount;
-            this.bir_discountable_gross_sales = totalGrossSales;
+            this.setBirDiscountAmount(totalDiscountAmount);
+            this.setBirDiscountableGrossSales(totalGrossSales);
         } catch (e) {
             // Silently fail - don't break POS operation
         }
@@ -200,21 +196,21 @@ patch(PosOrder.prototype, {
     
     export_as_JSON() {
         const json = super.export_as_JSON(...arguments);
-        json.bir_discount_type_id = this.bir_discount_type_id || false;
-        json.bir_discount_amount = this.bir_discount_amount || 0;
-        json.bir_discount_id_number = this.bir_discount_id_number || '';
-        json.bir_discount_id_type = this.bir_discount_id_type || '';
-        json.bir_discountable_gross_sales = this.bir_discountable_gross_sales || 0;
+        json.bir_discount_type_id = this.getBirDiscountTypeId() || false;
+        json.bir_discount_amount = this.getBirDiscountAmount() || 0;
+        json.bir_discount_id_number = this.getBirDiscountIdNumber() || '';
+        json.bir_discount_id_type = this.getBirDiscountIdType() || '';
+        json.bir_discountable_gross_sales = this.getBirDiscountableGrossSales() || 0;
         return json;
     },
     
     init_from_JSON(json) {
         super.init_from_JSON(...arguments);
-        this.bir_discount_type_id = json.bir_discount_type_id || null;
-        this.bir_discount_amount = json.bir_discount_amount || 0;
-        this.bir_discount_id_number = json.bir_discount_id_number || '';
-        this.bir_discount_id_type = json.bir_discount_id_type || '';
-        this.bir_discountable_gross_sales = json.bir_discountable_gross_sales || 0;
+        this.setBirDiscountTypeId(json.bir_discount_type_id || null);
+        this.setBirDiscountAmount(json.bir_discount_amount || 0);
+        this.setBirDiscountIdNumber(json.bir_discount_id_number || '');
+        this.setBirDiscountIdType(json.bir_discount_id_type || '');
+        this.setBirDiscountableGrossSales(json.bir_discountable_gross_sales || 0);
     },
     
     export_for_printing(baseUrl, headerData) {
@@ -223,21 +219,22 @@ patch(PosOrder.prototype, {
         
         // Add BIR discount information for printing
         result.bir_discount = null;
-        if (this.bir_discount_type_id) {
+        const discountTypeId = this.getBirDiscountTypeId();
+        if (discountTypeId) {
             const birDiscountModel = this.models ? this.models["bir.discount.type"] : null;
             
             if (birDiscountModel) {
-                const discountType = birDiscountModel.get(this.bir_discount_type_id);
+                const discountType = birDiscountModel.get(discountTypeId);
                 if (discountType) {
                     result.bir_discount = {
                         name: discountType.name,
                         code: discountType.code,
                         percent: discountType.discount_percent,
-                        amount: this.bir_discount_amount,
-                        id_number: this.bir_discount_id_number,
-                        id_type: this.bir_discount_id_type,
+                        amount: this.getBirDiscountAmount(),
+                        id_number: this.getBirDiscountIdNumber(),
+                        id_type: this.getBirDiscountIdType(),
                         is_vat_exempt: discountType.is_vat_exempt,
-                        discountable_gross_sales: this.bir_discountable_gross_sales,
+                        discountable_gross_sales: this.getBirDiscountableGrossSales(),
                     };
                 }
             } else {
@@ -245,11 +242,11 @@ patch(PosOrder.prototype, {
                     name: 'BIR Discount',
                     code: 'DISC',
                     percent: 20,
-                    amount: this.bir_discount_amount,
-                    id_number: this.bir_discount_id_number,
-                    id_type: this.bir_discount_id_type,
+                    amount: this.getBirDiscountAmount(),
+                    id_number: this.getBirDiscountIdNumber(),
+                    id_type: this.getBirDiscountIdType(),
                     is_vat_exempt: true,
-                    discountable_gross_sales: this.bir_discountable_gross_sales,
+                    discountable_gross_sales: this.getBirDiscountableGrossSales(),
                 };
             }
         }
@@ -318,45 +315,46 @@ patch(PosOrder.prototype, {
     },
     
     getBIRDiscount() {
-        if (!this.bir_discount_type_id) {
+        const discountTypeId = this.getBirDiscountTypeId();
+        if (!discountTypeId) {
             return null;
         }
         
         if (!this.models || !this.models["bir.discount.type"]) {
             return {
                 type: { name: "Unknown Discount", discount_percent: 0 },
-                amount: this.bir_discount_amount,
-                id_number: this.bir_discount_id_number,
-                id_type: this.bir_discount_id_type,
+                amount: this.getBirDiscountAmount(),
+                id_number: this.getBirDiscountIdNumber(),
+                id_type: this.getBirDiscountIdType(),
             };
         }
         
         const birDiscountModel = this.models["bir.discount.type"];
-        const discountType = birDiscountModel.get(this.bir_discount_type_id);
+        const discountType = birDiscountModel.get(discountTypeId);
         
         if (!discountType) {
             return {
                 type: { name: "Unknown Discount", discount_percent: 0 },
-                amount: this.bir_discount_amount,
-                id_number: this.bir_discount_id_number,
-                id_type: this.bir_discount_id_type,
+                amount: this.getBirDiscountAmount(),
+                id_number: this.getBirDiscountIdNumber(),
+                id_type: this.getBirDiscountIdType(),
             };
         }
         
         return {
             type: discountType,
-            amount: this.bir_discount_amount,
-            id_number: this.bir_discount_id_number,
-            id_type: this.bir_discount_id_type,
+            amount: this.getBirDiscountAmount(),
+            id_number: this.getBirDiscountIdNumber(),
+            id_type: this.getBirDiscountIdType(),
         };
     },
     
     hasBIRDiscount() {
-        return Boolean(this.bir_discount_type_id);
+        return Boolean(this.getBirDiscountTypeId());
     },
     
     removeBIRDiscount() {
-        if (!this.bir_discount_type_id) {
+        if (!this.getBirDiscountTypeId()) {
             return false;
         }
         
@@ -370,11 +368,11 @@ patch(PosOrder.prototype, {
                 }
             }
             
-            this.bir_discount_type_id = null;
-            this.bir_discount_amount = 0;
-            this.bir_discount_id_number = '';
-            this.bir_discount_id_type = '';
-            this.bir_discountable_gross_sales = 0;
+            this.setBirDiscountTypeId(null);
+            this.setBirDiscountAmount(0);
+            this.setBirDiscountIdNumber('');
+            this.setBirDiscountIdType('');
+            this.setBirDiscountableGrossSales(0);
         } catch (e) {
             // Silently fail
         }

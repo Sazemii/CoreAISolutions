@@ -46,11 +46,11 @@ patch(OrderWidget.prototype, {
         return {
             name: discountInfo.type?.name || "BIR Discount",
             percent: discountInfo.type?.discount_percent || 20,
-            amount: order.bir_discount_amount || 0,
-            grossSales: order.bir_discountable_gross_sales || 0,
+            amount: order.getBirDiscountAmount ? order.getBirDiscountAmount() : 0,
+            grossSales: order.getBirDiscountableGrossSales ? order.getBirDiscountableGrossSales() : 0,
             isVatExempt: discountInfo.type?.is_vat_exempt ?? true,
-            idNumber: order.bir_discount_id_number || '',
-            idType: order.bir_discount_id_type || '',
+            idNumber: order.getBirDiscountIdNumber ? order.getBirDiscountIdNumber() : '',
+            idType: order.getBirDiscountIdType ? order.getBirDiscountIdType() : '',
         };
     },
     
