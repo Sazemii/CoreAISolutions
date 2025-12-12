@@ -57,6 +57,8 @@
             # Order widget patch for BIR discount display
             'cai_pos/static/src/app/generic_components/order_widget/order_widget_patch.js',
             'cai_pos/static/src/app/generic_components/order_widget/order_widget_patch.xml',
+            # Orderline patch for BIR discount display (fix misleading %)
+            'cai_pos/static/src/app/generic_components/orderline/orderline_patch.js',
             # X-Reading button in navbar
             'cai_pos/static/src/app/navbar/xreading_button.js',
             'cai_pos/static/src/app/navbar/xreading_button.xml',

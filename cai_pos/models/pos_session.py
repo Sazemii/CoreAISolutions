@@ -107,15 +107,15 @@ class PosSession(models.Model):
         """
         self.ensure_one()
         
-        # Generate X-reading
-        xreading = self.env['pos.xreading'].generate_xreading(self.id)
+        # Generate X-reading (returns a dictionary for JS compatibility)
+        xreading_data = self.env['pos.xreading'].generate_xreading(self.id)
         
         # Return action to view and print the X-reading
         return {
             'type': 'ir.actions.act_window',
             'name': _('X-Reading Report'),
             'res_model': 'pos.xreading',
-            'res_id': xreading.id,
+            'res_id': xreading_data['id'],
             'view_mode': 'form',
             'target': 'current',
             'context': {'form_view_initial_mode': 'readonly'},

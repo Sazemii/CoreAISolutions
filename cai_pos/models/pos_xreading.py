@@ -345,8 +345,14 @@ class PosXReading(models.Model):
         xreading = self.create(xreading_vals)
         _logger.info(f"X-reading {xreading.reading_number} generated successfully")
         
-        # Return the record for action handling
-        return xreading
+        # Return a dictionary for JSON serialization (required for JS RPC calls)
+        return {
+            'id': xreading.id,
+            'reading_number': xreading.reading_number,
+            'reading_date': xreading.reading_date.isoformat() if xreading.reading_date else False,
+            'session_id': xreading.session_id.id,
+            'session_name': xreading.session_id.name,
+        }
 
     def _calculate_totals(self, orders, voided_orders):
         """Calculate all financial totals for X-reading

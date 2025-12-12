@@ -217,8 +217,8 @@ patch(ControlButtons.prototype, {
             }
         }
         
-        // Store the calculated discount amount and gross sales using update() for reactivity
-        order.update({ 
+        // Store the calculated discount amount and gross sales using update() for proper persistence
+        order.update({
             bir_discount_amount: totalDiscountAmount,
             bir_discountable_gross_sales: totalDiscountableGrossSales
         });
