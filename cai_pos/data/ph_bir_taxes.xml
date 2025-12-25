@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- 
+            BIR-Compliant Tax Types for Philippines POS
+            
+            These taxes are pre-configured for BIR compliance.
+            Note: noupdate="1" prevents these from being overwritten on module upgrade.
+            
+            IMPORTANT: For Philippine VAT-inclusive pricing:
+            - VAT 12% (Incl.) has price_include=True, meaning the list_price already includes VAT
+            - When you enter ₱140 as VAT-inclusive price, list_price should be ₱140
+            - The system will compute: base = 140/1.12 = 125, VAT = 15
+        -->
+        
+        <!-- VAT 12% Tax (Price Included) - Philippine Standard -->
+        <record id="bir_tax_vat_12_included" model="account.tax">
+            <field name="name">VAT 12% (Incl.)</field>
+            <field name="amount">12.0</field>
+            <field name="amount_type">percent</field>
+            <field name="type_tax_use">sale</field>
+            <field name="price_include" eval="True"/>
+            <field name="include_base_amount" eval="False"/>
+            <field name="l10n_ph_bir_tax_type">vat</field>
+            <field name="l10n_ph_bir_tax_code">RVAT-INCL</field>
+            <field name="description">Standard 12% VAT (already included in price) - Philippines BIR</field>
+            <field name="active" eval="True"/>
+            <field name="sequence">5</field>
+        </record>
+        
+        <!-- VAT-Exempt Tax for SC/PWD Discounts -->
+        <record id="bir_tax_sc_pwd_exempt" model="account.tax">
+            <field name="name">VAT-Exempt (SC/PWD)</field>
+            <field name="amount">0</field>
+            <field name="type_tax_use">sale</field>
+            <field name="price_include" eval="False"/>
+            <field name="l10n_ph_bir_tax_type">vat_exempt</field>
+            <field name="l10n_ph_bir_tax_code">VAT-EX</field>
+            <field name="description">VAT Exempt for Senior Citizen / PWD purchases</field>
+            <field name="active">True</field>
+        </record>
+    </data>
+</odoo>

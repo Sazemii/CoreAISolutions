@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- Extend ControlButtons to add BIR Discount in the Actions modal -->
+    <t t-name="point_of_sale.ControlButtons" t-inherit="point_of_sale.ControlButtons" t-inherit-mode="extension">
+        <xpath expr="//button[hasclass('o_pricelist_button')]" position="after">
+            <!-- BIR Discount Button - Red when discount is applied, secondary otherwise -->
+            <button t-attf-class="btn btn-lg py-5 {{ pos.get_order() and pos.get_order().bir_discount_type_id ? 'btn-danger' : 'btn-secondary' }}" 
+                    t-on-click="() => this.applyBIRDiscount()">
+                <i class="fa fa-percent me-1" role="img" aria-label="Apply BIR Discount" title="Apply BIR Discount"/>
+                <t t-if="pos.get_order() and pos.get_order().bir_discount_type_id">
+                    Change BIR Discount
+                </t>
+                <t t-else="">
+                    Apply BIR Discount
+                </t>
+            </button>
+            <!-- Remove BIR Discount Button - Only show if discount is applied -->
+            <button t-if="pos.get_order() and pos.get_order().bir_discount_type_id"
+                    class="btn btn-outline-danger btn-lg py-5" 
+                    t-on-click="() => this.removeBIRDiscount()">
+                <i class="fa fa-times me-1" role="img" aria-label="Remove BIR Discount" title="Remove BIR Discount"/>
+                Remove BIR Discount
+            </button>
+        </xpath>
+    </t>
+
+</templates>
