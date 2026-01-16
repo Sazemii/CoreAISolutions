@@ -432,14 +432,35 @@ class PosXReading(models.Model):
                 
                 totals['gross_sales'] += gross
                 
-                # VAT breakdown: use actual order.amount_tax to determine VATable vs zero-rated
-                if order.amount_tax and order.amount_tax > 0:
-                    # VATable order
-                    totals['vatable_sales'] += order.amount_total - order.amount_tax
-                    totals['vat_amount'] += order.amount_tax
-                else:
-                    # Zero-rated sales
+                # VAT breakdown: Check actual tax configuration on order lines
+                # Don't rely on amount_tax alone - it can be 0 for VAT-inclusive pricing
+                tax_types = self._get_order_tax_types(order)
+                
+                if 'vat' in tax_types or not tax_types:
+                    # VATable order (has VAT tax OR no tax configured - default to VATable)
+                    # Calculate VAT properly: if amount_tax exists, use it; otherwise calculate from amount_total
+                    if order.amount_tax and order.amount_tax > 0:
+                        totals['vatable_sales'] += order.amount_total - order.amount_tax
+                        totals['vat_amount'] += order.amount_tax
+                    else:
+                        # VAT-inclusive pricing or tax included in price
+                        # Assume 12% VAT is included: base = total / 1.12
+                        vatable_base = order.amount_total / 1.12
+                        vat_amt = order.amount_total - vatable_base
+                        totals['vatable_sales'] += vatable_base
+                        totals['vat_amount'] += vat_amt
+                elif 'zero_rated' in tax_types:
+                    # Zero-rated sales (explicitly configured)
                     totals['zero_rated_sales'] += order.amount_total
+                elif 'vat_exempt' in tax_types:
+                    # VAT-exempt sales (should have been caught earlier, but handle just in case)
+                    totals['vat_exempt_sales'] += order.amount_total
+                else:
+                    # Fallback: Default to VATable if unclear
+                    vatable_base = order.amount_total / 1.12
+                    vat_amt = order.amount_total - vatable_base
+                    totals['vatable_sales'] += vatable_base
+                    totals['vat_amount'] += vat_amt
             
             # Net sales (amount_total is final amount paid)
             totals['period_sales'] += order.amount_total
@@ -512,6 +533,33 @@ class PosXReading(models.Model):
                 payment_summary[key]['amount'] += payment.amount
         
         return list(payment_summary.values())
+    
+    def _get_order_tax_types(self, order):
+        """
+        Get the BIR tax types configured on order lines.
+        
+        Returns:
+            set: Set of tax type strings found ('vat', 'zero_rated', 'vat_exempt')
+        """
+        tax_types = set()
+        
+        for line in order.lines:
+            if line.tax_ids:
+                for tax in line.tax_ids:
+                    # Check BIR tax type classification
+                    bir_tax_type = getattr(tax, 'l10n_ph_bir_tax_type', False)
+                    if bir_tax_type:
+                        tax_types.add(bir_tax_type)
+                    else:
+                        # No BIR classification - check if it's a VAT tax by amount
+                        # If tax amount is 12%, assume it's VAT
+                        if tax.amount == 12.0 and tax.type_tax_use == 'sale':
+                            tax_types.add('vat')
+                        elif tax.amount == 0.0:
+                            # Zero-rated tax
+                            tax_types.add('zero_rated')
+        
+        return tax_types
 
     def action_print_xreading(self):
         """Print X-reading report"""

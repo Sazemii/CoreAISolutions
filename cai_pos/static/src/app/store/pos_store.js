@@ -183,17 +183,14 @@ patch(PosOrder.prototype, {
 
     let totalDiscountAmount = 0;
     let totalGrossSales = 0;
+    let totalNonDiscountableGross = 0;
+    let totalNonDiscountableVAT = 0;
 
     const orderlines = this.get_orderlines();
     for (const line of orderlines) {
       const product = line.get_product();
 
-      // Only calculate discount for discountable items
-      if (product.is_bir_discountable === false) {
-        continue;
-      }
-
-      // Get VAT rate from original product taxes (before VAT-exempt replacement)
+      // Get VAT rate from original product taxes
       let vatRate = 12.0; // Default Philippine VAT
       const productTaxes = product.taxes_id || [];
       for (const tax of productTaxes) {
@@ -204,35 +201,30 @@ patch(PosOrder.prototype, {
       }
       const vatMultiplier = 1 + vatRate / 100;
 
+      // Calculate VAT-inclusive price
+      let vatInclusivePrice;
+      if (line.bir_original_vat_inclusive_price) {
+        vatInclusivePrice = line.bir_original_vat_inclusive_price * line.qty;
+      } else {
+        vatInclusivePrice = line.price_unit * vatMultiplier * line.qty;
+      }
+
+      // For non-discountable items, track their VAT but don't apply discount
+      if (product.is_bir_discountable === false) {
+        totalNonDiscountableGross += vatInclusivePrice;
+        totalNonDiscountableVAT +=
+          vatInclusivePrice - vatInclusivePrice / vatMultiplier;
+        continue;
+      }
+
       if (discountType.is_vat_exempt) {
         // For VAT-exempt discounts (PWD/SC):
-        // The line's tax has been changed to VAT-exempt (0%), so we need to
-        // reconstruct the ORIGINAL VAT-inclusive gross from the line data.
-        //
-        // CRITICAL: Use the saved bir_original_vat_inclusive_price if available,
-        // because after changing the tax to VAT-exempt (0%), the get_all_prices()
-        // will no longer include VAT in its calculations.
-        //
-        // If bir_original_vat_inclusive_price is not set, we need to compute it:
-        // - If product has price_include=True tax: price_unit IS VAT-inclusive
-        // - If product has price_include=False tax: price_unit + VAT = VAT-inclusive
-
-        let originalVATInclusivePrice;
-        if (line.bir_original_vat_inclusive_price) {
-          // Use the saved original price (qty was 1 when saved)
-          originalVATInclusivePrice =
-            line.bir_original_vat_inclusive_price * line.qty;
-        } else {
-          // Calculate from current price + VAT (if not included)
-          // Since we don't know if original tax was price_include or not,
-          // assume price_unit is base and add VAT
-          originalVATInclusivePrice =
-            line.price_unit * vatMultiplier * line.qty;
-        }
-        totalGrossSales += originalVATInclusivePrice;
+        // The line's tax has been changed to VAT-exempt (0%), so we use
+        // the VAT-inclusive price we calculated above
+        totalGrossSales += vatInclusivePrice;
 
         // The discount amount is discount% of the VAT-exclusive amount
-        const vatExclusiveAmount = originalVATInclusivePrice / vatMultiplier;
+        const vatExclusiveAmount = vatInclusivePrice / vatMultiplier;
         const lineDiscountAmount =
           vatExclusiveAmount * (discountType.discount_percent / 100);
         totalDiscountAmount += lineDiscountAmount;
@@ -250,6 +242,8 @@ patch(PosOrder.prototype, {
     this.update({
       bir_discount_amount: totalDiscountAmount,
       bir_discountable_gross_sales: totalGrossSales,
+      bir_non_discountable_gross: totalNonDiscountableGross,
+      bir_non_discountable_vat: totalNonDiscountableVAT,
     });
   },
 
@@ -288,6 +282,8 @@ patch(PosOrder.prototype, {
     json.bir_discount_id_number = this.bir_discount_id_number || "";
     json.bir_discount_id_type = this.bir_discount_id_type || "";
     json.bir_discountable_gross_sales = this.bir_discountable_gross_sales || 0;
+    json.bir_non_discountable_gross = this.bir_non_discountable_gross || 0;
+    json.bir_non_discountable_vat = this.bir_non_discountable_vat || 0;
 
     return json;
   },
@@ -301,6 +297,8 @@ patch(PosOrder.prototype, {
     this.bir_discount_id_number = json.bir_discount_id_number || "";
     this.bir_discount_id_type = json.bir_discount_id_type || "";
     this.bir_discountable_gross_sales = json.bir_discountable_gross_sales || 0;
+    this.bir_non_discountable_gross = json.bir_non_discountable_gross || 0;
+    this.bir_non_discountable_vat = json.bir_non_discountable_vat || 0;
   },
 
   export_for_printing(baseUrl, headerData) {
@@ -382,6 +380,8 @@ patch(PosOrder.prototype, {
             is_vat_exempt: discountType.is_vat_exempt,
             discountable_gross_sales:
               printGrossSales || this.bir_discountable_gross_sales || 0,
+            non_discountable_gross: this.bir_non_discountable_gross || 0,
+            non_discountable_vat: this.bir_non_discountable_vat || 0,
           };
         }
       }
@@ -444,11 +444,25 @@ patch(PosOrder.prototype, {
 
     if (hasVATExemptDiscount) {
       // For VAT-exempt orders (SC/PWD discount applied):
-      // The entire order is VAT-exempt, no VAT to report
-      // The total amount due IS the VAT-exempt sales
-      breakdown.vat_exempt_sales = printData.taxTotals?.order_total || 0;
-      breakdown.vat_amount = 0;
-      breakdown.vatable_sales = 0;
+      // - Discounted items become VAT-exempt
+      // - Non-discountable items KEEP their VAT
+
+      // Get non-discountable amounts from bir_discount data
+      const nonDiscountableGross =
+        printData.bir_discount.non_discountable_gross || 0;
+      const nonDiscountableVAT =
+        printData.bir_discount.non_discountable_vat || 0;
+      const nonDiscountableBase = nonDiscountableGross - nonDiscountableVAT;
+
+      // Non-discountable items are vatable
+      breakdown.vatable_sales = nonDiscountableBase;
+      breakdown.vat_amount = nonDiscountableVAT;
+
+      // VAT-exempt is the total order minus the non-discountable gross
+      // (because non-discountable items are already VAT-inclusive in the total)
+      const orderTotal = printData.taxTotals?.order_total || 0;
+      breakdown.vat_exempt_sales = orderTotal - nonDiscountableGross;
+
       return breakdown;
     }
 

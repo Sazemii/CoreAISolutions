@@ -30,19 +30,8 @@
                            options="{'currency_field': 'currency_id', 'field_digits': True}"
                            class="oe_inline"/>
                     <span groups="uom.group_uom">
-                        per <field name="uom_id" class="oe_inline" style="max-width:136px" options="{'no_open': True, 'no_create': True}" readonly="1"/>
+                        per <field name="uom_id" class="oe_inline" style="max-width:136px" options="{'no_open': True, 'no_create': True}"/>
                     </span>
-                </div>
-                <div class="text-muted small" invisible="not is_vat_inclusive_pricing or vat_rate_display == 0">
-                    <span>Base: </span>
-                    <field name="computed_base_price" widget="monetary" options="{'currency_field': 'currency_id'}" class="oe_inline" readonly="1"/>
-                    <span> + VAT </span>
-                    <field name="vat_rate_display" class="oe_inline" readonly="1"/>
-                    <span>%: </span>
-                    <field name="computed_vat_amount" widget="monetary" options="{'currency_field': 'currency_id'}" class="oe_inline" readonly="1"/>
-                </div>
-                <div class="text-warning small" invisible="not is_vat_inclusive_pricing or vat_rate_display != 0">
-                    <i class="fa fa-exclamation-triangle"/> No VAT tax configured in Sales Taxes
                 </div>
             </xpath>
             
@@ -119,6 +108,49 @@
                 <group string="BIR Discount Settings" name="bir_discount_settings">
                     <field name="is_bir_discountable"/>
                 </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Add VAT-Inclusive Pricing to Product Variant Form -->
+    <record id="product_product_form_view_inherit_vat_inclusive" model="ir.ui.view">
+        <field name="name">product.product.form.inherit.vat.inclusive</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="priority">5</field>
+        <field name="arch" type="xml">
+            <!-- Add checkbox BEFORE Sales Price label (lst_price) -->
+            <xpath expr="//label[@for='lst_price']" position="before">
+                <field name="is_vat_inclusive_pricing" invisible="1"/>
+            </xpath>
+            
+            <!-- Make Sales Price readonly when VAT-inclusive mode is enabled -->
+            <xpath expr="//field[@name='lst_price']" position="attributes">
+                <attribute name="readonly">is_vat_inclusive_pricing</attribute>
+            </xpath>
+            
+            <!-- Add VAT-Inclusive Price field after the lst_price field -->
+            <xpath expr="//field[@name='lst_price']" position="after">
+                <label for="vat_inclusive_price" invisible="not is_vat_inclusive_pricing"/>
+                <div class="o_row" invisible="not is_vat_inclusive_pricing">
+                    <field name="vat_inclusive_price" 
+                           widget="monetary" 
+                           options="{'currency_field': 'currency_id', 'field_digits': True}"
+                           class="oe_inline"/>
+                    <span groups="uom.group_uom">
+                        per <field name="uom_id" class="oe_inline" style="max-width:136px" options="{'no_open': True, 'no_create': True}"/>
+                    </span>
+                </div>
+            </xpath>
+            
+            <!-- Hide Sales Price label when VAT-inclusive mode -->
+            <xpath expr="//label[@for='lst_price']" position="attributes">
+                <attribute name="invisible">is_vat_inclusive_pricing</attribute>
+            </xpath>
+            
+            <!-- Hide Sales Price field when VAT-inclusive mode -->
+            <xpath expr="//field[@name='lst_price']" position="attributes">
+                <attribute name="invisible">is_vat_inclusive_pricing</attribute>
             </xpath>
         </field>
     </record>

@@ -1,13 +1,16 @@
 /** @odoo-module **/
 /**
- * Ticket Screen Patch for BIR Void Functionality
+ * Ticket Screen Patch for BIR Void and Return Functionality
  *
- * Adds a VOID button to paid orders in the ticket screen.
+ * Adds:
+ * - VOID button to paid orders with Manager PIN verification
+ * - Manager PIN verification for REFUND/RETURN operations
  */
 
 import { patch } from "@web/core/utils/patch";
 import { TicketScreen } from "@point_of_sale/app/screens/ticket_screen/ticket_screen";
 import { VoidOrderPopup } from "@cai_pos/app/popups/void_popup/void_popup";
+import { ManagerPinPopup } from "@cai_pos/app/popups/manager_pin_popup/manager_pin_popup";
 import { useService } from "@web/core/utils/hooks";
 import { _t } from "@web/core/l10n/translation";
 
@@ -16,6 +19,75 @@ patch(TicketScreen.prototype, {
     super.setup(...arguments);
     this.dialog = useService("dialog");
     this.notification = useService("notification");
+    this.orm = useService("orm");
+  },
+
+  /**
+   * Get the BIR config from the POS data
+   */
+  getBirConfig() {
+    try {
+      // Access BIR config from POS data
+      const birConfigs = this.pos.data?.['bir.config'];
+      if (birConfigs && birConfigs.length > 0) {
+        return birConfigs[0];
+      }
+      // Fallback: try to get from models
+      const models = this.pos.models?.['bir.config'];
+      if (models) {
+        const configs = models.getAll();
+        if (configs && configs.length > 0) {
+          return configs[0];
+        }
+      }
+    } catch (e) {
+      console.warn("[BIR] Could not get BIR config:", e);
+    }
+    return null;
+  },
+
+  /**
+   * Check if manager PIN is required for returns
+   */
+  requiresManagerAuthForReturn() {
+    const birConfig = this.getBirConfig();
+    return birConfig?.require_manager_auth_for_return ?? false;
+  },
+
+  /**
+   * Verify manager PIN
+   * Returns a promise that resolves to true if verified, false otherwise
+   */
+  async verifyManagerPin() {
+    const birConfig = this.getBirConfig();
+    if (!birConfig) {
+      return true; // No config, allow access
+    }
+
+    return new Promise((resolve) => {
+      this.dialog.add(ManagerPinPopup, {
+        onVerified: () => resolve(true),
+        onCancel: () => resolve(false),
+      });
+    });
+  },
+
+  /**
+   * Override _onDoRefund to add manager PIN verification
+   * This is called when the user clicks the Refund button
+   */
+  async _onDoRefund() {
+    if (this.requiresManagerAuthForReturn()) {
+      const verified = await this.verifyManagerPin();
+      if (!verified) {
+        this.notification.add(_t("Manager authorization required for returns."), {
+          type: "warning",
+        });
+        return;
+      }
+    }
+    // Call the original refund method
+    return super._onDoRefund(...arguments);
   },
 
   /**
@@ -107,7 +179,7 @@ patch(TicketScreen.prototype, {
       return;
     }
 
-    // Open void popup
+    // Open void popup (which handles its own PIN verification)
     this.dialog.add(VoidOrderPopup, {
       order: order,
     });

@@ -2,7 +2,7 @@
 /**
  * VoidOrderPopup - BIR-Compliant Void Transaction Popup
  * 
- * Simple void popup for POS interface.
+ * Simple void popup for POS interface with Manager PIN verification.
  * Voiding creates a record for BIR audit trail and marks the order as voided.
  */
 
@@ -25,12 +25,27 @@ export class VoidOrderPopup extends Component {
         this.orm = useService("orm");
         this.notification = useService("notification");
         
+        // Check if manager PIN is required
+        const birConfig = this.getBirConfig();
+        const requireAuth = birConfig?.require_manager_auth_for_void ?? false;
+        const hasPin = !!birConfig?.id; // If there's a BIR config, we can verify PIN
+        
         this.state = useState({
+            // PIN verification state
+            step: requireAuth && hasPin ? 'pin' : 'form', // 'pin' or 'form'
+            managerPin: "",
+            pinError: "",
+            pinVerified: !requireAuth, // Skip verification if not required
+            
+            // Void form state
             voidReason: "",
             voidReasonDetails: "",
             isProcessing: false,
             errorMessage: "",
         });
+        
+        // Store if PIN is required for display purposes
+        this.requireManagerAuth = requireAuth;
         
         // Predefined void reasons per BIR requirements
         this.voidReasons = [
@@ -45,10 +60,93 @@ export class VoidOrderPopup extends Component {
             { value: "other", label: _t("Other Reason"), description: "" },
         ];
     }
+    
+    /**
+     * Get the BIR config from the POS data
+     */
+    getBirConfig() {
+        try {
+            // Access BIR config from POS data
+            const birConfigs = this.pos.data?.['bir.config'];
+            if (birConfigs && birConfigs.length > 0) {
+                return birConfigs[0];
+            }
+            // Fallback: try to get from models
+            const models = this.pos.models?.['bir.config'];
+            if (models) {
+                const configs = models.getAll();
+                if (configs && configs.length > 0) {
+                    return configs[0];
+                }
+            }
+        } catch (e) {
+            console.warn("[VOID] Could not get BIR config:", e);
+        }
+        return null;
+    }
 
     get order() {
         return this.props.order;
     }
+    
+    get dialogTitle() {
+        if (this.state.step === 'pin') {
+            return _t("Manager Authorization Required");
+        }
+        return _t("Void Transaction");
+    }
+    
+    // ========== PIN Verification Methods ==========
+    
+    onPinInput(ev) {
+        // Only allow numeric input
+        const value = ev.target.value.replace(/\D/g, '');
+        this.state.managerPin = value.slice(0, 6); // Max 6 digits
+        this.state.pinError = "";
+    }
+    
+    async verifyPin() {
+        if (!this.state.managerPin || this.state.managerPin.length < 4) {
+            this.state.pinError = _t("Please enter a valid PIN (4-6 digits).");
+            return;
+        }
+        
+        this.state.isProcessing = true;
+        this.state.pinError = "";
+        
+        try {
+            const birConfig = this.getBirConfig();
+            if (!birConfig) {
+                // No BIR config - allow access
+                this.state.pinVerified = true;
+                this.state.step = 'form';
+                return;
+            }
+            
+            // Call backend to verify PIN
+            const result = await this.orm.call(
+                "bir.config",
+                "verify_manager_pin",
+                [birConfig.id, this.state.managerPin]
+            );
+            
+            if (result.success) {
+                this.state.pinVerified = true;
+                this.state.step = 'form';
+                this.notification.add(_t("Manager authorization verified."), { type: "success" });
+            } else {
+                this.state.pinError = result.message || _t("Invalid PIN. Please try again.");
+                this.state.managerPin = "";
+            }
+        } catch (error) {
+            console.error("[VOID] PIN verification error:", error);
+            this.state.pinError = _t("Error verifying PIN. Please try again.");
+        } finally {
+            this.state.isProcessing = false;
+        }
+    }
+    
+    // ========== Void Form Methods ==========
     
     onReasonChange(ev) {
         this.state.voidReason = ev.target.value;

@@ -1,70 +1,215 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- BIR Configuration Form with Dashboard -->
     <record id="view_bir_config_form" model="ir.ui.view">
         <field name="name">bir.config.form</field>
         <field name="model">bir.config</field>
         <field name="arch" type="xml">
-            <form string="BIR Configuration">
+            <form string="BIR Configuration &amp; Dashboard">
                 <sheet>
+                    <!-- Alert Banners -->
+                    <div class="alert alert-warning d-flex align-items-center" role="alert" 
+                         invisible="not pending_zreading">
+                        <i class="fa fa-exclamation-triangle me-2" style="font-size: 1.2em;"/>
+                        <strong>Pending Z-Reading!</strong>
+                        <span class="ms-2">Yesterday's Z-reading has not been generated.</span>
+                    </div>
+                    <div class="alert alert-danger d-flex align-items-center" role="alert"
+                         invisible="permit_days_remaining > 30 or permit_days_remaining &lt; 0">
+                        <i class="fa fa-clock-o me-2" style="font-size: 1.2em;"/>
+                        <strong>Permit Expiring!</strong>
+                        <span class="ms-2">Your BIR permit expires in <field name="permit_days_remaining" readonly="1"/> days.</span>
+                    </div>
+                    
+                    <!-- Title -->
                     <div class="oe_title">
                         <h1><field name="name" placeholder="e.g. Main Store Configuration"/></h1>
                     </div>
-                    <group>
-                        <group string="Business Information">
-                            <field name="company_id" options="{'no_create': True}"/>
-                            <field name="business_name" placeholder="Registered business name"/>
-                            <field name="business_address" placeholder="Complete business address"/>
-                            <field name="active"/>
-                            <field name="branch_code" placeholder="2-digit branch code for eSales (e.g., 01 for main branch, 02 for branch 2)"/>
-                        </group>
-                        <group string="BIR Registration">
-                            <field name="tin" placeholder="e.g. 123-456-789-000"/>
-                            <field name="permit_number"/>
-                            <field name="permit_date_issued"/>
-                            <field name="permit_valid_until"/>
-                        </group>
-                    </group>
-                    <group>
-                        <group string="POS Accreditation">
-                            <field name="accreditation_number"/>
-                            <field name="min_number" placeholder="Machine Identification Number"/>
-                            <field name="serial_number" placeholder="POS Serial Number"/>
-                        </group>
-                        <group string="POS Terminal">
-                            <field name="terminal_id" placeholder="Unique terminal ID"/>
-                            <field name="pos_machine_brand" placeholder="e.g. Raspberry Pi 4"/>
-                        </group>
-                    </group>
-                    <group>
-                        <group string="Receipt Numbering">
-                            <field name="receipt_prefix"/>
-                            <field name="current_receipt_number"/>
-                        </group>
-                        <group string="Z-Reading">
-                            <field name="z_reading_counter" readonly="1"/>
-                            <field name="last_z_reading_date" readonly="1"/>
-                        </group>
-                    </group>
-                    <group>
-                        <group string="POS Software">
-                            <field name="pos_software_name"/>
-                            <field name="pos_software_version"/>
-                        </group>
-                        <group string="Accreditation Validity">
-                            <field name="valid_from"/>
-                            <field name="valid_until"/>
-                        </group>
-                    </group>
+                    
+                    <!-- Today's Dashboard Stats Cards -->
+                    <div class="row mb-4" style="margin: 0 -8px;">
+                        <!-- Total Sales Card -->
+                        <div class="col-lg-3 col-md-6 col-sm-6 mb-3" style="padding: 0 8px;">
+                            <div style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 16px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <div>
+                                        <div style="font-size: 0.8em; color: #212529; text-transform: uppercase; letter-spacing: 0.5px;">Today's Sales</div>
+                                        <div style="font-size: 1.5em; font-weight: 600; color: #212529; margin-top: 4px;">
+                                            ₱<field name="today_sales" readonly="1" widget="float" options="{'digits': [12, 2]}"/>
+                                        </div>
+                                    </div>
+                                    <div style="font-size: 2em; color: #FFFFFF;">
+                                        <i class="fa fa-money"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Transactions Card -->
+                        <div class="col-lg-3 col-md-6 col-sm-6 mb-3" style="padding: 0 8px;">
+                            <div style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 16px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <div>
+                                        <div style="font-size: 0.8em; color: #212529; text-transform: uppercase; letter-spacing: 0.5px;">Transactions</div>
+                                        <div style="font-size: 1.5em; font-weight: 600; color: #212529; margin-top: 4px;">
+                                            <field name="today_transactions" readonly="1"/>
+                                        </div>
+                                    </div>
+                                    <div style="font-size: 2em; color: #FFFFFF;">
+                                        <i class="fa fa-shopping-cart"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Voids Card -->
+                        <div class="col-lg-3 col-md-6 col-sm-6 mb-3" style="padding: 0 8px;">
+                            <div style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 16px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <div>
+                                        <div style="font-size: 0.8em; color: #212529; text-transform: uppercase; letter-spacing: 0.5px;">Today's Voids</div>
+                                        <div style="font-size: 1.5em; font-weight: 600; color: #212529; margin-top: 4px;">
+                                            <field name="today_voids" readonly="1"/>
+                                            <span style="font-size: 0.6em; color: #212529; margin-left: 8px;">
+                                                (₱<field name="today_void_amount" readonly="1" widget="float" options="{'digits': [12, 2]}"/>)
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div style="font-size: 2em; color: #FFFFFF;">
+                                        <i class="fa fa-ban"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Open Sessions Card -->
+                        <div class="col-lg-3 col-md-6 col-sm-6 mb-3" style="padding: 0 8px;">
+                            <div style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 16px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <div>
+                                        <div style="font-size: 0.8em; color: #212529; text-transform: uppercase; letter-spacing: 0.5px;">Open Sessions</div>
+                                        <div style="font-size: 1.5em; font-weight: 600; color: #212529; margin-top: 4px;">
+                                            <field name="open_sessions_count" readonly="1"/>
+                                        </div>
+                                    </div>
+                                    <div style="font-size: 2em; color: #FFFFFF;">
+                                        <i class="fa fa-desktop"/>  
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tabs -->
+                    <notebook>
+                        <!-- Business Information Tab -->
+                        <page string="Business Info" name="business">
+                            <group>
+                                <group string="Company Information">
+                                    <field name="company_id" options="{'no_create': True}"/>
+                                    <field name="business_name" placeholder="Registered business name"/>
+                                    <field name="business_address" placeholder="Complete business address"/>
+                                    <field name="branch_code" placeholder="01"/>
+                                    <field name="active"/>
+                                </group>
+                                <group string="BIR Registration">
+                                    <field name="tin" placeholder="e.g. 123-456-789-000"/>
+                                    <field name="permit_number"/>
+                                    <field name="permit_date_issued"/>
+                                    <field name="permit_valid_until"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <!-- Terminal Tab -->
+                        <page string="Terminal" name="terminal">
+                            <group>
+                                <group string="POS Accreditation">
+                                    <field name="accreditation_number"/>
+                                    <field name="min_number" placeholder="Machine Identification Number"/>
+                                    <field name="serial_number" placeholder="POS Serial Number"/>
+                                </group>
+                                <group string="POS Terminal">
+                                    <field name="terminal_id" placeholder="Unique terminal ID"/>
+                                    <field name="pos_machine_brand" placeholder="e.g. Raspberry Pi 4"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Receipt Numbering">
+                                    <field name="receipt_prefix"/>
+                                    <field name="current_receipt_number"/>
+                                </group>
+                                <group string="POS Software">
+                                    <field name="pos_software_name"/>
+                                    <field name="pos_software_version"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <!-- Security Tab -->
+                        <page string="Security" name="security">
+                            <div class="alert alert-info" role="alert">
+                                <i class="fa fa-info-circle me-2"/>
+                                <strong>Manager Authentication:</strong> When enabled, cashiers must enter the Manager PIN to perform void or return operations in the POS.
+                            </div>
+                            <group>
+                                <group string="Manager PIN">
+                                    <field name="manager_pin" password="True" readonly="1" 
+                                           placeholder="PIN not set"/>
+                                    <button name="action_set_manager_pin" 
+                                            string="Set/Change Manager PIN" 
+                                            type="object" 
+                                            class="btn-secondary"
+                                            icon="fa-key"/>
+                                </group>
+                                <group string="Require Manager Authorization For">
+                                    <field name="require_manager_auth_for_void" widget="boolean_toggle"/>
+                                    <field name="require_manager_auth_for_return" widget="boolean_toggle"/>
+                                </group>
+                            </group>
+                            <div class="alert alert-warning mt-3" role="alert" 
+                                 invisible="manager_pin">
+                                <i class="fa fa-exclamation-triangle me-2"/>
+                                <strong>No PIN Set:</strong> Manager PIN has not been configured. Security features will be bypassed until a PIN is set.
+                            </div>
+                        </page>
+                        
+                        <!-- Statistics Tab -->
+                        <page string="Statistics" name="stats">
+                            <group>
+                                <group string="Z-Reading Counter">
+                                    <field name="z_reading_counter" readonly="1"/>
+                                    <field name="last_z_reading_date" readonly="1"/>
+                                    <field name="pending_zreading" readonly="1" widget="boolean_toggle"/>
+                                </group>
+                                <group string="Void Statistics (All Time)">
+                                    <field name="void_counter" readonly="1"/>
+                                    <field name="total_void_amount" readonly="1"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Accreditation Validity">
+                                    <field name="valid_from"/>
+                                    <field name="valid_until"/>
+                                    <field name="permit_days_remaining" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                    
+                    <!-- Hidden fields for computed values -->
+                    <field name="currency_id" invisible="1"/>
                 </sheet>
             </form>
         </field>
     </record>
 
+    <!-- List View -->
     <record id="view_bir_config_tree" model="ir.ui.view">
         <field name="name">bir.config.list</field>
         <field name="model">bir.config</field>
         <field name="arch" type="xml">
-            <list string="BIR Configurations">
+            <list string="BIR Configurations" decoration-warning="pending_zreading" decoration-danger="permit_days_remaining >= 0 and permit_days_remaining &lt;= 30">
                 <field name="name"/>
                 <field name="business_name"/>
                 <field name="company_id"/>
@@ -72,14 +217,28 @@
                 <field name="permit_number"/>
                 <field name="permit_valid_until"/>
                 <field name="terminal_id"/>
+                <field name="today_sales" string="Today's Sales" optional="show"/>
+                <field name="today_transactions" string="Transactions" optional="show"/>
+                <field name="open_sessions_count" string="Open Sessions" optional="show"/>
+                <field name="pending_zreading" invisible="1"/>
+                <field name="permit_days_remaining" invisible="1"/>
                 <field name="active"/>
             </list>
         </field>
     </record>
 
+    <!-- Action -->
     <record id="action_bir_config" model="ir.actions.act_window">
         <field name="name">BIR Configurations</field>
         <field name="res_model">bir.config</field>
         <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first BIR Configuration
+            </p>
+            <p>
+                Configure BIR compliance settings including TIN, permit numbers, receipt numbering, and security controls for your POS terminals.
+            </p>
+        </field>
     </record>
 </odoo>

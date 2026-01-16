@@ -13,7 +13,21 @@
             - The system will compute: base = 140/1.12 = 125, VAT = 15
         -->
         
-        <!-- VAT 12% Tax (Price Included) - Philippine Standard -->
+        <!-- VAT 12% Tax - Philippine Standard (Default) -->
+        <record id="bir_tax_vat_12" model="account.tax">
+            <field name="name">VAT 12%</field>
+            <field name="description">Standard Value-Added Tax (12%) - Philippines BIR</field>
+            <field name="amount">12.0</field>
+            <field name="amount_type">percent</field>
+            <field name="type_tax_use">sale</field>
+            <field name="price_include" eval="False"/>
+            <field name="l10n_ph_bir_tax_type">vat</field>
+            <field name="l10n_ph_bir_tax_code">RVAT</field>
+            <field name="active" eval="True"/>
+            <field name="sequence">10</field>
+        </record>
+        
+        <!-- VAT 12% Tax (Price Included) - For VAT-inclusive pricing mode -->
         <record id="bir_tax_vat_12_included" model="account.tax">
             <field name="name">VAT 12% (Incl.)</field>
             <field name="amount">12.0</field>

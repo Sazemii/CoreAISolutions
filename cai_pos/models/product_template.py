@@ -14,6 +14,23 @@ class ProductTemplate(models.Model):
     """
     _inherit = 'product.template'
 
+    @api.model
+    def default_get(self, fields_list):
+        """Set default Sales Tax to VAT 12%"""
+        res = super().default_get(fields_list)
+        if 'taxes_id' in fields_list:
+            # Find VAT 12% tax (regular, not included)
+            vat_12 = self.env['account.tax'].search([
+                ('amount', '=', 12.0),
+                ('amount_type', '=', 'percent'),
+                ('type_tax_use', '=', 'sale'),
+                ('price_include', '=', False),
+                ('active', '=', True),
+            ], limit=1)
+            if vat_12:
+                res['taxes_id'] = [(6, 0, [vat_12.id])]
+        return res
+
     # ==========================================
     # VAT-Inclusive Pricing Helper (PH Standard)
     # ==========================================
@@ -134,29 +151,11 @@ class ProductTemplate(models.Model):
     @api.onchange('is_vat_inclusive_pricing')
     def _onchange_is_vat_inclusive_pricing(self):
         """
-        When VAT-inclusive pricing is enabled, auto-assign the VAT 12% (Incl.) tax.
-        This ensures proper tax calculation in Odoo.
+        VAT-inclusive pricing mode changed.
+        Note: Tax assignment is now manual - user selects the appropriate tax.
         """
-        if self.is_vat_inclusive_pricing:
-            # Find the VAT 12% (Incl.) tax
-            vat_12_incl = self.env['account.tax'].search([
-                ('amount', '=', 12.0),
-                ('amount_type', '=', 'percent'),
-                ('type_tax_use', '=', 'sale'),
-                ('price_include', '=', True),
-                ('active', '=', True),
-            ], limit=1)
-            
-            if vat_12_incl:
-                # Store current list_price as the VAT-inclusive price
-                current_price = self.list_price
-                
-                # Remove any non-price-include taxes and add the price-include one
-                self.taxes_id = [(6, 0, [vat_12_incl.id])]
-                
-                # If we had a price before, keep it (it's now treated as VAT-inclusive)
-                if current_price:
-                    self.list_price = current_price
+        # No auto-assignment - user manually selects tax
+        pass
     
     @api.depends('taxes_id')
     def _compute_vat_rate_display(self):
@@ -196,6 +195,7 @@ class ProductTemplate(models.Model):
 class ProductProduct(models.Model):
     """
     Extend Product Product to make the field accessible at variant level.
+    Also add VAT-inclusive pricing support at variant level.
     """
     _inherit = 'product.product'
     
@@ -205,6 +205,130 @@ class ProductProduct(models.Model):
         store=True,
         readonly=False,
         help='Whether this product variant is eligible for PWD/SC discounts')
+    
+    # VAT-Inclusive Pricing at Variant Level
+    # Inherit the flag from template, but allow variant-level override
+    is_vat_inclusive_pricing = fields.Boolean(
+        related='product_tmpl_id.is_vat_inclusive_pricing',
+        string='VAT-Inclusive Pricing',
+        readonly=True,
+        help='VAT-inclusive pricing mode (inherited from template)')
+    
+    vat_inclusive_price = fields.Float(
+        string='VAT-Inclusive Price',
+        digits='Product Price',
+        compute='_compute_vat_inclusive_price_variant',
+        inverse='_inverse_vat_inclusive_price_variant',
+        store=False,
+        help='Enter the price as displayed to customers (VAT already included).\n'
+             'This works with lst_price when VAT-inclusive mode is enabled.')
+    
+    vat_rate_display = fields.Float(
+        string='VAT Rate (%)',
+        compute='_compute_vat_rate_display_variant',
+        help='Current VAT rate from Sales Taxes')
+    
+    computed_base_price = fields.Float(
+        string='Computed Base Price',
+        compute='_compute_vat_inclusive_price_variant',
+        digits='Product Price',
+        help='Base price before VAT (automatically computed from lst_price)')
+    
+    computed_vat_amount = fields.Float(
+        string='VAT Amount',
+        compute='_compute_vat_inclusive_price_variant',
+        digits='Product Price',
+        help='VAT amount (automatically computed)')
+    
+    @api.depends('lst_price', 'taxes_id', 'is_vat_inclusive_pricing', 'list_price', 'price_extra')
+    def _compute_vat_inclusive_price_variant(self):
+        """
+        Compute VAT breakdown from lst_price (variant-level price).
+        
+        When is_vat_inclusive_pricing=True and tax has price_include=True:
+        - lst_price IS the VAT-inclusive price
+        - We compute the base and VAT for display only
+        """
+        for product in self:
+            lst_price = product.lst_price
+            vat_rate = product._get_vat_rate_variant()
+            has_price_include_tax = product._has_price_include_tax_variant()
+            
+            if product.is_vat_inclusive_pricing and has_price_include_tax and vat_rate > 0:
+                # lst_price is VAT-inclusive, compute base from it
+                # Formula: base = inclusive_price / (1 + rate)
+                base_price = lst_price / (1 + (vat_rate / 100))
+                vat_amount = lst_price - base_price
+                inclusive_price = lst_price
+            elif vat_rate > 0 and not has_price_include_tax:
+                # lst_price is base price, VAT is added on top
+                base_price = lst_price
+                vat_amount = base_price * (vat_rate / 100)
+                inclusive_price = base_price + vat_amount
+            else:
+                # No VAT or no tax configured
+                base_price = lst_price
+                vat_amount = 0.0
+                inclusive_price = lst_price
+            
+            product.vat_inclusive_price = inclusive_price
+            product.computed_base_price = base_price
+            product.computed_vat_amount = vat_amount
+    
+    def _inverse_vat_inclusive_price_variant(self):
+        """
+        When user enters VAT-inclusive price for variant, set lst_price accordingly.
+        
+        This will trigger the existing _set_product_lst_price inverse method which
+        updates the template's list_price. However, since each variant can have different
+        price_extra values, the effective lst_price will be different per variant.
+        
+        Note: In Odoo, variants share the template's list_price but can have different
+        price_extra values through attribute values. For completely independent prices,
+        users should set price_extra on the variant's attribute values.
+        """
+        for product in self:
+            inclusive_price = product.vat_inclusive_price
+            vat_rate = product._get_vat_rate_variant()
+            has_price_include_tax = product._has_price_include_tax_variant()
+            
+            if product.is_vat_inclusive_pricing and has_price_include_tax:
+                # Tax has price_include=True, so lst_price should be the inclusive price
+                # Set lst_price directly, which will trigger _set_product_lst_price
+                # to update the template's list_price
+                product.lst_price = inclusive_price
+            elif vat_rate > 0:
+                # Tax does NOT have price_include, compute base price first
+                # The inclusive_price includes VAT, so we need the base
+                base_price = inclusive_price / (1 + (vat_rate / 100))
+                # lst_price should be the base (VAT will be added by tax computation)
+                product.lst_price = base_price
+            else:
+                # No VAT, lst_price = inclusive_price
+                product.lst_price = inclusive_price
+    
+    def _has_price_include_tax_variant(self):
+        """Check if any of the sales taxes has price_include=True"""
+        self.ensure_one()
+        for tax in self.taxes_id:
+            if tax.type_tax_use == 'sale' and tax.price_include:
+                return True
+        return False
+    
+    @api.depends('taxes_id')
+    def _compute_vat_rate_display_variant(self):
+        """Get the VAT rate from sales taxes for display"""
+        for product in self:
+            product.vat_rate_display = product._get_vat_rate_variant()
+    
+    def _get_vat_rate_variant(self):
+        """Get the total VAT rate from sales taxes"""
+        self.ensure_one()
+        vat_rate = 0.0
+        for tax in self.taxes_id:
+            if tax.amount_type == 'percent' and tax.type_tax_use == 'sale':
+                vat_rate += tax.amount
+        return vat_rate
     
     @api.model
     def _load_pos_data_fields(self, config_id):

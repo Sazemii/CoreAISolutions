@@ -25,6 +25,7 @@
         'wizard/generate_zreading_wizard_views.xml',
         'views/pos_zreading_views.xml',
         'wizard/generate_esales_wizard_views.xml',
+        'wizard/bir_config_set_pin_wizard_views.xml',
         'views/pos_esales_views.xml',
         'views/pos_session_views.xml',
         # === REPORTS ===
@@ -43,6 +44,9 @@
             # Void popup (BIR-compliant voiding)
             'cai_pos/static/src/app/popups/void_popup/void_popup.js',
             'cai_pos/static/src/app/popups/void_popup/void_popup.xml',
+            # Manager PIN popup (for returns and other sensitive operations)
+            'cai_pos/static/src/app/popups/manager_pin_popup/manager_pin_popup.js',
+            'cai_pos/static/src/app/popups/manager_pin_popup/manager_pin_popup.xml',
             # Ticket screen patch for void button
             'cai_pos/static/src/app/screens/ticket_screen_patch.js',
             'cai_pos/static/src/app/screens/ticket_screen_patch.xml',

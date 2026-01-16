@@ -1,5 +1,9 @@
 from odoo import api, fields, models, _
-import uuid
+from odoo.exceptions import UserError
+import hashlib
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class BIRConfig(models.Model):
@@ -11,6 +15,138 @@ class BIRConfig(models.Model):
     name = fields.Char(string='Name', required=True)
     company_id = fields.Many2one('res.company', string='Company', required=True, 
                                 default=lambda self: self.env.company)
+    
+    # ========== MANAGER AUTHENTICATION (Security Controls) ==========
+    manager_pin = fields.Char(
+        string='Manager PIN',
+        size=6,
+        help='4-6 digit PIN for manager override functions (void, returns)',
+        groups='point_of_sale.group_pos_manager'
+    )
+    
+    require_manager_auth_for_void = fields.Boolean(
+        string='Require Manager Auth for Void',
+        default=True,
+        help='Cashier must enter manager PIN to void transactions'
+    )
+    
+    require_manager_auth_for_return = fields.Boolean(
+        string='Require Manager Auth for Returns',
+        default=True,
+        help='Cashier must enter manager PIN to process returns'
+    )
+    
+    # ========== DASHBOARD STATISTICS (Computed) ==========
+    today_sales = fields.Monetary(
+        string="Today's Sales",
+        compute='_compute_dashboard_stats',
+        currency_field='currency_id'
+    )
+    
+    today_transactions = fields.Integer(
+        string="Today's Transactions",
+        compute='_compute_dashboard_stats'
+    )
+    
+    today_voids = fields.Integer(
+        string="Today's Voids",
+        compute='_compute_dashboard_stats'
+    )
+    
+    today_void_amount = fields.Monetary(
+        string="Today's Void Amount",
+        compute='_compute_dashboard_stats',
+        currency_field='currency_id'
+    )
+    
+    open_sessions_count = fields.Integer(
+        string='Open Sessions',
+        compute='_compute_dashboard_stats'
+    )
+    
+    pending_zreading = fields.Boolean(
+        string='Pending Z-Reading',
+        compute='_compute_dashboard_stats',
+        help='True if yesterday has no Z-reading'
+    )
+    
+    permit_days_remaining = fields.Integer(
+        string='Permit Days Remaining',
+        compute='_compute_dashboard_stats'
+    )
+    
+    @api.depends_context('uid')
+    def _compute_dashboard_stats(self):
+        """Compute dashboard statistics for today
+        
+        Today's Sales = Gross Sales - Voided Amounts
+        This ensures voided transactions are explicitly subtracted from the total.
+        """
+        from datetime import date, datetime, time, timedelta
+        
+        for config in self:
+            today = date.today()
+            yesterday = today - timedelta(days=1)
+            
+            date_start = datetime.combine(today, time.min)
+            date_end = datetime.combine(today, time.max)
+            
+            # Get ALL today's orders (including voided) for gross sales
+            all_orders = self.env['pos.order'].search([
+                ('date_order', '>=', date_start),
+                ('date_order', '<=', date_end),
+                ('state', 'in', ['paid', 'done', 'invoiced']),
+                ('company_id', '=', config.company_id.id),
+                ('amount_total', '>=', 0)  # Exclude refunds from sales total
+            ])
+            
+            # Calculate gross sales (all orders)
+            gross_sales = sum(all_orders.mapped('amount_total'))
+            
+            # Get non-voided orders for transaction count
+            non_voided_orders = all_orders.filtered(lambda o: not o.is_voided)
+            config.today_transactions = len(non_voided_orders)
+            
+            # Voids today - get approved voids
+            voids = self.env['pos.order.void'].search([
+                ('void_date', '>=', date_start),
+                ('void_date', '<=', date_end),
+                ('state', '=', 'approved'),
+                ('company_id', '=', config.company_id.id)
+            ])
+            void_amount = sum(voids.mapped('amount_voided'))
+            config.today_voids = len(voids)
+            config.today_void_amount = void_amount
+            
+            # Today's Sales = Gross Sales - Voided Amounts
+            config.today_sales = gross_sales - void_amount
+            
+            # Open sessions
+            open_sessions = self.env['pos.session'].search([
+                ('state', 'not in', ['closed']),
+                ('company_id', '=', config.company_id.id)
+            ])
+            config.open_sessions_count = len(open_sessions)
+            
+            # Pending Z-reading check (yesterday)
+            yesterday_z = self.env['pos.zreading'].search([
+                ('reading_date', '=', yesterday),
+                ('company_id', '=', config.company_id.id)
+            ], limit=1)
+            # Only flag as pending if there were orders yesterday
+            yesterday_orders = self.env['pos.order'].search([
+                ('date_order', '>=', datetime.combine(yesterday, time.min)),
+                ('date_order', '<=', datetime.combine(yesterday, time.max)),
+                ('state', 'in', ['paid', 'done', 'invoiced']),
+                ('company_id', '=', config.company_id.id)
+            ], limit=1)
+            config.pending_zreading = bool(yesterday_orders) and not bool(yesterday_z)
+            
+            # Permit days remaining
+            if config.permit_valid_until:
+                config.permit_days_remaining = (config.permit_valid_until - today).days
+            else:
+                config.permit_days_remaining = -1  # No expiry set
     
     # Company/Business Information (for receipt)
     business_name = fields.Char(
@@ -361,4 +497,55 @@ class BIRConfig(models.Model):
             'permit_valid_until',
             'valid_from',
             'valid_until',
+            # Security settings (loaded into POS frontend)
+            'require_manager_auth_for_void',
+            'require_manager_auth_for_return',
         ]
+    
+    # ========== MANAGER PIN VERIFICATION (RPC Method) ==========
+    
+    @api.model
+    def verify_manager_pin(self, config_id, pin):
+        """
+        Verify manager PIN for sensitive operations.
+        Called from POS frontend when voiding or processing returns.
+        
+        Args:
+            config_id: ID of the bir.config record
+            pin: The PIN entered by the user
+            
+        Returns:
+            dict: {'success': True/False, 'message': str}
+        """
+        if not config_id or not pin:
+            return {'success': False, 'message': _('Invalid request')}
+        
+        config = self.browse(config_id)
+        if not config.exists():
+            return {'success': False, 'message': _('Configuration not found')}
+        
+        # Check if PIN is set
+        if not config.manager_pin:
+            # No PIN configured - allow operation (with warning logged)
+            _logger.warning(f"[BIR Security] No manager PIN configured for {config.name}. Allowing operation.")
+            return {'success': True, 'message': _('No PIN required')}
+        
+        # Verify PIN
+        if pin == config.manager_pin:
+            _logger.info(f"[BIR Security] Manager PIN verified successfully for {config.name}")
+            return {'success': True, 'message': _('PIN verified')}
+        else:
+            _logger.warning(f"[BIR Security] Invalid manager PIN attempt for {config.name}")
+            return {'success': False, 'message': _('Invalid PIN')}
+    
+    def action_set_manager_pin(self):
+        """Action to open wizard for setting manager PIN"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Set Manager PIN'),
+            'res_model': 'bir.config.set.pin.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_config_id': self.id}
+        }
