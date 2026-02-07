@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- ManagerPinPopup Template - Simple PIN Verification -->
+    <t t-name="cai_pos.ManagerPinPopup">
+        <Dialog title="title" size="'sm'">
+            <div class="manager-pin-popup text-center">
+                <!-- Lock Icon Header -->
+                <div style="width: 70px; height: 70px; background: linear-gradient(135deg, #6c757d 0%, #495057 100%); border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                    <i class="fa fa-shield" style="font-size: 1.8em; color: white;"/>
+                </div>
+                
+                <p class="text-muted mb-3" t-esc="message"/>
+                
+                <!-- PIN Error Message -->
+                <t t-if="state.pinError">
+                    <div class="alert alert-danger py-2 mb-3">
+                        <i class="fa fa-times-circle me-2"/>
+                        <span t-esc="state.pinError"/>
+                    </div>
+                </t>
+                
+                <!-- PIN Input -->
+                <div class="mb-3">
+                    <input 
+                        type="password" 
+                        class="form-control form-control-lg text-center"
+                        style="font-size: 1.5em; letter-spacing: 0.5em; font-weight: bold;"
+                        maxlength="6"
+                        placeholder="••••••"
+                        t-att-value="state.managerPin"
+                        t-on-input="onPinInput"
+                        t-att-disabled="state.isProcessing"
+                        autofocus="autofocus"/>
+                    <div class="form-text">
+                        Enter 4-6 digit Manager PIN
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer Buttons -->
+            <t t-set-slot="footer">
+                <div class="d-flex justify-content-between w-100">
+                    <button 
+                        class="btn btn-secondary" 
+                        t-on-click="cancel"
+                        t-att-disabled="state.isProcessing">
+                        Cancel
+                    </button>
+                    
+                    <button 
+                        class="btn btn-primary" 
+                        t-on-click="verifyPin"
+                        t-att-disabled="state.isProcessing or state.managerPin.length &lt; 4">
+                        <t t-if="state.isProcessing">
+                            <i class="fa fa-spinner fa-spin me-1"/>
+                            Verifying...
+                        </t>
+                        <t t-else="">
+                            <i class="fa fa-check me-1"/>
+                            Verify
+                        </t>
+                    </button>
+                </div>
+            </t>
+        </Dialog>
+    </t>
+
+</templates>
+
+

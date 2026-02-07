@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- 
+            Pre-configured BIR-Compliant Discount Types for Philippines
+            
+            These discount types are commonly used in Philippine retail and require
+            special handling for BIR compliance reporting.
+        -->
+        
+        <!-- Senior Citizen Discount (RA 9994) -->
+        <record id="bir_discount_senior_citizen" model="bir.discount.type">
+            <field name="name">Senior Citizen (20%)</field>
+            <field name="code">SC</field>
+            <field name="discount_percent">20.0</field>
+            <field name="discount_type">sc</field>
+            <field name="requires_id" eval="True"/>
+            <field name="is_vat_exempt" eval="True"/>
+            <field name="bir_tax_id" ref="bir_tax_sc_pwd_exempt"/>
+            <field name="bir_code">SC_DISC</field>
+            <field name="sequence">10</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="description">Senior Citizen discount per RA 9994 - 20% discount on goods and services, VAT-exempt. Requires valid Senior Citizen ID.</field>
+        </record>
+        
+        <!-- PWD Discount (RA 10754) -->
+        <record id="bir_discount_pwd" model="bir.discount.type">
+            <field name="name">PWD (20%)</field>
+            <field name="code">PWD</field>
+            <field name="discount_percent">20.0</field>
+            <field name="discount_type">pwd</field>
+            <field name="requires_id" eval="True"/>
+            <field name="is_vat_exempt" eval="True"/>
+            <field name="bir_tax_id" ref="bir_tax_sc_pwd_exempt"/>
+            <field name="bir_code">PWD_DISC</field>
+            <field name="sequence">11</field>
+            <field name="available_in_pos" eval="True"/>
+            <field name="description">Person with Disability discount per RA 10754 - 20% discount on goods and services, VAT-exempt. Requires valid PWD ID.</field>
+        </record>
+        
+    </data>
+</odoo>
