@@ -188,7 +188,7 @@
                 </t>
                 
                 <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px;">
-                    <span>Price Net of VAT:</span>
+                    <span>Net of VAT:</span>
                     <span><t t-esc="props.formatCurrency(vatable_sales)"/></span>
                 </div>
                 <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px;">
