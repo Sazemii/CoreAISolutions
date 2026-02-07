@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models, _
+from odoo.tools import float_round
 
 class ProductTemplate(models.Model):
     """
@@ -100,14 +101,14 @@ class ProductTemplate(models.Model):
             if product.is_vat_inclusive_pricing and has_price_include_tax and vat_rate > 0:
                 # list_price is VAT-inclusive, compute base from it
                 # Formula: base = inclusive_price / (1 + rate)
-                base_price = list_price / (1 + (vat_rate / 100))
-                vat_amount = list_price - base_price
+                base_price = float_round(list_price / (1 + (vat_rate / 100)), precision_digits=2)
+                vat_amount = float_round(list_price - base_price, precision_digits=2)
                 inclusive_price = list_price
             elif vat_rate > 0 and not has_price_include_tax:
                 # list_price is base price, VAT is added on top
                 base_price = list_price
-                vat_amount = base_price * (vat_rate / 100)
-                inclusive_price = base_price + vat_amount
+                vat_amount = float_round(base_price * (vat_rate / 100), precision_digits=2)
+                inclusive_price = float_round(base_price + vat_amount, precision_digits=2)
             else:
                 # No VAT or no tax configured
                 base_price = list_price
@@ -135,7 +136,7 @@ class ProductTemplate(models.Model):
                 product.list_price = inclusive_price
             elif vat_rate > 0:
                 # Tax does NOT have price_include, compute base price
-                base_price = inclusive_price / (1 + (vat_rate / 100))
+                base_price = float_round(inclusive_price / (1 + (vat_rate / 100)), precision_digits=2)
                 product.list_price = base_price
             else:
                 product.list_price = inclusive_price
@@ -257,14 +258,14 @@ class ProductProduct(models.Model):
             if product.is_vat_inclusive_pricing and has_price_include_tax and vat_rate > 0:
                 # lst_price is VAT-inclusive, compute base from it
                 # Formula: base = inclusive_price / (1 + rate)
-                base_price = lst_price / (1 + (vat_rate / 100))
-                vat_amount = lst_price - base_price
+                base_price = float_round(lst_price / (1 + (vat_rate / 100)), precision_digits=2)
+                vat_amount = float_round(lst_price - base_price, precision_digits=2)
                 inclusive_price = lst_price
             elif vat_rate > 0 and not has_price_include_tax:
                 # lst_price is base price, VAT is added on top
                 base_price = lst_price
-                vat_amount = base_price * (vat_rate / 100)
-                inclusive_price = base_price + vat_amount
+                vat_amount = float_round(base_price * (vat_rate / 100), precision_digits=2)
+                inclusive_price = float_round(base_price + vat_amount, precision_digits=2)
             else:
                 # No VAT or no tax configured
                 base_price = lst_price
@@ -300,7 +301,7 @@ class ProductProduct(models.Model):
             elif vat_rate > 0:
                 # Tax does NOT have price_include, compute base price first
                 # The inclusive_price includes VAT, so we need the base
-                base_price = inclusive_price / (1 + (vat_rate / 100))
+                base_price = float_round(inclusive_price / (1 + (vat_rate / 100)), precision_digits=2)
                 # lst_price should be the base (VAT will be added by tax computation)
                 product.lst_price = base_price
             else:
