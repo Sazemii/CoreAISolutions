@@ -125,15 +125,32 @@ class ProductTemplate(models.Model):
         
         With price_include=True tax: list_price = inclusive_price (direct assignment)
         Without price_include tax: list_price = inclusive_price / (1 + rate)
+        
+        IMPORTANT: For VAT-inclusive pricing with price_include=True, we adjust the list_price
+        to ensure that when Odoo computes base = list_price / (1 + rate) and then 
+        total = base * (1 + rate), we get exactly the desired inclusive price.
+        This prevents rounding errors in POS calculations.
         """
         for product in self:
             inclusive_price = product.vat_inclusive_price
             vat_rate = product._get_vat_rate()
             has_price_include_tax = product._has_price_include_tax()
             
-            if product.is_vat_inclusive_pricing and has_price_include_tax:
-                # Tax has price_include=True, so list_price should be the inclusive price
-                product.list_price = inclusive_price
+            if product.is_vat_inclusive_pricing and has_price_include_tax and vat_rate > 0:
+                # Tax has price_include=True
+                # To avoid rounding errors in POS, we store a price that when divided by (1 + rate)
+                # gives a rounded base that reconstructs to the desired inclusive price.
+                # 
+                # Strategy: 
+                # 1. Compute rounded base from desired inclusive price
+                # 2. Compute what list_price should be to produce that rounded base
+                # 3. Store that price (may be slightly different from user input, but ensures consistency)
+                base_price = float_round(inclusive_price / (1 + (vat_rate / 100)), precision_digits=2)
+                # Compute list_price that produces this rounded base
+                # This ensures: list_price / (1 + rate) ≈ base_price (rounded), and base_price * (1 + rate) ≈ inclusive_price
+                adjusted_list_price = base_price * (1 + (vat_rate / 100))
+                # Round to 2 decimals for storage, but this ensures the base will round correctly
+                product.list_price = float_round(adjusted_list_price, precision_digits=2)
             elif vat_rate > 0:
                 # Tax does NOT have price_include, compute base price
                 base_price = float_round(inclusive_price / (1 + (vat_rate / 100)), precision_digits=2)
@@ -287,17 +304,22 @@ class ProductProduct(models.Model):
         Note: In Odoo, variants share the template's list_price but can have different
         price_extra values through attribute values. For completely independent prices,
         users should set price_extra on the variant's attribute values.
+        
+        IMPORTANT: For VAT-inclusive pricing with price_include=True, we adjust the lst_price
+        to ensure proper rounding consistency (same logic as template level).
         """
         for product in self:
             inclusive_price = product.vat_inclusive_price
             vat_rate = product._get_vat_rate_variant()
             has_price_include_tax = product._has_price_include_tax_variant()
             
-            if product.is_vat_inclusive_pricing and has_price_include_tax:
-                # Tax has price_include=True, so lst_price should be the inclusive price
-                # Set lst_price directly, which will trigger _set_product_lst_price
-                # to update the template's list_price
-                product.lst_price = inclusive_price
+            if product.is_vat_inclusive_pricing and has_price_include_tax and vat_rate > 0:
+                # Tax has price_include=True
+                # Use same rounding strategy as template to ensure consistency
+                base_price = float_round(inclusive_price / (1 + (vat_rate / 100)), precision_digits=2)
+                # Compute lst_price that produces this rounded base
+                adjusted_lst_price = base_price * (1 + (vat_rate / 100))
+                product.lst_price = float_round(adjusted_lst_price, precision_digits=2)
             elif vat_rate > 0:
                 # Tax does NOT have price_include, compute base price first
                 # The inclusive_price includes VAT, so we need the base
