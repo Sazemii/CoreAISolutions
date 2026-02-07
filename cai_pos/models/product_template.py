@@ -144,13 +144,17 @@ class ProductTemplate(models.Model):
                 # Strategy: 
                 # 1. Compute rounded base from desired inclusive price
                 # 2. Compute what list_price should be to produce that rounded base
-                # 3. Store that price (may be slightly different from user input, but ensures consistency)
+                # 3. Store the exact adjusted price (without rounding) so that when Odoo's tax engine
+                #    divides by (1 + rate), it gets the rounded base, which then reconstructs correctly
                 base_price = float_round(inclusive_price / (1 + (vat_rate / 100)), precision_digits=2)
                 # Compute list_price that produces this rounded base
-                # This ensures: list_price / (1 + rate) ≈ base_price (rounded), and base_price * (1 + rate) ≈ inclusive_price
+                # Store the exact value (e.g., 74.9952) so division by 1.12 gives exactly 66.96
+                # The field's digits parameter will handle display rounding, but the stored value
+                # ensures correct tax computation
                 adjusted_list_price = base_price * (1 + (vat_rate / 100))
-                # Round to 2 decimals for storage, but this ensures the base will round correctly
-                product.list_price = float_round(adjusted_list_price, precision_digits=2)
+                # Store without rounding to preserve precision for tax computation
+                # The digits='Product Price' on the field will handle display formatting
+                product.list_price = adjusted_list_price
             elif vat_rate > 0:
                 # Tax does NOT have price_include, compute base price
                 base_price = float_round(inclusive_price / (1 + (vat_rate / 100)), precision_digits=2)
@@ -318,8 +322,9 @@ class ProductProduct(models.Model):
                 # Use same rounding strategy as template to ensure consistency
                 base_price = float_round(inclusive_price / (1 + (vat_rate / 100)), precision_digits=2)
                 # Compute lst_price that produces this rounded base
+                # Store the exact value without rounding to preserve precision for tax computation
                 adjusted_lst_price = base_price * (1 + (vat_rate / 100))
-                product.lst_price = float_round(adjusted_lst_price, precision_digits=2)
+                product.lst_price = adjusted_lst_price
             elif vat_rate > 0:
                 # Tax does NOT have price_include, compute base price first
                 # The inclusive_price includes VAT, so we need the base
