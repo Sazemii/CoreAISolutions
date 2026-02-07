@@ -154,31 +154,50 @@ class ProductTemplate(models.Model):
                 # So: base = inclusive_price / vat_multiplier
                 # But we need to find the right base that rounds correctly
                 
-                # Try different rounding strategies to find a base that reconstructs correctly
+                # The key insight: We need to store a price such that when Odoo divides by vat_multiplier
+                # and rounds to 2 decimals, we get a base that reconstructs to inclusive_price.
+                # 
+                # However, Odoo's tax engine might compute with full precision internally.
+                # The solution: Store the price that when divided by vat_multiplier gives us
+                # a value that rounds to a base which, when multiplied by vat_multiplier, 
+                # rounds back to inclusive_price.
+                #
+                # For 75.00: We want base ≈ 66.97 (not 66.96) because:
+                # - 66.97 * 1.12 = 75.0064 ≈ 75.01 (close enough)
+                # - 66.96 * 1.12 = 74.9952 ≈ 74.99 (too far)
+                #
+                # So we need to store a price that when divided by 1.12, rounds UP to 66.97
+                # That price would be: 66.965 * 1.12 = 75.0008 (any price >= 66.965 rounds up to 66.97)
                 target_base = inclusive_price / vat_multiplier
                 
-                # Test rounding down and up to see which reconstructs better
-                # Round down: floor to 2 decimals
-                base_rounded_down = float(int(target_base * 100)) / 100.0
-                # Round up: ceil to 2 decimals  
+                # Find the minimum price that rounds UP to give us a base that reconstructs well
+                # We want: round(price / vat_multiplier) * vat_multiplier ≈ inclusive_price
+                # Try both rounding directions
+                base_rounded_standard = float_round(target_base, precision_digits=2)
                 base_rounded_up = float(int(target_base * 100 + 0.999999)) / 100.0
                 
-                price_from_down = float_round(base_rounded_down * vat_multiplier, precision_digits=2)
-                price_from_up = float_round(base_rounded_up * vat_multiplier, precision_digits=2)
+                # Check which base reconstructs better
+                recon_standard = float_round(base_rounded_standard * vat_multiplier, precision_digits=2)
+                recon_up = float_round(base_rounded_up * vat_multiplier, precision_digits=2)
                 
-                # Choose the base that reconstructs closest to the desired price
-                if abs(price_from_up - inclusive_price) < abs(price_from_down - inclusive_price):
-                    # Rounding up gives better result
+                # Choose the base that reconstructs closest to inclusive_price
+                if abs(recon_up - inclusive_price) <= abs(recon_standard - inclusive_price):
+                    # Use rounded up base - we need to ensure price rounds UP to this base
                     best_base = base_rounded_up
+                    # To round UP to best_base, price/vat_multiplier must be >= best_base - 0.004999
+                    # So price must be >= (best_base - 0.004999) * vat_multiplier
+                    # Add a small epsilon to ensure it definitely rounds up
+                    min_price_for_round_up = (best_base - 0.004999) * vat_multiplier + 0.0001
+                    adjusted_list_price = max(inclusive_price, min_price_for_round_up)
                 else:
-                    # Rounding down gives better result (or same)
-                    best_base = base_rounded_down
+                    # Use standard rounded base
+                    best_base = base_rounded_standard
+                    # Store price that ensures standard rounding to this base
+                    # For standard rounding, we want price/vat_multiplier to round to best_base
+                    # So price should be close to best_base * vat_multiplier
+                    adjusted_list_price = best_base * vat_multiplier
                 
-                # Store the price that produces this base
-                # When Odoo divides this by vat_multiplier and rounds, it should get best_base
-                adjusted_list_price = best_base * vat_multiplier
-                
-                # Store without rounding to preserve precision
+                # Store the adjusted price (may have more precision)
                 product.list_price = adjusted_list_price
             elif vat_rate > 0:
                 # Tax does NOT have price_include, compute base price
@@ -347,24 +366,27 @@ class ProductProduct(models.Model):
                 # Use same rounding strategy as template to ensure consistency
                 vat_multiplier = 1 + (vat_rate / 100)
                 
-                # Try different rounding strategies to find a base that reconstructs correctly
                 target_base = inclusive_price / vat_multiplier
                 
-                # Test rounding down and up to see which reconstructs better
-                base_rounded_down = float(int(target_base * 100)) / 100.0
+                # Find the minimum price that rounds UP to give us a base that reconstructs well
+                base_rounded_standard = float_round(target_base, precision_digits=2)
                 base_rounded_up = float(int(target_base * 100 + 0.999999)) / 100.0
                 
-                price_from_down = float_round(base_rounded_down * vat_multiplier, precision_digits=2)
-                price_from_up = float_round(base_rounded_up * vat_multiplier, precision_digits=2)
+                # Check which base reconstructs better
+                recon_standard = float_round(base_rounded_standard * vat_multiplier, precision_digits=2)
+                recon_up = float_round(base_rounded_up * vat_multiplier, precision_digits=2)
                 
-                # Choose the base that reconstructs closest to the desired price
-                if abs(price_from_up - inclusive_price) < abs(price_from_down - inclusive_price):
+                # Choose the base that reconstructs closest to inclusive_price
+                if abs(recon_up - inclusive_price) <= abs(recon_standard - inclusive_price):
+                    # Use rounded up base - ensure price rounds UP to this base
                     best_base = base_rounded_up
+                    min_price_for_round_up = (best_base - 0.004999) * vat_multiplier + 0.0001
+                    adjusted_lst_price = max(inclusive_price, min_price_for_round_up)
                 else:
-                    best_base = base_rounded_down
+                    # Use standard rounded base
+                    best_base = base_rounded_standard
+                    adjusted_lst_price = best_base * vat_multiplier
                 
-                # Store the price that produces this base
-                adjusted_lst_price = best_base * vat_multiplier
                 product.lst_price = adjusted_lst_price
             elif vat_rate > 0:
                 # Tax does NOT have price_include, compute base price first
