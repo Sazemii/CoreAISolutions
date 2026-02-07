@@ -138,22 +138,47 @@ class ProductTemplate(models.Model):
             
             if product.is_vat_inclusive_pricing and has_price_include_tax and vat_rate > 0:
                 # Tax has price_include=True
-                # To avoid rounding errors in POS, we store a price that when divided by (1 + rate)
-                # gives a rounded base that reconstructs to the desired inclusive price.
+                # To avoid rounding errors in POS, we need to find a price that when Odoo's tax engine
+                # divides by (1 + rate) and rounds, gives a base that reconstructs to the desired inclusive price.
                 # 
-                # Strategy: 
-                # 1. Compute rounded base from desired inclusive price
-                # 2. Compute what list_price should be to produce that rounded base
-                # 3. Store the exact adjusted price (without rounding) so that when Odoo's tax engine
-                #    divides by (1 + rate), it gets the rounded base, which then reconstructs correctly
-                base_price = float_round(inclusive_price / (1 + (vat_rate / 100)), precision_digits=2)
-                # Compute list_price that produces this rounded base
-                # Store the exact value (e.g., 74.9952) so division by 1.12 gives exactly 66.96
-                # The field's digits parameter will handle display rounding, but the stored value
-                # ensures correct tax computation
-                adjusted_list_price = base_price * (1 + (vat_rate / 100))
-                # Store without rounding to preserve precision for tax computation
-                # The digits='Product Price' on the field will handle display formatting
+                # The problem: If we store 75.00, Odoo computes base = 75.00/1.12 = 66.964286...
+                # When rounded to 2 decimals: 66.96
+                # When reconstructed: 66.96 * 1.12 = 74.9952 ≈ 74.99 (not 75.00!)
+                #
+                # Solution: Find the base that when multiplied by (1+rate) gives exactly inclusive_price
+                # Then store the price that produces that base when divided and rounded
+                vat_multiplier = 1 + (vat_rate / 100)
+                
+                # Find the base that reconstructs to inclusive_price
+                # We want: round(base) * vat_multiplier = inclusive_price (when rounded)
+                # So: base = inclusive_price / vat_multiplier
+                # But we need to find the right base that rounds correctly
+                
+                # Try different rounding strategies to find a base that reconstructs correctly
+                target_base = inclusive_price / vat_multiplier
+                
+                # Test rounding down and up to see which reconstructs better
+                # Round down: floor to 2 decimals
+                base_rounded_down = float(int(target_base * 100)) / 100.0
+                # Round up: ceil to 2 decimals  
+                base_rounded_up = float(int(target_base * 100 + 0.999999)) / 100.0
+                
+                price_from_down = float_round(base_rounded_down * vat_multiplier, precision_digits=2)
+                price_from_up = float_round(base_rounded_up * vat_multiplier, precision_digits=2)
+                
+                # Choose the base that reconstructs closest to the desired price
+                if abs(price_from_up - inclusive_price) < abs(price_from_down - inclusive_price):
+                    # Rounding up gives better result
+                    best_base = base_rounded_up
+                else:
+                    # Rounding down gives better result (or same)
+                    best_base = base_rounded_down
+                
+                # Store the price that produces this base
+                # When Odoo divides this by vat_multiplier and rounds, it should get best_base
+                adjusted_list_price = best_base * vat_multiplier
+                
+                # Store without rounding to preserve precision
                 product.list_price = adjusted_list_price
             elif vat_rate > 0:
                 # Tax does NOT have price_include, compute base price
@@ -320,10 +345,26 @@ class ProductProduct(models.Model):
             if product.is_vat_inclusive_pricing and has_price_include_tax and vat_rate > 0:
                 # Tax has price_include=True
                 # Use same rounding strategy as template to ensure consistency
-                base_price = float_round(inclusive_price / (1 + (vat_rate / 100)), precision_digits=2)
-                # Compute lst_price that produces this rounded base
-                # Store the exact value without rounding to preserve precision for tax computation
-                adjusted_lst_price = base_price * (1 + (vat_rate / 100))
+                vat_multiplier = 1 + (vat_rate / 100)
+                
+                # Try different rounding strategies to find a base that reconstructs correctly
+                target_base = inclusive_price / vat_multiplier
+                
+                # Test rounding down and up to see which reconstructs better
+                base_rounded_down = float(int(target_base * 100)) / 100.0
+                base_rounded_up = float(int(target_base * 100 + 0.999999)) / 100.0
+                
+                price_from_down = float_round(base_rounded_down * vat_multiplier, precision_digits=2)
+                price_from_up = float_round(base_rounded_up * vat_multiplier, precision_digits=2)
+                
+                # Choose the base that reconstructs closest to the desired price
+                if abs(price_from_up - inclusive_price) < abs(price_from_down - inclusive_price):
+                    best_base = base_rounded_up
+                else:
+                    best_base = base_rounded_down
+                
+                # Store the price that produces this base
+                adjusted_lst_price = best_base * vat_multiplier
                 product.lst_price = adjusted_lst_price
             elif vat_rate > 0:
                 # Tax does NOT have price_include, compute base price first
