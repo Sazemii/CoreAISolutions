@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+    <record id="form_hr_coe" model="ir.ui.view">
+        <field name="name">form_hr_coe</field>
+        <field name="model">hr.ph.coe</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="%(ez_payroll_coe.coe_report)d"
+                        invisible="state not in ('done')"
+                        class="oe_highlight" string="Print" type="action"/>
+                    <button name="for_approval" string="For Approval"
+                        invisible="state not in ['draft']" type="object" class="oe_highlight" />
+                    <button name="to_done" string="Approve" groups="hr.group_hr_user"
+                        invisible="state not in ['draft', 'for-approval']" type="object" class="oe_highlight" />
+                    <button name="to_cancel" string="Cancel" groups="hr.group_hr_user"
+                        invisible="state not in ['for-approval']" type="object"/>
+                    <button name="to_draft" string="Back to Draft" groups="hr.group_hr_user"
+                        invisible="state=='draft'" type="object"/>
+                    <field name="state" widget="statusbar" readonly="1"/>
+                </header>
+                <sheet>
+                    <div class="row justify-content-between position-relative w-100 m-0 mb-2">
+                        <div class="oe_title mw-75 ps-0 pe-2">
+                            <field name="user_access" invisible="1"/>
+                            <h1 class="d-flex flex-row align-items-center">  
+                                <field name="employee_id" 
+                                    readonly="user_access or (state=='done')"
+                                    placeholder="eg. Employee..."/>
+                            </h1>
+                            <h2> 
+                                <field name="position"
+                                    readonly="user_access or (state=='done')"/>
+                            </h2>
+                        </div>
+                        <div class="o_employee_avatar m-0 p-0 col">
+                            <field name="avatar_128" invisible="1"/>
+                            <field name="image_1920" widget="image" class="oe_avatar m-0" 
+                            options="{&quot;zoom&quot;: true, &quot;preview_image&quot;:&quot;avatar_128&quot;}"/>
+                        </div>
+                    </div>
+                    <group>
+                        <group string="Information">
+                            <field name="certificate_type" 
+                                readonly="(not state=='draft') and ((not state=='for-approval') or (user_access))"/>
+                            <field name="purpose" 
+                                readonly="(not state=='draft') and ((not state=='for-approval') or (user_access))"
+                                invisible="certificate_type=='separated'"/>
+                            <field name="country" 
+                                readonly="(not state=='draft') and ((not state=='for-approval') or (user_access))"
+                                invisible="certificate_type=='separated' or (not purpose == 'Visa Application')"/>
+                            <field name="others_purpose" 
+                                readonly="(not state=='draft') and ((not state=='for-approval') or (user_access))"
+                                invisible="certificate_type=='separated' or (not purpose == 'Others')"/>
+                            <field name="date" 
+                                readonly="(not state=='draft') and ((not state=='for-approval') or (user_access))"
+                                invisible="user_access and (state in ('draft'))"/>
+                            <field name="proper_date" invisible="user_access"/>
+                            <field name="position" readonly="state=='done'" invisible="user_access"/>
+                            <field name="assignment" readonly="state=='done'" invisible="user_access"/>
+                            <field name="employment_status" readonly="state=='done'" invisible="user_access"/>
+                            <field name="title" readonly="state=='done'" invisible="user_access"/>
+                            <field name="pronoun" readonly="state=='done'" invisible="user_access"/>
+                            <field name="possessive_pronoun" readonly="state=='done'" invisible="user_access"/>
+                        </group>
+                        <group string="Hiring Details / Approvers" invisible="user_access">
+                            <field name="date_from" readonly="state=='done'"/>
+                            <field name="date_to" readonly="state=='done'"/>
+                            <field name="company" readonly="state=='done'"/>
+                            <field name="company_address" readonly="state=='done'"/>
+                            <field name="company_city" readonly="state=='done'"/>
+                            <field name="company_phone" readonly="state=='done'"/>
+                            <field name="company_email" readonly="state=='done'"/>
+                            <field name="approver_ids" widget="many2many_tags"
+                                readonly="state=='done'" invisible="user_access"/>
+                            <field name="approver_emails" invisible="user_access"/>
+                        </group>
+                    </group>
+                    <group invisible="user_access">
+                        <group string="Certified">
+                            <field name="certified_name" readonly="state=='done'"/>
+                            <field name="certified_position" string="Position" readonly="state=='done'"/>
+                            <field name="certified_department" string="Department" readonly="state=='done'"/>
+                        </group>
+                        <group string="Salary" invisible="certificate_type!='with-compensation'">
+                            <field name="gross"/>
+                            <field name="gross_words"/>
+                            <field name="salary_ids" readonly="state=='done'" colspan="2" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="coe_id" column_invisible="1"/>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="amount" sum="Total Salary"/>
+                                </list>
+                            </field>
+                        </group>
+                    </group>
+                </sheet>
+
+                <chatter/>
+
+           </form>
+        </field>
+    </record>
+
+
+    <record id="tree_hr_coe" model="ir.ui.view">
+        <field name="name">tree_hr_coe</field>
+        <field name="model">hr.ph.coe</field>
+        <field name="arch" type="xml">
+            <list> 
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="certificate_type"/>
+                <!-- <field name="position"/> -->
+                <field name="purpose" invisible="certificate_type=='separated'"/>
+                <field name="date"/>
+                <field name="state" widget="badge"
+                    decoration-danger="state=='draft'" 
+                    decoration-success="state=='done'"
+                    decoration-warning="state=='cancel'"
+                />
+           </list>
+        </field>
+    </record>
+
+
+    <record id="search_hr_coe" model="ir.ui.view">
+        <field name="name">search_hr_coe</field>
+        <field name="model">hr.ph.coe</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="position"/>
+                <field name="date"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="state"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="open_hr_coe" model="ir.actions.act_window">
+        <field name="name">Certificate of Employment</field>
+        <field name="res_model">hr.ph.coe</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="open_hr_coe_for_approval" model="ir.actions.act_window">
+        <field name="name">For Approval</field>
+        <field name="res_model">hr.ph.coe</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_state':'for-approval'}</field>
+    </record>
+
+    <menuitem
+        id="menu_hr_coe0"
+        sequence="20"
+        name="Certificate of Employment"
+        parent="hr.menu_hr_root"/>
+
+        <menuitem
+            id="menu_hr_coe_for_approval"
+            action="open_hr_coe_for_approval"
+            groups="hr.group_hr_user"
+            sequence="5"
+            parent="menu_hr_coe0"/>
+
+        <menuitem
+            id="menu_hr_coe"
+            action="open_hr_coe"
+            sequence="10"
+            parent="menu_hr_coe0"/>
+
+
+    <!-- ############################################# -->
+
+    <record id="multi_approve_coe" model="ir.actions.server">
+        <field name="name">Approve</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_hr_ph_coe"/>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+              action = records.to_done()
+        </field>
+        <field name="binding_model_id" ref="model_hr_ph_coe"/>
+    </record>
+
+</odoo>

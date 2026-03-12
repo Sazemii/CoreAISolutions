@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+  <record id="form_pay_acct_setting" model="ir.ui.view">
+    <field name="name">form_pay_acct_setting</field>
+    <field name="model">ez.payroll.account.setting</field>
+    <field name="arch" type="xml">
+      <form>
+
+        <!-- <header>
+          <button string="Demo Create" name="create_demo_data" type="object"/>
+        </header> -->
+
+        <sheet>
+
+          <div class="oe_title">
+            <label for="name" class="oe_edit_only"/>
+            <h1>
+              <field name="name" required="1"/>
+            </h1>
+          </div> 
+
+          <group>
+            <group string="Accounts">
+              <field name="wtax_acct_id" required="1"/>
+              <field name="sss_acct_id" required="1"/>
+              <field name="philhealth_acct_id" required="1"/>
+              <field name="hdmf_acct_id" required="1"/>
+              <field name="bank_acct_id" required="1"/>
+              <field name="salary_expense_acct_id" required="1"/>
+              <field name="other_ded_acct_id" required="1"/>
+            </group>
+            <group string="Partners">
+              <field name="bir_partner_id"/>
+              <field name="sss_partner_id"/>
+              <field name="philhealth_partner_id"/>
+              <field name="hdmf_partner_id"/>
+            </group>
+          </group>
+
+          <separator string="Notes"/>
+          <field name="note"/>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="tree_pay_acct_setting" model="ir.ui.view">
+    <field name="name">tree_pay_acct_setting</field>
+    <field name="model">ez.payroll.account.setting</field>
+    <field name="arch" type="xml">
+      <list>
+        <!-- <field name="sequence" widget="handle"/> -->
+        <field name="name"/>
+        <field name="company_id" groups="base.group_multi_company"/>
+        <field name="note"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="open_pay_acct_setting" model="ir.actions.act_window">
+    <field name="name">Payroll Accounting Setup</field>
+    <field name="res_model">ez.payroll.account.setting</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <menuitem id="menu_pay_acct_setting"
+    name="Accounting Setup"
+    parent="ez_payroll.menu_config_payroll"
+    action="open_pay_acct_setting"
+    sequence="600"
+  />
+
+  <!-- ################################################### -->
+
+  <record id="view_loan_type_tree_inh" model="ir.ui.view">
+    <field name="name">view_loan_type_tree_inh</field>
+    <field name="model">hr.ph.loan.type</field>
+    <field name="inherit_id" ref="ez_payroll.view_loan_type_tree"/>
+    <field name="arch" type="xml">
+      <field name="name" position="after">
+        <field name="loan_acct_id" required="1"/> 
+        <field name="partner_id"/> 
+      </field>
+    </field>
+  </record>
+
+</odoo>

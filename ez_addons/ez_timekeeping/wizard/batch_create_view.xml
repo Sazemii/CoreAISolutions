@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2017
+======================================== -->
+<odoo>
+
+  <record id="form_batch" model="ir.ui.view">
+    <field name="name">form_batch</field>
+    <field name="model">wz.timecard.batch</field>
+    <field name="arch" type="xml">
+      <form>
+        <group>
+          <group>
+            <field name="company_id"/>
+            <!-- <field name="date1"/>
+            <field name="date2"/> -->
+            <field
+                name="date1"
+                widget="daterange"
+                options="{'end_date_field': 'date2'}"
+                string="Date Range"/>
+            <field name="date2" invisible="1" />
+            <field name="skip_no_shift"/>
+          </group>
+          <group>
+            <field name="run_background"/>
+            <field name="batch_running"/>
+          </group>
+        </group>
+        <footer>
+          <button string="Generate Timecards" name="generate_timecards"
+            invisible="batch_running or not run_background"
+            confirm="This will run on the background. Please refresh to show generated timecards. Continue?"
+            type="object" class="btn-primary"/>
+          <button string="Generate Timecards" name="generate_timecards"
+            invisible="batch_running or run_background"
+            confirm="Batch timecard create may take a long time. Continue?"
+            type="object" class="btn-primary"/>
+          <button string="Update Time Card Summary" name="update_summary" type="object"
+            confirm="This will update all time card summary on the date range. Are you sure to continue?"/>
+          <button string="Cancel" class="btn-default" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="open_batch" model="ir.actions.act_window">
+    <field name="name">Batch Process</field>
+    <field name="res_model">wz.timecard.batch</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+
+  <menuitem id="menu_batch"
+    action="open_batch"
+    parent="menu_timekeeping_main"
+    groups="group_timekeeping_user"
+    sequence="20"/>
+
+</odoo>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2017
+======================================== -->
+<odoo>
+
+  <record id="search_request_inherit" model="ir.ui.view">
+    <field name="name">search_request_inherit</field>
+    <field name="model">ez.time.request</field>
+    <field name="inherit_id" ref="ez_timekeeping_request.search_request"/>
+    <field name="arch" type="xml">
+
+      <filter name="filter_ob" position="after">
+        <filter string="Change Timekeeping Approver" name="filter_app_timekeeping" 
+          domain="[('type','=','change_approver_timekeeping')]"/>
+        <filter string="Change Time Off Approver" name="filter_app_timeoff" 
+          domain="[('type','=','change_approver_timeoff')]"/>
+        <filter string="Change Attendace Approver" name="filter_app_attendance" 
+          domain="[('type','=','change_approver_attendance')]"/>
+      </filter>
+
+    </field>
+  </record>
+
+  <record id="form_request_inherit" model="ir.ui.view">
+    <field name="name">form_request_inherit</field>
+    <field name="model">ez.time.request</field>
+    <field name="inherit_id" ref="ez_timekeeping_request.form_request"/>
+    <field name="arch" type="xml">
+
+      <field name="time" position="after">
+        <field name="old_approver_id" invisible="type not in (
+            'change_approver_timekeeping',
+            'change_approver_timeoff',
+            'change_approver_attendance',
+          )" readonly="1" widget="many2one_avatar_user"/>
+        <field name="new_approver_id" invisible="type not in (
+            'change_approver_timekeeping',
+            'change_approver_timeoff',
+            'change_approver_attendance',
+          )" readonly="state not in ('draft')" widget="many2one_avatar_user"/>
+      </field>
+
+    </field>
+  </record>
+
+  <record id="tree_request_inherit" model="ir.ui.view">
+    <field name="name">tree_request_inherit</field>
+    <field name="model">ez.time.request</field>
+    <field name="inherit_id" ref="ez_timekeeping_request.tree_request"/>
+    <field name="arch" type="xml">
+
+      <field name="time" position="after">
+        <field name="new_approver_id" readonly="state not in ('draft')" widget="many2one_avatar_user"/>
+      </field>
+
+    </field>
+  </record>
+
+  <record id="form_bulk_request_inh" model="ir.ui.view">
+    <field name="name">form_bulk_request_inh</field>
+    <field name="model">ez.time.request.bulk</field>
+    <field name="inherit_id" ref="ez_timekeeping_request.form_bulk_request"/>
+    <field name="arch" type="xml">
+
+      <field name="time" position="after">
+        <field name="new_approver_id" invisible="type not in (
+            'change_approver_timekeeping',
+            'change_approver_timeoff',
+            'change_approver_attendance',
+          )" readonly="state not in ('draft')" widget="many2one_avatar_user"/>
+      </field>
+
+      <xpath expr="//list/field[@name='state']" position="before">
+        <!-- <field name="old_approver_id" readonly="1" widget="many2one_avatar_user"/> -->
+        <field name="new_approver_id" readonly="state not in ('draft')" widget="many2one_avatar_user"/>
+      </xpath>
+
+    </field>
+  </record>
+
+  <!-- =================================================================== -->
+
+  <record id="open_my_request_approver" model="ir.actions.act_window">
+    <field name="name">Change Approver Requests</field>
+    <field name="res_model">ez.time.request</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{
+      "search_default_my_requests":1,
+      "search_default_filter_app_timekeeping":1,
+      "search_default_filter_app_timeoff":1,
+      "search_default_filter_app_attendance":1,
+      "default_type":'change_approver_timekeeping',
+    }</field>
+  </record>
+
+  <menuitem
+    id="menu_my_request_approver"
+    parent="ez_timekeeping_request.menu_my_request"
+    action="open_my_request_approver"
+    sequence="35"
+  />
+
+  <!-- =================================================================== -->
+
+  <record id="open_for_approval_approver" model="ir.actions.act_window">
+    <field name="name">Change Approver Requests</field>
+    <field name="res_model">ez.time.request</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{
+      "search_default_sent":1,
+      "search_default_filter_app_timekeeping":1,
+      "search_default_filter_app_timeoff":1,
+      "search_default_filter_app_attendance":1,
+      "default_type":'change_approver_timekeeping',
+    }</field>
+  </record>
+
+  <menuitem
+    id="menu_for_approval_approver"
+    parent="ez_timekeeping_request.menu_for_approval"
+    action="open_for_approval_approver"
+    sequence="35"
+  />
+
+</odoo>

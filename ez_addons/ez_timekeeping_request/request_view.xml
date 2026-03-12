@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2019
+======================================== -->
+<odoo>
+
+  <menuitem
+    id="menu_requests"
+    parent="ez_timekeeping.menu_timekeeping_main"
+    name="Requests"
+    sequence="12"
+  />
+
+  <menuitem
+    id="menu_my_request"
+    name="My Requests"
+    parent="menu_requests"
+    sequence="100"
+  />
+
+  <menuitem
+    id="menu_for_approval"
+    name="For Approval"
+    parent="menu_requests"
+    groups="base.group_user"
+    sequence="200"
+  />
+<!--     groups="ez_timekeeping.group_timekeeping_user" -->
+
+  <!-- =================================================================== -->
+
+  <record id="form_request" model="ir.ui.view">
+    <field name="name">form_request</field>
+    <field name="model">ez.time.request</field>
+    <field name="arch" type="xml">
+      <form string="Approval Requests">
+        <header>
+          <button name="to_sent" string="For Approval" confirm="Send request for approval?"
+            invisible="state not in ('draft')" type="object" class="oe_highlight"/>
+            
+          <button name="approve_record" string="Approve" type="object" class="oe_highlight"
+            confirm="Are you sure to approve this time card?"
+            invisible="(not can_approve) or state in ('denied','approved')"
+            groups="base.group_user" 
+          />
+          <!-- attrs="{'invisible': ['|',('can_approve','=',False),('state','in',['denied','approved'])]}" -->
+              
+          <button name="to_denied" string="Deny" type="object"
+            invisible="(not can_approve) or state in ('draft','denied','approved')"
+            groups="base.group_user" 
+          />
+          <!-- attrs="{'invisible': ['|',('can_approve','=',False),('state','in',['draft','denied','approved'])]}" -->
+            
+          <button name="to_draft" string="Back to Draft" invisible="state not in ('denied')" type="object"/>
+          <button name="to_draft" string="Back to Draft" invisible="state not in ('approved','sent')" type="object"
+            groups="ez_timekeeping.group_timekeeping_manager"/>
+            
+          <field name="state" readonly="1" widget="statusbar"/>
+          <field name="user_id" invisible="1"/>
+        </header>
+
+        <sheet>
+
+          <widget name="web_ribbon" title="Approved" bg_color="text-bg-success" invisible="state!='approved'"/>
+          <widget name="web_ribbon" title="For Approval" bg_color="text-bg-warning" invisible="state!='sent'"/>
+          <widget name="web_ribbon" title="Denied" bg_color="text-bg-danger" invisible="state!='denied'"/>
+
+          <div class="oe_title">
+            <label for="name" class="oe_edit_only"/>
+            <h1>
+              <field name="name" required="1" placeholder="eg. Request #4455"
+                readonly="state not in ('draft')"/>
+            </h1>
+          </div> 
+
+          <group>
+            <group>
+              <!-- <field name="employee_id" required="1" readonly="(not is_timekeeping_user) or (state not in ('draft'))"/> -->
+              <field name="employee_id" invisible="not is_timekeeping_user" readonly="state not in ('draft')"
+                widget="many2one_avatar_user"
+                required="1" placeholder="eg. Employee..."/>
+              <field name="employee_id" invisible="is_timekeeping_user" readonly="state not in ('draft')"
+                domain="[
+                  '|',
+                    ('timekeeping_manager_id','=',uid),
+                    ('user_id','=',uid),
+                ]" required="1" placeholder="eg. Employee..."/>
+              <field name="date" required="1" readonly="state not in ('draft')"/>
+              <field name="type" required="1" readonly="state not in ('draft')"/>
+              <field name="is_timekeeping_user" invisible="1"/>
+              <field name="can_approve" invisible="1"/>
+            </group>
+            <group>
+              <field name="auth_hrs" invisible="type not in ('ot','ob')" readonly="state not in ('draft')"/>
+              <field name="time" invisible="type != 'ob'" readonly="state not in ('draft')"/>
+              <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+            </group>
+          </group>
+          <separator string="Notes"/>
+          <field name="note"/>
+        </sheet>
+
+        <chatter/>
+
+      </form>
+
+    </field>
+
+  </record>
+
+  <record id="tree_request" model="ir.ui.view">
+    <field name="name">tree_request</field>
+    <field name="model">ez.time.request</field>
+    <field name="arch" type="xml">
+      <list string="Approval Requests" decoration-muted="state=='denied'">
+        <field name="employee_id" widget="many2one_avatar_employee"/>
+        <field name="date"/>
+        <field name="name" optional="show"/>
+        <field name="type"/>
+        <field name="auth_hrs" optional="show"/>
+        <field name="time" optional="show"/>
+        <field name="company_id" groups="base.group_multi_company" readonly="1" optional="hide"/>
+        <field name="state" widget="badge" 
+          decoration-danger="state=='denied'"
+          decoration-warning="state=='sent'" 
+          decoration-success="state=='approved'"
+        />
+        <field name="note" optional="hide"/>
+        <field name="user_id" column_invisible="1"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="search_request" model="ir.ui.view">
+    <field name="name">search_request</field>
+    <field name="model">ez.time.request</field>
+    <field name="arch" type="xml">
+      <search string="Search">
+        <field name="employee_id"/>
+        <field name="date"/>
+        <field name="name"/>
+        <field name="type"/>
+        <filter name="gmonth" string="Date" context="{'group_by':'date'}"/>
+        <separator/>
+        <filter string="My Requests" name="my_requests" domain="[('user_id','=',uid)]"/>
+        <separator/>
+        <filter string="Overtime" name="filter_ot" domain="[('type','=','ot')]"/>
+        <filter string="Official Business" name="filter_ob" domain="[('type','=','ob')]"/>
+        <separator/>
+        <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+        <filter string="For Approval" name="sent" domain="[('state','=','sent')]"/>
+        <filter string="Denied" name="denied" domain="[('state','=','denied')]"/>
+        <filter string="Approved" name="approved" domain="[('state','=','approved')]"/>
+      </search>
+    </field>
+  </record>
+
+  <!-- =================================================================== -->
+
+  <record id="open_my_request_ot" model="ir.actions.act_window">
+    <field name="name">Overtime Requests</field>
+    <field name="res_model">ez.time.request</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{"search_default_my_requests":1,"search_default_filter_ot":1,"default_type":'ot'}</field>
+  </record>
+
+  <menuitem
+    id="menu_my_request_ot"
+    parent="menu_my_request"
+    action="open_my_request_ot"
+    sequence="10"
+  />
+
+  <!-- =================================================================== -->
+
+  <record id="open_my_request_ob" model="ir.actions.act_window">
+    <field name="name">Official Business Requests</field>
+    <field name="res_model">ez.time.request</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{"search_default_my_requests":1,"search_default_filter_ob":1,"default_type":'ob'}</field>
+  </record>
+
+  <menuitem
+    id="menu_my_request_ob"
+    parent="menu_my_request"
+    action="open_my_request_ob"
+    sequence="20"
+  />
+
+  <!-- =================================================================== -->
+
+  <record id="open_my_request_all" model="ir.actions.act_window">
+    <field name="name">All Requests</field>
+    <field name="res_model">ez.time.request</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{"search_default_my_requests":1}</field>
+  </record>
+
+  <menuitem
+    id="menu_my_request_all"
+    parent="menu_my_request"
+    action="open_my_request_all"
+    sequence="100000"
+  />
+
+  <!-- =================================================================== -->
+  <!-- =================================================================== -->
+
+  <record id="open_for_approval_ot" model="ir.actions.act_window">
+    <field name="name">Overtime Requests</field>
+    <field name="res_model">ez.time.request</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{"search_default_sent":1,"search_default_filter_ot":1,"default_type":'ot'}</field>
+  </record>
+
+  <menuitem
+    id="menu_for_approval_ot"
+    parent="menu_for_approval"
+    action="open_for_approval_ot"
+    sequence="10"
+  />
+
+  <!-- =================================================================== -->
+
+  <record id="open_for_approval_ob" model="ir.actions.act_window">
+    <field name="name">Official Business Requests</field>
+    <field name="res_model">ez.time.request</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{
+        "search_default_sent":1,"search_default_filter_ob":1,"default_type":'ob',"default_auth_hrs":'8'
+    }</field>
+  </record>
+
+  <menuitem
+    id="menu_for_approval_ob"
+    parent="menu_for_approval"
+    action="open_for_approval_ob"
+    sequence="20"
+  />
+
+  <!-- =================================================================== -->
+
+  <record id="open_for_approval_all" model="ir.actions.act_window">
+    <field name="name">All Requests</field>
+    <field name="res_model">ez.time.request</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{"search_default_sent":1}</field>
+  </record>
+
+  <menuitem
+    id="menu_for_approval_all"
+    parent="menu_for_approval"
+    action="open_for_approval_all"
+    sequence="100000"
+  />
+
+  <!-- =================================================================== -->
+
+  <record id="form_bulk_request" model="ir.ui.view">
+    <field name="name">form_bulk_request</field>
+    <field name="model">ez.time.request.bulk</field>
+    <field name="arch" type="xml">
+
+      <form>
+        <header>
+          <button name="btn_add" string="Add Requests"
+            invisible="state not in ('draft')" type="object"/>
+          <button name="btn_approve" string="Approve"
+            invisible="state not in ('draft','sent')" type="object"/>
+          <button name="btn_for_approval" string="For Approval"
+            invisible="state not in ('draft')" type="object"/>
+          <button name="btn_draft" string="Back to Draft"
+            invisible="state not in ('approved','sent')" type="object"/>
+          <field name="state" readonly="1" widget="statusbar"/>
+        </header>
+
+        <sheet>
+          <widget name="web_ribbon" title="Approved" bg_color="text-bg-success" invisible="state!='approved'"/>
+          <widget name="web_ribbon" title="For Approval" bg_color="text-bg-warning" invisible="state!='sent'"/>
+          <div class="oe_title">
+            <label for="name" class="oe_edit_only"/>
+            <h1>
+              <field name="name" readonly="state not in ('draft')"
+                required="1" placeholder="eg. Bulk Request Req #112"/>
+            </h1>
+          </div> 
+
+          <group>
+            <group>
+              <field name="date" readonly="state not in ('draft')"/>
+              <field name="type" readonly="state not in ('draft')"/>
+              <field name="emp_tag_ids" readonly="state not in ('draft')"
+                options="{'no_quick_create':True,'no_create_edit':True,'no_open':True,'color_field':'color'}"
+                widget="many2many_tags"/>
+            </group>
+            <group>
+              <field name="auth_hrs" readonly="state not in ('draft')" 
+                invisible="type not in ('ob','ot')"/>
+              <field name="time" readonly="state not in ('draft')" 
+                invisible="type != 'ob'"/>
+              <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+            </group>
+          </group>
+
+          <notebook>
+            <page string="Requests">
+              <field name="request_ids" readonly="state not in ('draft')">
+                <list decoration-muted="state=='denied'">
+                  <field name="user_id" column_invisible="1"/>
+                  <field name="employee_id" widget="many2one_avatar_employee"/>
+                  <field name="date"/>
+                  <field name="name" optional="hide"/>
+                  <field name="type"/>
+                  <field name="auth_hrs"/>
+                  <field name="time"/>
+                  <field name="state" widget="badge" 
+                    decoration-info="state == 'draft'" 
+                    decoration-success="state == 'approved'"/>
+                  <field name="note" optional="hide"/>
+                </list>
+              </field>
+            </page>
+          </notebook>
+
+        </sheet>
+
+        <chatter/>
+      
+      </form>
+    </field>
+  </record>
+
+  <record id="tree_bulk_request" model="ir.ui.view">
+    <field name="name">tree_bulk_request</field>
+    <field name="model">ez.time.request.bulk</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="date"/>
+        <field name="name"/>
+        <field name="company_id" groups="base.group_multi_company" readonly="1" optional="hide"/>
+        <field name="note"/>
+        <field name="state" widget="badge" 
+          decoration-danger="state == 'draft'" 
+          decoration-warning="state == 'sent'" 
+          decoration-success="state == 'approved'"
+        />
+      </list>
+    </field>
+  </record>
+
+  <record id="search_bulk_request" model="ir.ui.view">
+    <field name="name">search_bulk_request</field>
+    <field name="model">ez.time.request.bulk</field>
+    <field name="arch" type="xml">
+      <search string="Search">
+        <field name="name"/>
+        <field name="date"/>
+      </search>
+    </field>
+  </record>
+
+  <record id="open_bulk_request" model="ir.actions.act_window">
+    <field name="name">Bulk Requests</field>
+    <field name="res_model">ez.time.request.bulk</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <menuitem
+    id="menu_bulk_request"
+    name="Bulk Requests"
+    parent="menu_requests"
+    action="open_bulk_request"
+    sequence="10"
+  />
+
+
+  <!-- =================================================================== -->
+  <!-- bulk approve / deny -->
+
+  <record id="multi_approve_requests" model="ir.actions.server">
+      <field name="name">Approve Requests</field>
+      <field name="type">ir.actions.server</field>
+      <field name="model_id" ref="model_ez_time_request"/>
+      <field name="state">code</field>
+      <field name="code">
+          if records:
+            action = records.approve_record()
+      </field>
+      <field name="binding_model_id" ref="model_ez_time_request"/>
+  </record>
+
+  <record id="multi_deny_requests" model="ir.actions.server">
+      <field name="name">Deny Requests</field>
+      <field name="type">ir.actions.server</field>
+      <field name="model_id" ref="model_ez_time_request"/>
+      <field name="state">code</field>
+      <field name="code">
+          if records:
+            action = records.to_denied()
+      </field>
+      <field name="binding_model_id" ref="model_ez_time_request"/>
+  </record>
+
+
+</odoo>

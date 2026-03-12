@@ -1,0 +1,117 @@
+
+.table-box {
+  /* font-size:50pt; */
+}
+
+.col-space {
+  padding-left:5px;
+  padding-right:5px;
+}
+
+.border-box {
+  /*
+  border-left:1px solid black;
+  border-right:1px solid black;
+  border-top:1px solid black;
+  border-bottom:1px solid black;
+  */
+  border-left:1px solid #aaa;
+  border-right:1px solid #aaa;
+  border-top:1px solid #aaa;
+  border-bottom:1px solid #aaa;
+}
+
+.shrink {
+  white-space: nowrap;
+  width: 1%;
+}
+
+table.table-box td {
+  vertical-align:top;
+}
+
+table.table-box th {
+  vertical-align:middle;
+  text-align:center;
+  font-weight:bold;
+}
+
+table.table-box > tbody > tr > td,
+table.table-box > thead > tr > th,
+table.table-box > tbody > tr > th
+{
+  /* font-size: 10pt; */
+  padding-top: 3px;
+  padding-bottom: 3px;
+  /*
+  border-left:1px solid black;
+  border-right:1px solid black;
+  border-top:1px solid black;
+  border-bottom:1px solid black;
+  */
+  border-left:1px solid #aaa;
+  border-right:1px solid #aaa;
+  border-top:1px solid #aaa;
+  border-bottom:1px solid #aaa;
+  page-break-inside:avoid;
+}
+
+table.table-box table td {
+  white-space:nowrap;
+}
+
+table.table-box td > span,
+table.table-box th > span
+{
+  padding-left:5px;
+  padding-right:5px;
+}
+
+.hrb {
+  /* border-bottom:1px solid black; */
+  border-bottom:1px solid #aaa;
+}
+
+.hrt {
+  /* border-top:1px solid black; */
+  border-top:1px solid #aaa;
+}
+
+.tbold {
+  font-weight: bold;
+}
+
+.ps-bottom-line {
+  /* border-bottom:1px solid black; */
+  border-bottom:1px solid #aaa;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.table-payslip {
+  width: 100%;
+}
+
+table.table-payslip td {
+  font-size:10pt;
+  padding-left:3px;
+  padding-right:3px;
+  padding-top:3px;
+  padding-bottom:3px;
+}
+
+table.table-payslip th {
+  font-weight:thick;
+  /* border-bottom:1px solid black; */
+  border-bottom:1px solid #aaa;
+  padding-left:3px;
+  padding-right:3px;
+  padding-top:3px;
+  padding-bottom:3px;
+}
+
+.box-flex {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}

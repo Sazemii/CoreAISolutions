@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+    <data noupdate="1">
+        <record id="payslip_count" model="ir.config_parameter">
+            <field name="key">payslip_count</field>
+            <field name="value">1</field>
+        </record>
+
+        <record id="bir2316_count" model="ir.config_parameter">
+            <field name="key">bir2316_count</field>
+            <field name="value">1</field>
+        </record>
+
+        <record id="timecard_count" model="ir.config_parameter">
+            <field name="key">timecard_count</field>
+            <field name="value">1</field>
+        </record>
+        <record id="timecard_approve_count" model="ir.config_parameter">
+            <field name="key">timecard_approve_count</field>
+            <field name="value">1</field>
+        </record>
+
+        <record id="timeoff_count" model="ir.config_parameter">
+            <field name="key">timeoff_count</field>
+            <field name="value">1</field>
+        </record>
+        <record id="timeoff_approve_count" model="ir.config_parameter">
+            <field name="key">timeoff_approve_count</field>
+            <field name="value">1</field>
+        </record>
+
+        <record id="tkrequest_count" model="ir.config_parameter">
+            <field name="key">tkrequest_count</field>
+            <field name="value">1</field>
+        </record>
+        <record id="tkrequest_approve_count" model="ir.config_parameter">
+            <field name="key">tkrequest_approve_count</field>
+            <field name="value">1</field>
+        </record>
+
+        <record id="ess_signature_enabled" model="ir.config_parameter">
+            <field name="key">ez_hr_esignature.signature_enabled</field>
+            <field name="value">1</field>
+        </record>
+    </data>
+</odoo>

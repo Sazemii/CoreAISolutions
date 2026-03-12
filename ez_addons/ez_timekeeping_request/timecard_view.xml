@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2019
+======================================== -->
+<odoo>
+
+  <record id="tree_timerecord_inherit" model="ir.ui.view">
+    <field name="name">tree_timerecord_inherit</field>
+    <field name="model">ez.time.record</field>
+    <field name="inherit_id" ref="ez_timekeeping.tree_timerecord"/>
+    <field name="arch" type="xml">
+
+      <field name="auth_hrs" position="attributes">
+        <attribute name="readonly">1</attribute>
+      </field>
+
+      <!-- <field name="done" position="attributes">
+        <attribute name="readonly">1</attribute>
+      </field> -->
+
+    </field>
+  </record>
+
+  <record id="form_timecard_inherit" model="ir.ui.view">
+    <field name="name">form_timecard_inherit</field>
+    <field name="model">ez.time.card</field>
+    <field name="inherit_id" ref="ez_timekeeping.form_timecard"/>
+    <field name="arch" type="xml">
+
+      <xpath expr="//field[@name='details']/list/field[@name='auth_hrs']" position="attributes">
+        <attribute name="readonly">(not is_timekeeping_user) or done or (not edit_schedule)</attribute>
+      </xpath>
+
+      <xpath expr="//field[@name='details']/list/field[@name='done']" position="attributes">
+        <attribute name="readonly">1</attribute>
+      </xpath>
+
+    </field>
+  </record>
+
+</odoo>

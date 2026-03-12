@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+    <template
+        id="portal_layout_payslip"
+        name="Portal layout: payslip menu entry"
+        inherit_id="portal.portal_breadcrumbs"
+        priority="40"
+    >
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li
+                t-if="page_name == 'payslip' or payslip"
+                t-attf-class="breadcrumb-item #{'active ' if not payslip else ''}"
+            >
+                <a
+                    t-if="payslip"
+                    t-attf-href="/my/payslips?{{ keep_query() }}"
+                >Payslips</a>
+                <t t-else="">Payslips</t>
+            </li>
+            <li t-if="payslip" class="breadcrumb-item active text-truncate">
+                <span t-field="payslip.name" />
+            </li>
+        </xpath>
+    </template>
+
+    <template
+        id="portal_my_home_ess"
+        name="Portal My Home : ESS"
+        inherit_id="portal.portal_my_home"
+        priority="35"
+        customize_show="True"
+    >
+        <div id="portal_common_category" position="before">
+            <div class="o_portal_category row g-2 mt-3" id="portal_ess_category"/>
+        </div>
+    </template>
+
+    <template
+        id="portal_my_home_payslips"
+        name="Portal My Home : payslips"
+        inherit_id="ez_payroll_ess.portal_my_home_ess"
+        priority="35"
+        customize_show="True"
+    >
+        <div id="portal_ess_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/purchase/static/src/img/calculator.svg'"/>
+                <t t-set="title">Your Payslips</t>
+                <t t-set="text">List and download your payslips</t>
+                <t t-set="url" t-value="'/my/payslips'" />
+                <t t-set="placeholder_count" t-value="'payslip_count'" />
+            </t>
+        </div>
+    </template>
+
+    <template id="portal_my_payslips" name="My Payslips">
+      <t t-call="portal.portal_layout">
+        <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+        <t t-call="portal.portal_searchbar">
+            <t t-set="title">Payslips</t>
+        </t>
+        <t t-if="not records">
+            <p class="alert alert-warning">There are currently no paylips in your account.</p>
+        </t>
+        <t t-if="records" t-call="portal.portal_table">
+            <thead>
+                <tr class="active">
+                    <th>Payroll No.</th>
+
+                    <th class="d-none d-md-table-cell text-end">Gross Pay</th>
+                    <th class="d-none d-md-table-cell text-end">Deductions</th>
+                    <th class="d-none d-md-table-cell text-end">Loan Payments</th>
+
+                    <th class="text-end">Net Pay</th>
+                    <t t-if="company_id.signature_enabled">
+                        <th class="d-none d-md-table-cell">Sign</th>
+                    </t>
+                    <th class="d-none d-md-table-cell">Payslip</th>
+                </tr>
+            </thead>
+            <tbody>
+                <script type="text/javascript" src="/ez_payroll_ess/static/src/js/utils.js"></script>
+                <script type="text/javascript">
+                    async function sign_payslip(payslip_id, is_signed) {
+                        if (window.confirm('Are you sure you want to confirm and sign this payslip?')) {
+                            const url = '/ess-api/sign_payslip/' + payslip_id + '/' + is_signed;
+                            const result = await jsonRpcApi(url, 'call', {});
+                            window.location.reload();
+                            console.log(url, result);
+                        }
+                    }
+                </script>
+                <t t-foreach="records" t-as="payslip">
+                    <tr>
+                        <td>
+                            <span t-field="payslip.payroll_id.name"/>
+                        </td>
+
+                        <td class="d-none d-md-table-cell text-end ">
+                            <span t-field="payslip.gross_pay"/>
+                        </td>
+                        <td class="d-none d-md-table-cell text-end">
+                            <span t-field="payslip.total_deductions"/>
+                        </td>
+                        <td class="d-none d-md-table-cell text-end">
+                            <span t-field="payslip.total_loan_payments"/>
+                        </td>
+
+                        <td class="text-end"><span t-field="payslip.net_pay"/></td>
+                         
+                        <!-- <td>
+                            <t t-set="props" t-value="{
+                                'payslip_id': payslip.id,
+                                'net_pay': payslip.net_pay,
+                            }"/>
+                            <owl-component name="ez_payroll_ess.PayslipWidget" 
+                                t-att-props="json.dumps(props)"
+                            />
+                        </td> -->
+
+                        <td t-if="payslip.signature_enabled">
+                            <t t-if="not payslip.is_signed">
+                                <a 
+                                    t-attf-onclick="sign_payslip({{payslip.id}},1);"
+                                    target="_blank"
+                                    t-att-title="payslip.payroll_id.name"
+                                >
+                                    <i class="fa fa-fw fa-check-circle" aria-label="Sign" title="Sign" role="img"/>
+                                    <span class="d-none d-md-inline"> Confirm and Sign</span>
+                                </a>
+                            </t><t t-else="">
+                                <span class="d-none d-md-inline">SIGNED</span>
+                            </t>
+                        </td>
+
+                        <td>
+                            <a t-att-href="'/my/payslips/pdf/%s' % payslip.id" 
+                                target="_blank"
+                                t-att-title="payslip.payroll_id.name"
+                            >
+                                <i class="fa fa-fw fa-download" aria-label="Download" title="Download" role="img"/>
+                                <span class="d-none d-md-inline"> Download</span>
+                            </a>
+                        </td>
+                    </tr>
+                </t>
+            </tbody>
+        </t>
+      </t>
+    </template>
+
+
+    <template id="portal_payslip_page" name="Payslip" inherit_id="portal.portal_sidebar" primary="True">
+        <xpath expr="//div[hasclass('o_portal_sidebar')]" position="inside">
+            <!-- <t t-set="o_portal_fullwidth_alert" groups="sales_team.group_sale_salesman,account.group_account_invoice,account.group_account_readonly">
+                <t t-call="portal.portal_back_in_edit_mode">
+                    <t t-set="backend_url" t-value="'/web#model=%s&amp;id=%s&amp;action=%s&amp;view_type=form' % (invoice._name, invoice.id, invoice.env.ref('account.action_move_out_invoice_type').id)"/>
+                </t>
+            </t> -->
+
+            <div class="row o_portal_invoice_sidebar">
+                <!-- Sidebar -->
+                <t t-call="portal.portal_record_sidebar">
+                    <t t-set="classes" t-value="'col-lg-3 col-xl-4 d-print-none me-lg-auto'"/>
+                    <t t-set="title">
+                        <h2>
+                            <span t-if="payslip.net_pay"/>
+                        </h2>
+                    </t>
+
+                    <t t-set="entries">
+                        <div class="d-flex flex-column gap-4">
+                            <div class="flex-basis-100 flex-basis-sm-50 flex-basis-lg-100 order-1 order-lg-0">
+                                <div class="o_download_pdf d-flex gap-1 flex-lg-column flex-xl-row">
+                                    <div class="flex-grow-1">
+                                        <a class="btn btn-secondary d-block o_download_btn" 
+                                            title="Download"><i class="fa fa-download"
+                                            t-att-href="'/my/payslips/pdf/%s' % payslip.id"
+                                        /> Download</a>
+                                            <!-- t-att-href="payslip.get_portal_url(report_type='pdf', download=True)"  -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+
+                <!-- Page Content -->
+                <div id="invoice_content" class="o_portal_content col-12 col-lg-9 col-xl-8">
+                    <div class="o_portal_html_view shadow p-3">
+                        <div class="o_portal_html_loader text-center">
+                            <i class="fa fa-circle-o-notch fa-spin fa-2x fa-fw text-black-50"></i>
+                        </div>
+                        <iframe id="payslip_html" class="mt8 mb8" width="100%" height="100%" frameborder="0" scrolling="no" 
+                            t-att-src="'/my/payslips/pdf/%s' % payslip.id"/>
+                            <!-- t-att-src="'/report/pdf/ez_payroll.action_print_single_payslip/%s' % payslip.id"/> -->
+                    </div>
+                    <!-- chatter -->
+                    <!-- <div id="invoice_communication" class="mt-4">
+                        <h3>Communication history</h3>
+                        <t t-call="portal.message_thread"/>
+                    </div> -->
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>

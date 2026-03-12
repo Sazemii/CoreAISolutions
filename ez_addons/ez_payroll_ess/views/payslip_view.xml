@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+    <record id="view_payslip_form_ess_inherit" model="ir.ui.view">
+        <field name="name">view_payslip_form_ess_inherit</field>
+        <field name="model">hr.ph.payslip</field>
+        <field name="inherit_id" ref="ez_payroll.view_payslip_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//sheet/*[1]" position="before">
+                <field name="is_signed" invisible="1"/>
+                <field name="signature_enabled" invisible="1"/>
+                <widget name="web_ribbon" title="Signed" bg_color="bg-success" invisible="(not is_signed) or (not signature_enabled)"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_payslip_tree_ess_inherit" model="ir.ui.view">
+        <field name="name">view_payslip_tree_ess_inherit</field>
+        <field name="model">hr.ph.payslip</field>
+        <field name="inherit_id" ref="ez_payroll.view_payslip_tree"/>
+        <field name="arch" type="xml">
+            <field name="net_pay" position="after">
+                <field name="is_signed"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- TEMPLATES -->
+    <template id="report_payslip_template_half_inh" inherit_id="ez_payroll.report_payslip_template_half">
+        <xpath expr="//table/tr/td/p[1]" position="before"> 
+            <t t-if="ps.is_signed and ps.employee_id.signature_image">
+                <div style="position:relative;">
+                    <div width="100%" style="position: absolute; left: 40%;">
+                        <div style="padding-top: 50px;"/>
+                        <img 
+                            t-att-src="image_data_uri(ps.employee_id.signature_image)" 
+                            height="40px"
+                            alt="Signature"
+                        />
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>

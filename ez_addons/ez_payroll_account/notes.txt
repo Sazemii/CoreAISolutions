@@ -1,0 +1,42 @@
+
+contacts
+    sss
+    philhealth
+    hdmf
+    bir
+
+accts
+    payable sss 
+        ee
+        er
+    payable hdmf
+        ee
+        er
+    payable philhealth
+        ee
+        er
+    payable tax
+        ee
+
+
+entry
+    cr
+        bank/cash
+        payable - wtax - tax received
+        payable - sss ee - current liabilities
+        payable - sss er - current liabilities
+        payable - hdmf ee - current liabilities
+        payable - hdmf er - current liabilities
+        payable - philhealth ee - current liabilities
+        payable - philhealth er - current liabilities
+
+        receivable - loan payments (partner) - current assets
+
+    db
+        expense - salary
+        expense - er (sss,hdmf,philhealth)
+        
+
+        
+
+     

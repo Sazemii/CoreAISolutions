@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2017
+======================================== -->
+<odoo>
+
+    <record id="request_for_approval_email_template" model="mail.template">
+        <field name="name">Timekeeping Requests for Approval</field>
+        <field name="model_id" ref="model_ez_time_request"/>
+        <field name="lang">{{object.company_id.partner_id.lang}}</field>
+        <field name="email_from">{{object.company_id.partner_id.email}}</field>
+        <field name="partner_to">{{object.employee_id.timekeeping_manager_id.partner_id.id}}</field>
+        <field
+            name="subject"
+        >Request for Approval for {{object.employee_id.name or 'n/a' }} {{object.date.strftime('%m/%d/%Y')}}</field> 
+        <field name="description">Send email to approver when request is to be approved.</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="body_html" type="html">
+            <p>Hello <t t-out="object.employee_id.timekeeping_manager_id.name">Michel Admin</t>,</p>
+            <p>Please approve the <b t-field="object.type">Overtime</b> <b>Request</b>
+              of <b t-out="object.employee_id.name">Juan dela Cruz</b> 
+              named <b t-out="object.name">Request #111</b> dated 
+              <b t-field="object.date" t-options='{"widget": "date","format": "MMMM d, yyyy"}'>date</b>.
+            </p>
+        </field>
+    </record>
+
+    <record id="request_denied_email_template" model="mail.template">
+        <field name="name">Timekeeping Requests Denied</field>
+        <field name="model_id" ref="model_ez_time_request"/>
+        <field name="lang">{{object.company_id.partner_id.lang}}</field>
+        <field name="email_from">{{object.company_id.partner_id.email}}</field>
+        <field name="partner_to">{{object.employee_id.user_id.partner_id.id}}</field>
+        <field
+            name="subject"
+        >Request Denied {{object.employee_id.name or 'n/a' }} {{object.date.strftime('%m/%d/%Y')}}</field>
+        <field name="description">Send email to employee when request is denied. </field>
+        <field name="auto_delete" eval="False" />
+        <field name="body_html" type="html">
+            <p>Hello <t t-out="object.employee_id.first_name">Employee</t>,</p>
+            <p>Your <b t-field="object.type">Overtime</b> <b>Request</b>
+              named <b t-out="object.name">Request #111</b> dated 
+              <b t-field="object.date" t-options='{"widget": "date","format": "MMMM d, yyyy"}'>date</b>              
+              has been denied.   Please set back to draft and re-send again for approval.
+            </p>
+        </field>
+    </record>
+
+    <record id="request_approved_email_template" model="mail.template">
+        <field name="name">Timekeeping Requests Approved</field>
+        <field name="model_id" ref="model_ez_time_request"/>
+        <field name="lang">{{object.company_id.partner_id.lang}}</field>
+        <field name="email_from">{{object.company_id.partner_id.email}}</field>
+        <field name="partner_to">{{object.employee_id.user_id.partner_id.id}}</field>
+        <field
+            name="subject"
+        >Request Approved {{object.employee_id.name or 'n/a' }} {{object.date.strftime('%m/%d/%Y')}}</field>
+        <field name="description">Send email to employee when request is approvded. </field>
+        <field name="auto_delete" eval="False" />
+        <field name="body_html" type="html">
+            <p>Hello <t t-out="object.employee_id.first_name">Employee</t>,</p>
+            <p>Your <b t-field="object.type">Overtime</b> <b>Request</b>
+              named <b t-out="object.name">Request #111</b> dated 
+              <b t-field="object.date" t-options='{"widget": "date","format": "MMMM d, yyyy"}'>date</b>              
+              has been approved.
+            </p>
+        </field>
+    </record>
+
+</odoo>

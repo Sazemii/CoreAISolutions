@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+  <record id="view_payroll_form_inh" model="ir.ui.view">
+    <field name="name">view_payroll_form_inh</field>
+    <field name="model">hr.ph.payroll</field>
+    <field name="inherit_id" ref="ez_payroll.view_payroll_form"/>
+    <field name="arch" type="xml">
+
+      <field name="emp_tag_ids" position="after">
+        <field name="move_id" invisible="1"/>
+      </field>
+
+      <div name="button_box" position="inside">
+        <button name="action_view_journal" type="object" class="oe_stat_button" 
+          groups="ez_payroll.group_hr_payroll_manager"
+          icon="fa-pencil-square-o" 
+          invisible="journal_line_count==0"
+        >
+          <field name="journal_line_count" widget="statinfo" string="Journal Lines"/>
+        </button>
+      </div>
+
+      <button name="cancel_done" position="before">
+        <button name="create_journal" type="object" 
+          invisible="state not in ['done']"
+          string="Create Journal Entry" class="oe_highlight" 
+          confirm="Journal Entry will be created. Are you sure to continue?"
+          groups="ez_payroll.group_hr_payroll_manager"/>
+      </button>
+
+    </field>
+  </record>
+
+  <record id="open_other_deduction_form_inh" model="ir.ui.view">
+    <field name="name">open_other_deduction_form_inh</field>
+    <field name="model">hr.ph.pay.deduction.entry</field>
+    <field name="inherit_id" ref="ez_payroll.id_open_other_deduction_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//label[@for='filename']" position="before">
+        <field name="partner_id" readonly="state not in ['draft']"/>
+      </xpath>
+    </field>
+  </record>
+
+</odoo>

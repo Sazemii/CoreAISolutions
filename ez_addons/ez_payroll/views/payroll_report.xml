@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+    <template id="report_payroll_ps_line">
+      <table class="table-borderless table-box">
+
+        <thead>
+          <tr>
+            <th class="shrink">
+              <span>
+                No.
+              </span>
+            </th>
+            <th class="shrink">
+              <span>
+                Name
+              </span>
+            </th>
+            <th class="shrink">
+              <span>
+                Compensation
+              </span>
+            </th>
+            <th class="shrink">
+              <span>
+                Deductions
+              </span>
+            </th>
+            <th class="shrink">
+              <span>
+                Loan Payments
+              </span>
+            </th>
+            <th class="shrink">
+              <span>
+                Totals
+              </span>
+            </th>
+            <th class="shrink">
+              <span>
+                Signature
+              </span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <t t-set="num" t-value="0"/>
+          <tr t-foreach="o.payslip" t-as="ps">
+
+            <td class="shrink text-end">
+              <t t-set="num" t-value="num + 1"/>
+              <span t-esc="num"/>
+            </td>
+
+            <td class="shrink">
+              <!-- <table style="width:100%;">
+                <tr>
+                  <td colspan="2"><span t-field="ps.employee_id.name"/></td>
+                </tr>
+                <tr>
+                  <td><span>
+                    Dept.:
+                  </span></td>
+                  <td style="width:100%;">
+                    <span t-field="ps.employee_id.department_id.name"/>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span>
+                    ID No.:
+                  </span></td>
+                  <td style="width:100%;">
+                    <span t-field="ps.employee_id.identification_id"/>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span>
+                    Rate:
+                  </span></td>
+                  <td style="width:100%;">
+                    <span t-field="ps.salary_rate_period"/>
+                  </td>
+                </tr>
+              </table>
+              </div> -->
+
+              <div class="row" style="padding-left:5px;">
+                  <div class="col-12">
+                    <span t-field="ps.employee_id.name"/>
+                  </div>
+              </div>
+              <div class="row" style="padding-left:5px;">
+                <div class="col-3">
+                  <span>
+                    Dept.:
+                  </span> 
+                </div>
+                <div class="col-9">
+                  <span t-field="ps.employee_id.department_id.name"/>
+                </div>
+              </div>
+
+              <div class="row" style="padding-left:5px;">
+                <div class="col-3">
+                  <span>
+                    ID No.:
+                  </span>
+                </div>
+                <div class="col-9">
+                  <span t-field="ps.identification_id"/>
+                </div>
+              </div>
+              <div class="row" style="padding-left:5px;">
+                <div class="col-3">
+                  <span>
+                    Rate:
+                  </span>
+                </div>
+                <div class="col-a9">
+                  <span t-field="ps.salary_rate"/> <span t-field="ps.salary_rate_period"/>
+                </div>
+              </div>
+            </td>
+
+            <td class="shrink">
+              <table style="width:100%;">
+                <tr t-foreach="o.get_compensation_lines(ps)" t-as="ln">
+                  <td><span t-esc="ln[1]"/></td>
+                  <td class="text-end"><span t-esc="o.format_curr(ln[2])"/></td>
+                </tr>
+              </table>
+            </td>
+
+            <td class="shrink">
+              <table style="width:100%;">
+                <tr t-foreach="ps.deduction_line" t-as="ded">
+                  <td class="shrink">
+                    <span t-field="ded.name"/>
+                  </td>
+                  <td class="shrink text-end">
+                    <span t-field="ded.amount"/>
+                  </td>
+                </tr>
+              </table>
+            </td>
+
+            <td class="shrink">
+              <table style="width:100%;">
+                <tr t-foreach="ps.loan_line" t-as="loan">
+                  <td class="shrink">
+                    <!-- <span t-esc="(loan.name or '').split(' - ')[0]"/> -->
+                    <span t-esc="loan.loan_type_id.name"/>
+                  </td>
+                  <td class="shrink text-end">
+                    <span t-field="loan.amount"/>
+                  </td>
+                </tr>
+              </table>
+            </td>
+
+            <td class="shrink">
+              <table style="width:100%;">
+                <tr>
+                  <td>
+                    <span>
+                      Basic Pay:
+                    </span>
+                  </td>
+                  <td class="text-end"><span t-field="ps.basic_pay"/><br/></td>
+                </tr>
+                <tr>
+                  <td>
+                    <span>
+                      Gross Pay:
+                    </span>
+                  </td>
+                  <td class="text-end"><span t-field="ps.gross_pay"/><br/></td>
+                </tr>
+
+                <tr t-if="len(ps.deduction_line)>0">
+                  <td>
+                    <span>
+                      Deductions:
+                    </span>
+                  </td>
+                  <td class="text-end">-<span t-field="ps.total_deductions"/><br/></td>
+                </tr>
+                <tr t-if="len(ps.loan_line)>0">
+                  <td>
+                    <span>
+                      Loans:
+                    </span>
+                  </td>
+                  <td class="text-end">-<span t-field="ps.total_loan_payments"/><br/></td>
+                </tr>
+                <tr>
+                  <td class="hrb"></td><td class="hrb"></td>
+                </tr>
+                <tr>
+                  <td style="font-weight:bold;">
+                    <span>
+                      Net Pay:
+                    </span>
+                  </td>
+                  <td class="text-end" style="font-weight:bold;"><span t-field="ps.net_pay"/><br/></td>
+                </tr>
+              </table>
+            </td>
+
+            <td class="shrink"></td>
+          </tr>
+
+          <tr t-foreach="o.get_dept_summary(o.payslip)" t-as="dept">
+            <td class="text-end" colspan="2" style="font-weight:bold;">
+              <span>TOTAL DEPARTMENT / <t t-esc="dept['department']"/>:</span>
+            </td>
+            <td class="text-end" style="font-weight:bold;">
+              <span><t t-esc="'{:,.2f}'.format(dept['gross_pay'])"/></span>
+            </td>
+            <td class="text-end" style="font-weight:bold;">
+              <span><t t-esc="'{:,.2f}'.format(dept['deductions'])"/></span>
+            </td>
+            <td class="text-end" style="font-weight:bold;">
+              <span><t t-esc="'{:,.2f}'.format(dept['loan_payments'])"/></span>
+            </td>
+            <td class="text-end" style="font-weight:bold;">
+              <span><t t-esc="'{:,.2f}'.format(dept['net_pay'])"/></span>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </template>
+
+    <template id="report_payroll_summary">
+      <br/>
+      <table class="table-borderless table-box" style="width:100%">
+        <tbody>
+
+          <tr>
+            <th colspan="3">
+              <span>
+                SUB-TOTALS
+              </span>
+            </th>
+          </tr>
+          <tr>
+            <th style="width:33.3%">
+              <span>
+                COMPENSATION
+              </span>
+            </th>
+            <th style="width:33.3%">
+              <span>
+                DEDUCTIONS
+              </span>
+            </th>
+            <th>
+              <span>
+                LOAN PAYMENTS
+              </span>
+            </th>
+          </tr>
+
+          <t t-set="su" t-value="o.get_summary(o.payslip)"/>
+
+            <tr>
+              <td>
+                <table style="width:100%">
+                  <tr t-foreach="su['pay']" t-as="ln">
+                    <td><span t-esc="ln[1]"/></td>
+                    <td class="text-end"><span t-esc="o.format_curr(ln[2])"/></td>
+                  </tr>
+                </table>
+              </td>
+              <td>
+                <table style="width:100%">
+                  <tr t-foreach="su['ded']" t-as="ln">
+                    <td><span t-esc="ln[1]"/></td>
+                    <td class="text-end"><span t-esc="o.format_curr(ln[2])"/></td>
+                  </tr>
+                </table>
+              </td>
+              <td>
+                <table style="width:100%">
+                  <tr t-foreach="su['loan']" t-as="ln">
+                    <td><span t-esc="ln[1]"/></td>
+                    <td class="text-end"><span t-esc="o.format_curr(ln[2])"/></td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <table style="width:100%">
+                  <tr>
+                    <td>
+                      <span>
+                        TOTAL BASIC PAY:
+                      </span>
+                    </td>
+                    <td class="text-end"><span t-field="o.basic_pay"/></td>
+                  </tr>
+                  <tr>
+                    <td><span>TOTAL GROSS PAY:</span></td>
+                    <td class="text-end"><span t-field="o.gross_pay"/></td>
+                  </tr>
+                  <tr>
+                    <td class="hrt" style="padding-top:4px;">
+                      <span>
+                        <strong>
+                          TOTAL NET PAY:
+                        </strong>
+                      </span>
+                    </td>
+                    <td class="hrt text-end" style="padding-top:4px;">
+                      <span>
+                        <strong t-field="o.net_pay"/>
+                      </span>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+
+              <td style="vertical-align:middle;">
+                <table style="width:100%">
+                  <tr>
+                    <td>
+                      <span>
+                        TOTAL DEDUCTIONS:
+                      </span>
+                    </td>
+                    <td class="text-end"><span t-field="o.total_deductions"/></td>
+                  </tr>
+                </table>
+              </td>
+              <td style="vertical-align:middle;">
+                <table style="width:100%">
+                  <tr>
+                    <td>
+                      <span>
+                        TOTAL LOAN PAYMENTS:
+                      </span>
+                    </td>
+                    <td class="text-end"><span t-field="o.total_loan_payments"/></td>
+                  </tr>
+                </table>
+              </td>
+
+            </tr>
+
+          </tbody>
+
+      </table>
+    </template>
+
+    <template id="report_payroll_header">
+      <div class="headerx">
+
+        <table class="table-borderless" width="100%">
+          <tr>
+            <td colspan="3">
+              <strong t-if="o.state=='draft'" style='color:red;'>
+                PAYROLL REGISTER (DRAFT)
+              </strong>
+              <strong t-if="o.state!='draft'">
+                PAYROLL REGISTER
+              </strong>
+            </td>
+          </tr>
+
+          <tr>
+            <td width="65px">
+              <strong>
+                Name:
+              </strong>
+            </td>
+            <td>
+              <span t-field="o.name" class="col-space"/>
+            </td>
+            <td style="text-align:right;">
+              Page <span class="page"/> of <span class="topage"/>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <strong>
+                Date:
+              </strong>
+            </td>
+            <td>
+              <div style="white-space: nowrap;">
+                <span t-field="o.date_from"/> - <span t-field="o.date_to"/>
+              </div>
+            </td>
+            <td></td>
+          </tr>
+
+        </table>
+
+      </div>
+    </template>
+
+    <template id="report_payroll">
+      <t t-call="web.basic_layout">
+        <t t-foreach="docs" t-as="o">
+          <div class="header">
+            <t t-call="ez_payroll.report_payroll_header"/>
+          </div>
+          <div class="page">
+            <t t-call="ez_payroll.report_payroll_ps_line"/>
+            <t t-call="ez_payroll.report_payroll_summary"/>
+          </div>
+        </t>
+      </t>
+    </template>
+
+
+    <record id="payroll_format" model="report.paperformat">
+      <field name="name">Payroll</field>
+      <field name="format">Letter</field>
+      <field name="orientation">Landscape</field>
+      <field name="header_spacing">17</field>
+      <field name="margin_top">22</field>
+      <field name="margin_bottom">10</field>
+      <field name="margin_left">8</field>
+      <field name="margin_right">8</field>
+      <field name="header_line" eval="False"/>
+      <field name="dpi">90</field>
+      <field name="default" eval="False"/>
+    </record>
+
+    <record id="payslip_format" model="report.paperformat">
+      <field name="name">Payslip</field>
+      <field name="format">Letter</field>
+      <field name="orientation">Portrait</field>
+      <field name="header_spacing">0</field>
+      <field name="margin_top">10</field>
+      <field name="margin_bottom">10</field>
+      <field name="margin_left">5</field>
+      <field name="margin_right">5</field>
+      <field name="header_line" eval="False"/>
+      <field name="dpi">90</field>
+      <field name="default" eval="False"/>
+    </record>
+    
+<!-- 
+    <report
+      string="Payroll"
+      id="action_print_payroll"
+      model="hr.ph.payroll"
+      report_type="qweb-pdf"
+      name="ez_payroll.report_payroll"
+      file="ez_payroll.report_payroll"
+      attachment_use="False"
+      paperformat="ez_payroll.payroll_format"
+    />
+ -->
+    
+    <record id="action_print_payroll" model="ir.actions.report">
+      <field name="name">Payroll</field>
+      <field name="model">hr.ph.payroll</field>
+      <field name="report_type">qweb-pdf</field>
+      <field name="report_name">ez_payroll.report_payroll</field>
+      <field name="report_file">ez_payroll.report_payroll</field>
+      <field name="binding_model_id" ref="ez_payroll.model_hr_ph_payroll"/>
+      <field name="binding_type">report</field>
+      <field name="paperformat_id" ref="ez_payroll.payroll_format"/>
+    </record>
+    
+<!--     
+    <report
+      string="Payslips"
+      id="action_print_payslip"
+      model="hr.ph.payroll"
+      report_type="qweb-pdf"
+      name="ez_payroll.report_payslip"
+      file="ez_payroll.report_payslip"
+      attachment_use="False"
+      paperformat="ez_payroll.payslip_format"
+    />
+ -->
+    
+    <record id="action_print_payslip" model="ir.actions.report">
+      <field name="name">Payslips</field>
+      <field name="model">hr.ph.payroll</field>
+      <field name="report_type">qweb-pdf</field>
+      <field name="report_name">ez_payroll.report_payslip</field>
+      <field name="report_file">ez_payroll.report_payslip</field>
+      <field name="binding_model_id" ref="ez_payroll.model_hr_ph_payroll"/>
+      <field name="binding_type">report</field>
+      <field name="paperformat_id" ref="ez_payroll.payslip_format"/>
+    </record>
+    
+   
+    <record id="action_print_single_payslip" model="ir.actions.report">
+      <field name="name">Payslip</field>
+      <field name="model">hr.ph.payslip</field>
+      <field name="report_type">qweb-pdf</field>
+      <field name="report_name">ez_payroll.report_single_payslip</field>
+      <field name="report_file">ez_payroll.report_single_payslip</field>
+      <field name="binding_model_id" ref="ez_payroll.model_hr_ph_payslip"/>
+      <field name="binding_type">report</field>
+      <field name="paperformat_id" ref="ez_payroll.payslip_format"/>
+      <field name="print_report_name">'Payslip %s to %s %s' % (
+        object.payroll_id.date_from.strftime('%b-%d-%Y'), 
+        object.payroll_id.date_to.strftime('%b-%d-%Y'), 
+        object.employee_id.name)</field>
+    </record>    
+    
+</odoo>

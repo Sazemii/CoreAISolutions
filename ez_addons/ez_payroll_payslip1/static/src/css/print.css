@@ -1,0 +1,88 @@
+/* .col-12, .col-6, .col-8, .col-4 {
+    padding-left: 5px;
+    padding-right: 5px;
+} */
+
+.image-logo {
+    opacity: 0.99;
+    padding: 25px; 
+    height: 135px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.box-payslip-summary {
+    background-color: #EEEEEE;
+    line-height: 250%;
+    font-size: 80%;
+    /* margin-right: -50px; */
+    /* padding-left: 5px;
+    padding-right: 5px; */
+}
+
+.box-payslip-summary div div {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.box-netpay {
+    background-color: #000;
+    color: white;
+    font-weight: bold;
+}
+
+.box-payslip-header {
+    font-size: 90%;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.box-payslip-header div {
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.payslip-separator1 {
+    border-top: 7px solid #EEEEEE;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    padding-top: 10px;
+    font-weight: bold;
+}
+
+
+.box-payslip4 {
+    /* margin: 5px; */
+    padding: 5px;
+}
+
+.payslip-summary4-header {
+    background-color: #EEEEEE;
+}
+
+.payslip-summary4-header2 {
+    border-bottom: 1px solid #444;
+    border-right: 1px solid #444;
+    border-left: 1px solid #444;
+}
+
+.payslip-summary4-body {
+    font-size: 70%;
+}
+
+.pad-lr5 {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.text-name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* .payslip-summary4-body div {
+    border-bottom: 1px solid #444;
+} */
+

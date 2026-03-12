@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+    <data noupdate="1">
+        <!-- July 2022 -->
+        <record model="hr.ph.gov.deductions" id="govded_07_2022">
+            <field name="name">2022</field>
+            <field name="date_from">2022-01-01</field>
+            <field name="date_to">2199-12-31</field>
+            <field name="ee_code">( (gross &lt;= 1500.0) and (gross * 0.01) ) or ( (gross &lt; 5000.0) and (gross * 0.02) ) or 100.0</field>
+            <field name="er_code">( (gross &lt; 5000.0) and (gross * 0.02) ) or 100.0</field>
+            <!-- 
+            <field name="phic_code">self.compute_phic(payslip.basic_pay + pbasic_pay, date, percent=4.0, limit=80000.0)</field> 
+            -->
+            <field name="phic_code">self.get_phic_mbs(payslip, pded, factor=0.5, percent=4.0, limit=80000.0)</field>
+            <field name="non_taxable_13thmp">90000</field>
+        </record>
+    </data>
+
+    <data noupdate="1">
+        <!-- WTAX -->
+        <!-- daily -->
+
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_0">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="seq">10</field>
+            <field name="period">Daily</field>
+            <field name="name">Tax</field>
+            <field name="t1">0.0</field>
+            <field name="t2">0.0</field>
+            <field name="t3">0.0</field>
+            <field name="t4">0.0</field>
+            <field name="t5">82.19</field>
+            <field name="t6">356.16</field>
+            <field name="t7">1342.47</field>
+            <field name="t8">6602.74</field>
+            <field name="is_compute"></field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_1">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="seq">20</field>
+            <field name="period">Daily</field>
+            <field name="name">Over %</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">20</field>
+            <field name="t5">25</field>
+            <field name="t6">30</field>
+            <field name="t7">32</field>
+            <field name="t8">35</field>
+            <field name="is_compute"></field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_2">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="seq">30</field>
+            <field name="period">Daily</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">685</field>
+            <field name="t5">1096</field>
+            <field name="t6">2192</field>
+            <field name="t7">5479</field>
+            <field name="t8">21918</field>
+            <field name="is_compute">True</field>
+            <field name="name">Z</field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_3">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="seq">40</field>
+            <field name="period">Daily</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">685</field>
+            <field name="t5">1096</field>
+            <field name="t6">2192</field>
+            <field name="t7">5479</field>
+            <field name="t8">21918</field>
+            <field name="is_compute">True</field>
+            <field name="name">S/ME</field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_4">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="seq">50</field>
+            <field name="period">Daily</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">685</field>
+            <field name="t5">1096</field>
+            <field name="t6">2192</field>
+            <field name="t7">5479</field>
+            <field name="t8">21918</field>
+            <field name="is_compute">True</field>
+            <field name="name">ME1/S1</field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_5">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="seq">60</field>
+            <field name="period">Daily</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">685</field>
+            <field name="t5">1096</field>
+            <field name="t6">2192</field>
+            <field name="t7">5479</field>
+            <field name="t8">21918</field>
+            <field name="is_compute">True</field>
+            <field name="name">ME2/S2</field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_6">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="seq">70</field>
+            <field name="period">Daily</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">685</field>
+            <field name="t5">1096</field>
+            <field name="t6">2192</field>
+            <field name="t7">5479</field>
+            <field name="t8">21918</field>
+            <field name="is_compute">True</field>
+            <field name="name">ME3/S3</field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_7">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="seq">80</field>
+            <field name="period">Daily</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">685</field>
+            <field name="t5">1096</field>
+            <field name="t6">2192</field>
+            <field name="t7">5479</field>
+            <field name="t8">21918</field>
+            <field name="is_compute">True</field>
+            <field name="name">ME4/S4</field>
+        </record>
+
+        <!-- weekly -->
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_8">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="seq">90</field>
+            <field name="period">Weekly</field>
+            <field name="name">Tax</field>
+            <field name="t1">0.0</field>
+            <field name="t2">0.0</field>
+            <field name="t3">0.0</field>
+            <field name="t4">0.0</field>
+            <field name="t5">576.92</field>
+            <field name="t6">2500</field>
+            <field name="t7">9423.08</field>
+            <field name="t8">46346.15</field>
+            <field name="is_compute"></field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_9">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="seq">100</field>
+            <field name="period">Weekly</field>
+            <field name="name">Over %</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">20</field>
+            <field name="t5">25</field>
+            <field name="t6">30</field>
+            <field name="t7">32</field>
+            <field name="t8">35</field>
+            <field name="is_compute"></field>
+        </record>
+
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_10">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="period">Weekly</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">4808</field>
+            <field name="t5">7692</field>
+            <field name="t6">15385</field>
+            <field name="t7">38462</field>
+            <field name="t8">153846</field>
+            <field name="seq">110</field>
+            <field name="is_compute">True</field>
+            <field name="name">Z</field>
+        </record>
+
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_11">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="period">Weekly</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">4808</field>
+            <field name="t5">7692</field>
+            <field name="t6">15385</field>
+            <field name="t7">38462</field>
+            <field name="t8">153846</field>
+            <field name="seq">120</field>
+            <field name="is_compute">True</field>
+            <field name="name">S/ME</field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_12">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="period">Weekly</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">4808</field>
+            <field name="t5">7692</field>
+            <field name="t6">15385</field>
+            <field name="t7">38462</field>
+            <field name="t8">153846</field>
+            <field name="seq">130</field>
+            <field name="is_compute">True</field>
+            <field name="name">ME1/S1</field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_13">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="period">Weekly</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">4808</field>
+            <field name="t5">7692</field>
+            <field name="t6">15385</field>
+            <field name="t7">38462</field>
+            <field name="t8">153846</field>
+            <field name="seq">140</field>
+            <field name="is_compute">True</field>
+            <field name="name">ME2/S2</field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_14">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="period">Weekly</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">4808</field>
+            <field name="t5">7692</field>
+            <field name="t6">15385</field>
+            <field name="t7">38462</field>
+            <field name="t8">153846</field>
+            <field name="seq">150</field>
+            <field name="is_compute">True</field>
+            <field name="name">ME3/S3</field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_15">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="period">Weekly</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">4808</field>
+            <field name="t5">7692</field>
+            <field name="t6">15385</field>
+            <field name="t7">38462</field>
+            <field name="t8">153846</field>
+            <field name="seq">160</field>
+            <field name="is_compute">True</field>
+            <field name="name">ME4/S4</field>
+        </record>
+
+        <!-- semi-monthly -->
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_sm_tax">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="name">Tax</field>
+            <field name="t1">0.0</field>
+            <field name="t2">0.0</field>
+            <field name="t3">0.0</field>
+            <field name="t4">0.0</field>
+            <field name="t5">1250</field>
+            <field name="t6">5416.67</field>
+            <field name="t7">20416.67</field>
+            <field name="t8">100416.67</field>
+            <field name="seq">170</field>
+            <field name="is_compute"></field>
+            <field name="period">Semi-monthly</field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_sm_pct">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="name">Over %</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">20</field>
+            <field name="t5">25</field>
+            <field name="t6">30</field>
+            <field name="t7">32</field>
+            <field name="t8">35</field>
+            <field name="seq">180</field>
+            <field name="is_compute"></field>
+            <field name="period">Semi-monthly</field>
+        </record>
+
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_18">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="period">Semi-monthly</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">10417</field>
+            <field name="t5">16667</field>
+            <field name="t6">33333</field>
+            <field name="t7">83333</field>
+            <field name="t8">333333</field>
+            <field name="seq">190</field>
+            <field name="is_compute">True</field>
+            <field name="name">Z</field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_19">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="period">Semi-monthly</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">10417</field>
+            <field name="t5">16667</field>
+            <field name="t6">33333</field>
+            <field name="t7">83333</field>
+            <field name="t8">333333</field>
+            <field name="seq">200</field>
+            <field name="is_compute">True</field>
+            <field name="name">S/ME</field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_20">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="period">Semi-monthly</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">10417</field>
+            <field name="t5">16667</field>
+            <field name="t6">33333</field>
+            <field name="t7">83333</field>
+            <field name="t8">333333</field>
+            <field name="seq">210</field>
+            <field name="is_compute">True</field>
+            <field name="name">ME1/S1</field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_21">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="period">Semi-monthly</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">10417</field>
+            <field name="t5">16667</field>
+            <field name="t6">33333</field>
+            <field name="t7">83333</field>
+            <field name="t8">333333</field>
+            <field name="seq">220</field>
+            <field name="is_compute">True</field>
+            <field name="name">ME2/S2</field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_22">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="period">Semi-monthly</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">10417</field>
+            <field name="t5">16667</field>
+            <field name="t6">33333</field>
+            <field name="t7">83333</field>
+            <field name="t8">333333</field>
+            <field name="seq">230</field>
+            <field name="is_compute">True</field>
+            <field name="name">ME3/S3</field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_23">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="period">Semi-monthly</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">10417</field>
+            <field name="t5">16667</field>
+            <field name="t6">33333</field>
+            <field name="t7">83333</field>
+            <field name="t8">333333</field>
+            <field name="seq">240</field>
+            <field name="is_compute">True</field>
+            <field name="name">ME4/S4</field>
+        </record>
+
+        <!-- monthly -->
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_montly_tax">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="name">Tax</field>
+            <field name="t1">0.0</field>
+            <field name="t2">0.0</field>
+            <field name="t3">0.0</field>
+            <field name="t4">0.0</field>
+            <field name="t5">2500</field>
+            <field name="t6">10833.33</field>
+            <field name="t7">40833.33</field>
+            <field name="t8">200833.33</field>
+            <field name="seq">250</field>
+            <field name="is_compute"></field>
+            <field name="period">Monthly</field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_montly_pct">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="name">Over %</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">20</field>
+            <field name="t5">25</field>
+            <field name="t6">30</field>
+            <field name="t7">32</field>
+            <field name="t8">35</field>
+            <field name="seq">260</field>
+            <field name="is_compute"></field>
+            <field name="period">Monthly</field>
+        </record>
+
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_26">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="period">Monthly</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">20833</field>
+            <field name="t5">33333</field>
+            <field name="t6">66667</field>
+            <field name="t7">166667</field>
+            <field name="t8">666667</field>
+            <field name="seq">270</field>
+            <field name="is_compute">True</field>
+            <field name="name">Z</field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_27">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="period">Monthly</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">20833</field>
+            <field name="t5">33333</field>
+            <field name="t6">66667</field>
+            <field name="t7">166667</field>
+            <field name="t8">666667</field>
+            <field name="seq">280</field>
+            <field name="is_compute">True</field>
+            <field name="name">S/ME</field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_28">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="period">Monthly</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">20833</field>
+            <field name="t5">33333</field>
+            <field name="t6">66667</field>
+            <field name="t7">166667</field>
+            <field name="t8">666667</field>
+            <field name="seq">290</field>
+            <field name="is_compute">True</field>
+            <field name="name">ME1/S1</field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_29">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="period">Monthly</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">20833</field>
+            <field name="t5">33333</field>
+            <field name="t6">66667</field>
+            <field name="t7">166667</field>
+            <field name="t8">666667</field>
+            <field name="seq">300</field>
+            <field name="is_compute">True</field>
+            <field name="name">ME2/S2</field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_30">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="period">Monthly</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">20833</field>
+            <field name="t5">33333</field>
+            <field name="t6">66667</field>
+            <field name="t7">166667</field>
+            <field name="t8">666667</field>
+            <field name="seq">310</field>
+            <field name="is_compute">True</field>
+            <field name="name">ME3/S3</field>
+        </record>
+        <record model="hr.ph.wtax" id="hr_ph_wtax_2019_31">
+            <field name="govded_id" ref="govded_07_2022"/>
+            <field name="period">Monthly</field>
+            <field name="t1">0</field>
+            <field name="t2">0</field>
+            <field name="t3">0</field>
+            <field name="t4">20833</field>
+            <field name="t5">33333</field>
+            <field name="t6">66667</field>
+            <field name="t7">166667</field>
+            <field name="t8">666667</field>
+            <field name="seq">320</field>
+            <field name="is_compute">True</field>
+            <field name="name">ME4/S4</field>
+        </record>
+
+    </data>
+</odoo>

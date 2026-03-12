@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+    <record id="view_payslip_form_payroll_timekeeping_inh" model="ir.ui.view">
+        <field name="name">view_payslip_form_payroll_timekeeping_inh</field>
+        <field name="model">hr.ph.payslip</field>
+        <field name="inherit_id" ref="ez_payroll.view_payslip_form"/>
+        <field name="arch" type="xml">
+
+            <div name="button_box" position="inside">
+                <button name="action_view_timerecords" type="object" class="oe_stat_button" 
+                    groups="ez_timekeeping.group_timekeeping_user" icon="fa-calendar" 
+                >
+                    Time Records
+                </button>
+            </div>
+
+        </field>
+    </record>
+
+</odoo>

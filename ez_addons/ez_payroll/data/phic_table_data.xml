@@ -1,0 +1,248 @@
+<?xml version="1.0"?>
+<openerp>
+   <data noupdate="0">
+      <record model="hr.ph.phic" id="hr_ph_phic0">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">4000.0</field>
+      	<field name="range_to">5000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">0.0</field>
+      	<field name="ee_share">50.0</field>
+      	<field name="er_share">50.0</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic1">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">5000.0</field>
+      	<field name="range_to">6000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">5000.0</field>
+      	<field name="ee_share">62.5</field>
+      	<field name="er_share">62.5</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic2">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">6000.0</field>
+      	<field name="range_to">7000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">6000.0</field>
+      	<field name="ee_share">75.0</field>
+      	<field name="er_share">75.0</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic3">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">7000.0</field>
+      	<field name="range_to">8000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">7000.0</field>
+      	<field name="ee_share">87.5</field>
+      	<field name="er_share">87.5</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic4">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">8000.0</field>
+      	<field name="range_to">9000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">8000.0</field>
+      	<field name="ee_share">100.0</field>
+      	<field name="er_share">100.0</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic5">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">9000.0</field>
+      	<field name="range_to">10000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">9000.0</field>
+      	<field name="ee_share">112.5</field>
+      	<field name="er_share">112.5</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic6">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">10000.0</field>
+      	<field name="range_to">11000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">10000.0</field>
+      	<field name="ee_share">125.0</field>
+      	<field name="er_share">125.0</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic7">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">11000.0</field>
+      	<field name="range_to">12000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">11000.0</field>
+      	<field name="ee_share">137.5</field>
+      	<field name="er_share">137.5</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic8">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">12000.0</field>
+      	<field name="range_to">13000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">12000.0</field>
+      	<field name="ee_share">150.0</field>
+      	<field name="er_share">150.0</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic9">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">13000.0</field>
+      	<field name="range_to">14000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">13000.0</field>
+      	<field name="ee_share">162.5</field>
+      	<field name="er_share">162.5</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic10">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">14000.0</field>
+      	<field name="range_to">15000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">14000.0</field>
+      	<field name="ee_share">175.0</field>
+      	<field name="er_share">175.0</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic11">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">15000.0</field>
+      	<field name="range_to">16000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">15000.0</field>
+      	<field name="ee_share">187.5</field>
+      	<field name="er_share">187.5</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic12">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">16000.0</field>
+      	<field name="range_to">17000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">16000.0</field>
+      	<field name="ee_share">200.0</field>
+      	<field name="er_share">200.0</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic13">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">17000.0</field>
+      	<field name="range_to">18000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">17000.0</field>
+      	<field name="ee_share">212.5</field>
+      	<field name="er_share">212.5</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic14">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">18000.0</field>
+      	<field name="range_to">19000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">18000.0</field>
+      	<field name="ee_share">225.0</field>
+      	<field name="er_share">225.0</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic15">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">19000.0</field>
+      	<field name="range_to">20000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">19000.0</field>
+      	<field name="ee_share">237.5</field>
+      	<field name="er_share">237.5</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic16">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">20000.0</field>
+      	<field name="range_to">21000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">20000.0</field>
+      	<field name="ee_share">250.0</field>
+      	<field name="er_share">250.0</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic17">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">21000.0</field>
+      	<field name="range_to">22000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">21000.0</field>
+      	<field name="ee_share">262.5</field>
+      	<field name="er_share">262.5</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic18">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">22000.0</field>
+      	<field name="range_to">23000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">22000.0</field>
+      	<field name="ee_share">275.0</field>
+      	<field name="er_share">275.0</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic19">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">23000.0</field>
+      	<field name="range_to">24000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">23000.0</field>
+      	<field name="ee_share">287.5</field>
+      	<field name="er_share">287.5</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic20">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">24000.0</field>
+      	<field name="range_to">25000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">24000.0</field>
+      	<field name="ee_share">300.0</field>
+      	<field name="er_share">300.0</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic21">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">25000.0</field>
+      	<field name="range_to">26000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">25000.0</field>
+      	<field name="ee_share">312.5</field>
+      	<field name="er_share">312.5</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic22">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">26000.0</field>
+      	<field name="range_to">27000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">26000.0</field>
+      	<field name="ee_share">325.0</field>
+      	<field name="er_share">325.0</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic23">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">27000.0</field>
+      	<field name="range_to">28000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">27000.0</field>
+      	<field name="ee_share">337.5</field>
+      	<field name="er_share">337.5</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic24">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">28000.0</field>
+      	<field name="range_to">29000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">28000.0</field>
+      	<field name="ee_share">350.0</field>
+      	<field name="er_share">350.0</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic25">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">29000.0</field>
+      	<field name="range_to">30000.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">29000.0</field>
+      	<field name="ee_share">362.5</field>
+      	<field name="er_share">362.5</field>
+      </record>
+      <record model="hr.ph.phic" id="hr_ph_phic26">
+      	<field name="govded_id" ref="govded_version_0"/>
+      	<field name="salary_base">30000.0</field>
+      	<field name="range_to">99999999.0</field>
+      	<field name="note"></field>
+      	<field name="range_from">30000.0</field>
+      	<field name="ee_share">375.0</field>
+      	<field name="er_share">375.0</field>
+      </record>
+   </data>
+</openerp>

@@ -1,0 +1,1 @@
+from.import wtax_table,sss_table,phic_table,govt_contributions,payroll,payslip,deduction_sheet,deduction,loan,hr,work_type,compensation_sheet,res_company,demo,res_config_settings

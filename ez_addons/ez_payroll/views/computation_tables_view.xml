@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+        <record id="view_computation_table_tree" model="ir.ui.view">
+            <field name="name">hr.ph.gov.deductions.tree</field>
+            <field name="model">hr.ph.gov.deductions</field>
+            <field name="arch" type="xml">
+                <list string="Computation Tables">
+                    <field name="name"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="note"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_computation_table_form" model="ir.ui.view">
+            <field name="name">hr.ph.gov.deductions.form</field>
+            <field name="model">hr.ph.gov.deductions</field>
+            <field name="arch" type="xml">
+                <form string="Computation Tables">
+                  <sheet>
+                    <div class="oe_title">
+                      <label for="name"/>
+                      <h1>
+                        <field name="name" required="1"/>
+                      </h1>
+                    </div> 
+
+                    <group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <group>
+                            <field name="note"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+
+                        <page string="Withholding Tax">
+
+                            <field name="wtax_table2023" 
+                              invisible="date_from &lt; '2023-01-01'"
+                            >
+                                <form string="Withholding Tax Table 2023" >
+                                  <group>
+                                    <group>
+                                      <field name="seq"/>
+                                      <field name="govded_id"/>
+                                      <field name="period"/>
+                                      <field name="name"/>
+                                    </group>
+                                    <group>
+                                      <field name="amount_from"/>
+                                      <field name="amount_to"/>
+                                      <field name="tax"/>
+                                      <field name="rate_excess"/>
+                                    </group>
+                                  </group>
+                                </form>
+                                <list string="Withholding Tax Table 2023" editable="bottom">
+                                    <field name="seq" widget="handle"/>
+                                    <field name="period"/>
+                                    <field name="name"/>
+                                    <field name="amount_from"/>
+                                    <field name="amount_to"/>
+                                    <field name="tax"/>
+                                    <field name="rate_excess"/>
+                                </list>
+                            </field>
+
+                            <field name="wtax_table"
+                              invisible="date_from &gt;= '2023-01-01'"
+                            >
+                                <form string="Withholding Tax Table">
+                                  <group>
+                                    <group>
+                                      <field name="seq"/>
+                                      <field name="name"/>
+                                      <field name="period"/>
+                                      <field name="is_compute"/>
+                                      <field name="note" colspan="4"/>
+                                    </group>
+                                    <group>
+                                      <field name="t1"/>
+                                      <field name="t2"/>
+                                      <field name="t3"/>
+                                      <field name="t4"/>
+                                      <field name="t5"/>
+                                      <field name="t6"/>
+                                      <field name="t7"/>
+                                      <field name="t8"/>
+                                    </group>
+                                  </group>
+                                </form>
+
+                                <list string="Withholding Tax Table" editable="bottom">
+                                    <field name="seq"/>
+                                    <field name="name"/>
+                                    <field name="period"/>
+                                    <field name="t1"/>
+                                    <field name="t2"/>
+                                    <field name="t3"/>
+                                    <field name="t4"/>
+                                    <field name="t5"/>
+                                    <field name="t6"/>
+                                    <field name="t7"/>
+                                    <field name="t8"/>
+                                    <!--
+                                    <field name="is_compute" />
+                                    <field name="note"/>
+                                    -->
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="SSS">
+                            <group>
+                                <field name="sss_salary_base"/>
+                            </group>
+
+                            <field name="sss_table">
+
+                                <form string="SSS Contribution">
+                                  <group>
+                                    <group>
+                                      <field name="range_from"/>
+                                      <field name="range_to"/>
+                                      <field name="salary_credit"/>
+                                      <field name="note"/>
+                                    </group>
+                                    <group>
+                                      <field name="ee_premium"/>
+                                      <field name="er_premium"/>
+                                      <field name="ec_premium"/>
+                                      <field name="total"/>
+                                    </group>
+                                  </group>
+                                </form>
+
+                                <list string="SSS Contribution Table" editable="bottom">
+                                    <field name="range_from"/>
+                                    <field name="range_to"/>
+                                    <field name="salary_credit"/>
+                                    <field name="ee_premium"/>
+                                    <field name="er_premium"/>
+                                    <field name="ec_premium"/>
+                                    <field name="total"/>
+                                    <field name="note"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="PhilHealth">
+                            <group>
+                              <field name="phic_code"/>
+                            </group>
+
+                            <!-- <field name="phic_table">
+                                <form string="Philhealth Contribution Table">
+                                  <group>
+                                    <group>
+                                      <field name="range_from"/>
+                                      <field name="range_to"/>
+                                      <field name="salary_base"/>
+                                      <field name="note" colspan="4"/>
+                                    </group>
+                                    <group>
+                                      <field name="er_share"/>
+                                      <field name="ee_share"/>
+                                      <field name="total"/>
+                                    </group>
+                                  </group>
+                                </form>
+
+                                <list string="Philhealth Contribution Table" editable="bottom">
+                                    <field name="range_from"/>
+                                    <field name="range_to"/>
+                                    <field name="salary_base"/>
+                                    <field name="ee_share"/>
+                                    <field name="er_share"/>
+                                    <field name="total"/>
+                                    <field name="note"/>
+                                </list>
+                            </field> -->
+                        </page>
+
+                        <page string="HDMF/Pagibig">
+                            <group string="Computation Code">
+                                <group colspan="2" col="2">
+                                  <field name="ee_code" string="Employee"/>
+                                  <field name="er_code" string="Employer"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Others">
+                            <group>
+                                <group>
+                                  <field name="non_taxable_13thmp"/>
+                                  <field name="minimun_gross"/>
+                                  <!--
+                                  <field name="cola"/>
+                                  <field name="lh_cola"/>
+                                -->
+                                </group>
+                            </group>
+                        </page>
+
+                    </notebook>
+
+                  </sheet>
+
+                </form>
+            </field>
+        </record>
+
+        <record id="open_computation_table" model="ir.actions.act_window">
+            <field name="name">Computation Tables</field>
+            <field name="res_model">hr.ph.gov.deductions</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="view_computation_table_tree"/>
+        </record>
+
+        <menuitem action="open_computation_table" id="menu_computation_table"
+          groups="ez_payroll.group_hr_payroll_manager"
+          parent="menu_config_payroll" sequence="10" />
+
+</odoo>

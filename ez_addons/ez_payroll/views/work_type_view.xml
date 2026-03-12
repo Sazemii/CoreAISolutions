@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2018
+======================================== -->
+<odoo>
+
+      <record id="tree_ez_work_type_group" model="ir.ui.view">
+          <field name="name">ez.work.type.group.tree</field>
+          <field name="model">ez.work.type.group</field>
+          <field name="arch" type="xml">
+              <list string="Compensation Type Groups">
+                  <field name="name"/>
+                  <field name="active"/>
+              </list>
+          </field>
+      </record>
+
+      <record id="form_ez_work_type_group" model="ir.ui.view">
+          <field name="name">ez.work.type.group.form</field>
+          <field name="model">ez.work.type.group</field>
+          <field name="arch" type="xml">
+              <form string="Compensation Type Group">
+                <sheet>
+                  <div class="oe_title">
+                    <label for="name"/>
+                    <h1>
+                      <field name="name" required="1"/>
+                    </h1>
+                  </div> 
+                  <group>
+                    <group>
+                      <field name="active"/>
+                    </group>
+                  </group>
+                  <field name="work_type_line">
+                      <form string="Compensation Type">
+                        <group>
+                          <group>
+                            <field name="seq" invisible="1"/>
+                            <field name="name"/>
+                            <field name="unit"/>
+                            <field name="factor"/>
+                          </group>
+                          <group>
+                            <field name="basic_pay"/>
+                            <field name="taxable"/>
+                          </group>
+                        </group>
+                      </form>
+                      <list string="Compensation Types" editable="bottom">
+                          <field name="seq" widget="handle"/>
+                          <field name="name"/>
+                          <field name="unit"/>
+                          <field name="factor"/>
+                          <field name="basic_pay"/>
+                          <field name="taxable"/>
+                      </list>
+                  </field>
+                </sheet>
+              </form>
+          </field>
+      </record>
+
+      <record id="search_ez_work_type_group" model="ir.ui.view">
+          <field name="name">ez.work.type.group.search</field>
+          <field name="model">ez.work.type.group</field>
+          <field name="arch" type="xml">
+              <search string="Compensation Type Groups">
+                  <field name="work_type_line"/>
+                  <field name="name"/>
+              </search>
+          </field>
+      </record>
+
+      <record id="open_ez_work_type_group" model="ir.actions.act_window">
+          <field name="name">Compensation Type Groups</field>
+          <field name="res_model">ez.work.type.group</field>
+          <field name="view_mode">list,form</field>
+          <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+              Click to create a compensation type group.
+            </p>
+          </field>
+      </record>
+
+      <menuitem
+          id="menu_ez_work_type_group"
+          action="open_ez_work_type_group"
+          parent="ez_payroll.menu_config_payroll"
+          sequence="540" />
+
+
+</odoo>

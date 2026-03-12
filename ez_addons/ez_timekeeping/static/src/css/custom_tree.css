@@ -1,0 +1,74 @@
+
+.timecard_tree_details td[data-field='schedule'] {
+  width:10px;
+  white-space: nowrap;
+}
+
+.timecard_tree_details td[data-field='timelog'] {
+  white-space: nowrap;
+}
+
+.timecard_tree_details td[data-field='vnorm_time'] {
+  width:10px;
+  white-space: nowrap;
+}
+
+.timecard_tree_details td[data-field='vot_time'] {
+  width:10px;
+  white-space: nowrap;
+}
+
+.timecard_tree_details th[data-id='timelog'] {
+  min-width:100px;
+}
+
+.timecard_tree_details th[data-id='schedule'] {
+  min-width:100px;
+}
+
+.timecard_tree_details th[data-id='name'] {
+  width:10px;
+}
+
+.timecard_tree_details td[data-field='name'] {
+  white-space: nowrap;
+}
+
+
+.timecard_tree_details th[data-id='day_type'] {
+  min-width:50px;
+}
+
+.timecard_tree_details td[data-field='employee_id'] {
+  /* white-space: nowrap; */
+  min-width:250px;
+}
+
+/*
+.timecard_tree_details td[data-field='vnorm_time'] {
+  width:10px;
+}
+
+.timecard_tree_details td[data-field='vot_time'] {
+  width:10px;
+}
+*/
+
+.timecard_tree_details td[data-field='auth_hrs']
+{
+  width:10px;
+}
+
+.timecard_tree_details td[data-field='vremarks'] {
+  min-width:100px;
+}
+
+/*
+.timecard_tree_details th[data-field='note'],
+.timecard_tree_details th[data-field='payroll_name']
+*/
+.timecard_tree_details td[data-field='note'],
+.timecard_tree_details td[data-field='payroll_name']
+{
+  width:50%;
+}

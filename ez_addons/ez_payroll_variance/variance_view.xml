@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c)
+======================================== -->
+<odoo>
+
+    <record id="pivot_variance_payroll_report" model="ir.ui.view">
+        <field name="name">pivot_variance_payroll_report</field>
+        <field name="model">hr.ph.pay.variance.report</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <!-- <field name="employee_id" string="Employee" type="row"/> -->
+                <field name="payroll_id" string="Payroll" type="col"/>
+                <field name="sorted_name" string="Name" type="row"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="pivot_variance_ym_report" model="ir.ui.view">
+        <field name="name">pivot_variance_ym_report</field>
+        <field name="model">hr.ph.pay.variance.report</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <!-- <field name="employee_id" string="Employee" type="row"/> -->
+                <field name="year_month" string="Year-Month" type="col"/>
+                <field name="sorted_name" string="Name" type="row"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="pivot_variance_year_report" model="ir.ui.view">
+        <field name="name">pivot_variance_ym_report</field>
+        <field name="model">hr.ph.pay.variance.report</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <!-- <field name="employee_id" string="Employee" type="row"/> -->
+                <field name="year" string="Year" type="col"/>
+                <field name="sorted_name" string="Name" type="row"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="tree_variance_report" model="ir.ui.view">
+        <field name="name">tree_variance_report</field>
+        <field name="model">hr.ph.pay.variance.report</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="company_id"/>
+                <field name="year"/>
+                <field name="year_month"/>
+                <field name="payroll_id"/>
+                <field name="employee_id"/>
+                <field name="identification_id"/>
+                <field name="hired"/>
+                <field name="sequence"/>
+                <field name="sorted_name"/>
+                <!-- <field name="year"/> -->
+                <field name="amount"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="search_variance_report" model="ir.ui.view">
+        <field name="name">search_variance_report</field>
+        <field name="model">hr.ph.pay.variance.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <!-- <field name="name"/> -->
+                <field name="payroll_id"/>
+                <field name="employee_id"/>
+                <field name="sorted_name"/>
+                <field name="amount"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_variance_report" model="ir.actions.act_window">
+        <field name="name">Pay Variance Report</field>
+        <field name="res_model">hr.ph.pay.variance.report</field>
+        <field name="view_mode">pivot,list</field>
+        <!-- <field name="context">{}</field> -->
+    </record>
+
+    <!-- <menuitem
+        id="menu_variance_report"
+        name="Variance Report"
+        action="action_variance_report"
+        parent="ez_payroll.menu_reporting_payroll"
+        sequence="50000"/> -->
+
+    <!-- ####################################################### -->
+
+    <record id="tree_variance_wiard" model="ir.ui.view">
+        <field name="name">tree_variance_wiard</field>
+        <field name="model">hr.ph.pay.variance.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <!-- <field name="year_month_ids" widget="many2many_tags" options="{'color_field': 'color'}"/> -->
+                    <field name="report_type"/>
+                    <field name="payroll_ids" widget="many2many_tags" options="{'color_field': 'color'}"
+                        invisible="not report_type=='pay_period'"/>
+                        <!-- domain="[('state','!=','draft')]"/> -->
+                    <field name="year_month_ids" widget="many2many_tags" options="{'color_field': 'color'}"
+                        invisible="not report_type=='monthly'"/>
+                    <field name="year_ids" widget="many2many_tags" options="{'color_field': 'color'}"
+                        invisible="not report_type=='yearly'"/>
+                    <field name="xlsx_file" 
+                        invisible="not report_type=='pay_period'"
+                        filename="xlsx_filename" readonly="1"/>
+                    <field name="xlsx_filename" invisible="1"/>
+                </group>
+                <footer>
+                    <button name="view_report" string="View Report" type="object" class="btn-primary" />
+                    <button name="gen_xlsx" string="Generate Excel Report File" 
+                        invisible="not report_type=='pay_period'"                    
+                        type="object" class="btn-primary" />
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="action_variance_wizard" model="ir.actions.act_window">
+        <field name="name">Pay Variance Report Wizard</field>
+        <field name="res_model">hr.ph.pay.variance.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem
+        id="menu_variance_wizard"
+        name="Variance Report Wizard"
+        action="action_variance_wizard"
+        parent="ez_payroll.menu_reporting_payroll"
+        sequence="50010"/>
+
+</odoo>

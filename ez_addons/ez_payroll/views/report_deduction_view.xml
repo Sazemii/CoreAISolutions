@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+  <record id="pivot_deduction_report" model="ir.ui.view">
+      <field name="name">pivot_deduction_report</field>
+      <field name="model">hr.ph.payslip</field>
+      <field name="arch" type="xml">
+          <pivot>
+            <!-- <field name="name" type="row"/> -->
+            <field name="employee_id" type="row"/>
+            <field name="gross_pay" type="measure"/>
+            <field name="basic_pay" type="measure"/>
+            <field name="taxable" type="measure"/>
+            <field name="wtax" type="measure"/>
+            <field name="sss_ee" type="measure"/>
+            <field name="sss_er" type="measure"/>
+            <field name="phic_ee" type="measure"/>
+            <field name="phic_er" type="measure"/>
+            <field name="hdmf_ee" type="measure"/>
+            <field name="hdmf_er" type="measure"/>
+          </pivot>
+      </field>
+  </record>
+
+  <record model="ir.actions.act_window" id="action_deduction_report">
+      <field name="name">Government Deductions</field>
+      <field name="res_model">hr.ph.payslip</field>
+      <field name="view_mode">pivot</field>
+      <field name="context">{ 'search_default_last_month': 1 }</field>
+      <field name="domain">[('state','!=','draft')]</field>
+  </record>
+
+  <record id="action_pivot_view_deductions" model="ir.actions.act_window.view">
+      <field name="sequence" eval="1"/>
+      <field name="view_mode">pivot</field>
+      <field name="view_id" ref="pivot_deduction_report"/>
+      <field name="act_window_id" ref="action_deduction_report"/>
+  </record>
+
+  <menuitem
+      name="Government Deductions"
+      id="menu_deduction_report"
+      action="action_deduction_report"
+      parent="ez_payroll.menu_deductions" sequence="50" />
+
+  <!-- =============================================================== -->
+
+  <record id="tree_loan_pay_report" model="ir.ui.view">
+      <field name="name">hr.ph.loan.payment.tree</field>
+      <field name="model">hr.ph.loan.payment</field>
+      <field name="priority">100</field>
+      <field name="arch" type="xml">
+        <list string="Loan Payments" default_order="date_to desc,payslip_id" create="0" edit="0" delete="0">
+          <field name="payslip_id" string="Employee" column_invisible="1"/>
+          <field name="employee_id"/>
+          <field name="date_to" string="Date"/>
+          <field name="year_month"/>
+          <field name="payroll_number" />
+          <field name="name" string="Reference"/>
+          <field name="amount" sum="Total Loans"/>
+          <field name="loan_amount"/>
+          <field name="category_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="show"/>
+        </list>
+      </field>
+  </record>
+
+
+  <record id="pivot_loan_pay_report" model="ir.ui.view">
+      <field name="name">pivot_loan_pay_report</field>
+      <field name="model">hr.ph.loan.payment</field>
+      <field name="arch" type="xml">
+        <pivot string="Loan Payments">
+          <field name="date_to" type="row"/>
+          <field name="loan_type_id" type="row"/>
+          <field name="payslip_id" type="row"/>
+          <!-- <field name="loan_id" type="row"/> -->
+          <field name="amount" type="measure"/>
+        </pivot>
+      </field>
+  </record>
+
+  <record id="search_loan_pay_report" model="ir.ui.view">
+      <field name="name">search_loan_pay_report</field>
+      <field name="model">hr.ph.loan.payment</field>
+      <field name="type">search</field>
+      <field name="arch" type="xml">
+          <search string="Loans">
+            <field name="year_month"/>
+            <field name="employee_id"/>
+            <field name="category_ids"/>
+            <field name="name"/>
+            <field name="date_to" string="Date"/>
+            <separator/>
+            <filter string="This Month" name="this_month"
+                domain="[('year_month','=',context_today().strftime('%Y-%m'))]" />
+            <filter string="Last Month" name="last_month"
+                domain="[('year_month','=',(context_today() - relativedelta(months=1)).strftime('%Y-%m'))]" />
+            <separator/>
+            <!-- <filter string="Not damage" name="filter_damage"
+                domain="[('loan_type_id','!=','Damage')]" />
+            <filter string="Damage" name="filter_damage"
+                domain="[('loan_type_id','=','Damage')]" /> -->
+          </search>
+      </field>
+  </record>
+
+  <record model="ir.actions.act_window" id="action_loan_pay_report">
+      <field name="name">Loan Payments</field>
+      <field name="res_model">hr.ph.loan.payment</field>
+      <field name="view_mode">list,pivot</field>
+      <field name="view_id" ref="tree_loan_pay_report"/>
+      <field name="domain">[('state','!=','draft')]</field>
+      <field name="context">{ 'search_default_last_month': 1 }</field>
+
+  </record>
+
+  <menuitem
+      name="Loan Payments"
+      id="menu_loan_pay_report"
+      action="action_loan_pay_report"
+      groups="ez_payroll.group_hr_payroll_user"
+      parent="menu_deductions" sequence="60" />
+
+
+  <!-- ################################################################ -->
+
+  <record id="tree_loan_pay_report_mgr" model="ir.ui.view">
+    <field name="name">hr.ph.loan.payment.tree.mgr</field>
+    <field name="model">hr.ph.loan.payment</field>
+    <field name="inherit_id" ref="ez_payroll.tree_loan_pay_report"/>
+    <!-- <field name="groups_id" eval="[(6, 0, [ref('ez_payroll.group_hr_payroll_user') ])]"/> -->
+    <field name="arch" type="xml">
+
+      <field name="employee_id" position="attributes">
+        <t group="ez_payroll.group_hr_payroll_user">
+          <!-- <field name="employee_id" widget="many2one_avatar_employee"/> -->
+          <attribute name="widget">many2one_avatar_employee</attribute>
+        </t>
+      </field>
+
+    </field>
+  </record>
+
+
+</odoo>

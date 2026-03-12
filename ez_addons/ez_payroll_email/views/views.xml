@@ -1,0 +1,42 @@
+<odoo>
+
+  <record id="view_payroll_form_inherit" model="ir.ui.view">
+    <field name="name">view_payroll_form_inherit</field>
+    <field name="model">hr.ph.payroll</field>
+    <field name="inherit_id" ref="ez_payroll.view_payroll_form"/>
+    <field name="arch" type="xml">
+      <button name="cancel_done" position="before">
+        <button name="action_email_payslips" type="object"
+          class="oe_highlight btn-primary"
+          confirm="Are you sure you want to email the payslips?"
+          string="Email Payslips"
+          invisible="state != 'done'"/>
+      </button>
+    </field>
+  </record>
+
+  <data noupdate="0">
+
+    <record id="email_template_payslip" model="mail.template">
+      <field name="name">Payslip</field>
+      <field name="model_id" ref="ez_payroll.model_hr_ph_payslip"/>
+      <field name="email_from">{{object.company_id.partner_id.email}}</field>
+      <field name="email_to">{{object.employee_id.work_email}},</field>
+      <field name="subject" >Payslip for {{object.employee_id.name or 'n/a' }}</field>
+      <field name="description">Send payslip email to employee. </field>
+      <field name="auto_delete" eval="True"/>
+      <field name="lang">{{object.company_id.partner_id.lang}}</field>
+      <field name="body_html" type="html">
+        <!-- <p>Hello <t t-out="object.employee_id.first_name">John</t>,</p> -->
+        <p>Attached is your payslip for the period of
+        <b t-field="object.date_from" t-options='{"widget": "date","format": "MMMM d, yyyy"}'/>
+        to <b t-field="object.date_to" t-options='{"widget": "date","format": "MMMM d, yyyy"}'/>.
+        </p>
+        <p>Thank you for your hard work!</p>
+        <p><b t-field="object.company_id.name"/></p>
+      </field>
+    </record>
+
+  </data>
+
+</odoo>

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+  <menuitem
+    name="Compensation"
+    id="menu_compensation"
+    parent="menu_reporting_payroll"
+    sequence="100000"/>
+
+  <menuitem
+    name="Deductions"
+    id="menu_deductions"
+    parent="menu_reporting_payroll"
+    sequence="100010"/>
+
+  <!-- ====================================================== -->
+
+  <record id="pivot_compensation" model="ir.ui.view">
+    <field name="name">pivot_compensation</field>
+    <field name="model">hr.ph.pay.computation</field>
+    <field name="arch" type="xml">
+        <pivot string="Compensation Summary">
+          <field name="employee_id" string="Employee" type="row"/>
+          <field name="name" string="Compensation" type="row"/>
+          <field name="amount" type="measure"/>
+        </pivot>
+    </field>
+  </record>
+
+
+  <record id="tree_compensation_report" model="ir.ui.view">
+    <field name="name">tree_compensation_report</field>
+    <field name="model">hr.ph.pay.computation</field>
+    <field name="priority">100</field>
+    <field name="arch" type="xml">
+      <list default_order="date_to desc,payslip_id" create="0" edit="0" delete="0">
+        <field name="employee_id"/>
+        <!-- <field name="payslip_id" string="Employee"/> -->
+        <field name="date_to" string="Date"/>
+        <field name="year_month"/>
+        <field name="payroll_number"/>
+        <field name="name" string="Compensation"/>
+        <field name="qty"/>
+        <field name="unit"/>
+        <field name="amount" sum="Total Amount"/>
+        <field name="category_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="show"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="search_compensation_report" model="ir.ui.view">
+    <field name="name">search_compensation_report</field>
+    <field name="model">hr.ph.pay.computation</field>
+    <field name="type">search</field>
+    <field name="arch" type="xml">
+        <search>
+          <field name="name" string="Compensation Name"/>
+          <field name="year_month"/>
+          <field name="employee_id"/>
+          <field name="category_ids"/>
+          <field name="date_to" string="Date"/>
+          <filter string="This Month" name="this_month"
+            domain="[('year_month','=',context_today().strftime('%Y-%m'))]" />
+          <filter string="Last Month" name="last_month"
+            domain="[('year_month','=',(context_today() - relativedelta(months=1)).strftime('%Y-%m'))]" />
+          <separator/>
+        </search>
+    </field>
+  </record>
+
+  <record model="ir.actions.act_window" id="action_compensation_report">
+    <field name="name">Compensation Details</field>
+    <field name="res_model">hr.ph.pay.computation</field>
+    <field name="view_mode">list,pivot</field>
+    <field name="domain">[('state','!=','draft')]</field>
+    <field name="context">{ 'search_default_last_month': 1 }</field>
+  </record>
+
+  <menuitem
+    id="menu_compensation_report"
+    name="Compensation Details"
+    action="action_compensation_report"
+    groups="ez_payroll.group_hr_payroll_user"
+    parent="menu_compensation" sequence="60" />
+
+  <!-- ====================================================== -->
+
+  <record id="pivot_deduction_detail_report" model="ir.ui.view">
+    <field name="name">pivot_deduction_detail_report</field>
+    <field name="model">hr.ph.pay.deduction</field>
+    <field name="arch" type="xml">
+      <pivot>
+        <field name="employee_id" type="row"/>
+        <field name="name" string="Deduction" type="row"/>
+        <field name="amount" type="measure"/>
+        <field name="er_amount" type="measure"/>
+      </pivot>
+    </field>
+  </record>
+
+  <record id="tree_deduction_detail_report" model="ir.ui.view">
+    <field name="name">tree_deduction_detail_report</field>
+    <field name="model">hr.ph.pay.deduction</field>
+    <field name="priority">100</field>
+    <field name="arch" type="xml">
+      <list default_order="date desc, payslip_id" create="0" edit="0" delete="0">
+        <field name="employee_id"/>
+        <field name="date"/>
+        <field name="year_month"/>
+        <field name="payroll_number"/>
+        <field name="name"/>
+        <field name="amount" sum="Total EE Amount"/>
+        <field name="er_amount" sum="Total ER Amount"/>
+        <field name="category_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="show"/>
+      </list>
+    </field>
+  </record>
+
+
+  <record id="search_deduction_detail_report" model="ir.ui.view">
+    <field name="name">search_deduction_detail_report</field>
+    <field name="model">hr.ph.pay.deduction</field>
+    <field name="type">search</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name" string="Deduction Name"/>
+        <field name="year_month"/>
+        <field name="employee_id"/>
+        <field name="category_ids"/>
+        <field name="date" string="Date"/>
+        <filter string="This Month" name="this_month"
+          domain="[('year_month','=',context_today().strftime('%Y-%m'))]" />
+        <filter string="Last Month" name="last_month"
+          domain="[('year_month','=',(context_today() - relativedelta(months=1)).strftime('%Y-%m'))]" />
+        <separator/>
+      </search>
+    </field>
+  </record>
+
+
+  <record model="ir.actions.act_window" id="open_deduction_detail_report">
+    <field name="name">Deduction Details</field>
+    <field name="res_model">hr.ph.pay.deduction</field>
+    <field name="view_mode">list,pivot</field>
+    <field name="domain">[('state','!=','draft')]</field>
+    <field name="context">{}</field>
+    <field name="view_ids" eval="[(5, 0, 0),
+      (0, 0, {'view_mode': 'list', 'view_id': ref('tree_deduction_detail_report')}),
+      (0, 0, {'view_mode': 'pivot', 'view_id': ref('pivot_deduction_detail_report')})]"/>
+    <field name="context">{ 'search_default_last_month': 1 }</field>
+  </record>
+
+  <menuitem
+    id="menu_deduction_detail_report"
+    name="Deduction Details"
+    action="open_deduction_detail_report"
+    parent="menu_deductions" 
+    groups="ez_payroll.group_hr_payroll_user"
+    sequence="2" />
+
+
+    <!-- <menuitem
+        id="menu_hr_ph_loan2"
+        action="open_view_hr_ph_loan"
+        sequence="40000"
+        parent="menu_deductions"/> -->
+
+
+  <!-- ###################################################### -->
+
+    <record id="tree_compensation_report_mgr" model="ir.ui.view">
+    <field name="name">tree_compensation_report_mgr</field>
+    <field name="model">hr.ph.pay.computation</field>
+    <field name="inherit_id" ref="ez_payroll.tree_compensation_report"/>
+    <!-- <field name="groups_id" eval="[(6, 0, [ref('ez_payroll.group_hr_payroll_user') ])]"/> -->
+    <field name="arch" type="xml">
+
+      <field name="employee_id" position="attributes">
+         <t group="ez_payroll.group_hr_payroll_user">
+            <!-- <field name="employee_id" widget="many2one_avatar_employee"/> -->
+            <attribute name="widget">many2one_avatar_employee</attribute>
+         </t>
+      </field>
+
+    </field>
+  </record>
+
+  <record id="tree_deduction_detail_report_mgr" model="ir.ui.view">
+    <field name="name">tree_deduction_detail_report_mgr</field>
+    <field name="model">hr.ph.pay.deduction</field>
+    <field name="inherit_id" ref="ez_payroll.tree_deduction_detail_report"/>
+    <!-- <field name="groups_id" eval="[(6, 0, [ref('ez_payroll.group_hr_payroll_user') ])]"/> -->
+    <field name="arch" type="xml">
+
+      <field name="employee_id" position="attributes">
+        <t group="ez_payroll.group_hr_payroll_user">
+          <!-- <field name="employee_id" widget="many2one_avatar_employee"/> -->
+          <attribute name="widget">many2one_avatar_employee</attribute>
+        </t>
+      </field>
+
+    </field>
+  </record>
+
+</odoo>

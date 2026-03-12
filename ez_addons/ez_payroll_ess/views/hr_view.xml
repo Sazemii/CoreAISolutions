@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+  <record id="view_employee_form_inherit" model="ir.ui.view">
+    <field name="name">view_employee_form_inherit</field>
+    <field name="model">hr.employee</field>
+    <field name="inherit_id" ref="hr.view_employee_form"/>
+    <field name="arch" type="xml">
+
+      <field name="employee_type" position="before">
+        <field name="mfa_code" string="MFA Code"/>
+        <field name="mfa_count" string="MFA Count"/>
+        <field name="check_in_ids" widget="many2many_tags"/>
+        <field name="check_out_ids" widget="many2many_tags"/>
+      </field>
+
+    </field>
+  </record>
+
+  <!-- ############################################## -->
+
+  <record id="tree_geofence" model="ir.ui.view">
+    <field name="name">hr.employee.geofence.tree</field>
+    <field name="model">hr.employee.geofence</field>
+    <field name="arch" type="xml">
+      <list editable="bottom">
+        <field name="name" />
+        <field name="latitude" />
+        <field name="longitude" />
+        <field name="radius" />
+        <field name="note" />
+        <button
+          name="action_show_maps"
+          type="object"
+          class="btn btn-link ps-0 pt-0 pb-2"
+          icon="oi-arrow-right"
+          string="View on Maps"
+        />
+      </list>
+    </field>
+  </record>
+
+  <record id="search_geofence" model="ir.ui.view">
+    <field name="name">hr.employee.geofence.search</field>
+    <field name="model">hr.employee.geofence</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name" />
+        <field name="note" />
+      </search>
+    </field>
+  </record>
+
+  <record id="action_geofence" model="ir.actions.act_window">
+    <field name="name">Geofences</field>
+    <field name="res_model">hr.employee.geofence</field>
+    <field name="view_mode">list</field>
+  </record>
+
+  <menuitem
+      id="menu_geofence"
+      name="Geofences"
+      action="action_geofence"
+      parent="hr.menu_config_employee"
+      sequence="1000"
+  />
+
+</odoo>

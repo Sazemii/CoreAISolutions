@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+    <record id="view_loan_type_form" model="ir.ui.view">
+        <field name="name">hr.ph.loan.type.form</field>
+        <field name="model">hr.ph.loan.type</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Loan Type">
+            <sheet>
+                <group string="Loan Type">
+                    <group>
+                        <field name="name"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                    </group>
+                    <group>
+                        <field name="active"/>
+                    </group>
+                </group>
+                <separator string="Notes"/>
+                <field name="note"/>
+            </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_loan_type_tree" model="ir.ui.view">
+        <field name="name">hr.ph.loan.type.tree</field>
+        <field name="model">hr.ph.loan.type</field>
+        <field name="arch" type="xml">
+            <list string="Loan Types" editable="bottom">
+                <field name="name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active"/>
+                <field name="note"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="open_loan_type_tree" model="ir.actions.act_window">
+        <field name="name">Loan Types</field>
+        <field name="res_model">hr.ph.loan.type</field>
+        <field name="view_mode">list,form</field>
+        <!--
+        <field name="search_view_id" ref="hr_ph_loans_view_search"/>
+        -->
+    </record>
+
+    <menuitem id="menu_loan_type_tree" action="open_loan_type_tree"
+        parent="menu_config_payroll" sequence="45" />
+
+    <!-- =================================================== -->
+
+    <record id="view_loan_payment_tree" model="ir.ui.view">
+        <field name="name">hr.ph.loan.payment.tree</field>
+        <field name="model">hr.ph.loan.payment</field>
+        <field name="arch" type="xml">
+            <list string="Loan Payments" editable="bottom">
+                <field name="seq" width="10"/>
+                <field name="name" width="500" readonly="1"/>
+                <field name="loan_id" width="500" readonly="1"/>
+                <field name="amount" width="300" sum="Total Loans"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- =================================================== -->
+
+    <record id="hr_ph_loan_view_form" model="ir.ui.view">
+        <field name="name">hr.ph.loan.form</field>
+        <field name="model">hr.ph.loan</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Loan">
+
+            <header>
+                <button name="set_as_confirmed" type="object"
+                    invisible="state not in ('draft')"
+                    groups="ez_payroll.group_hr_payroll_user"
+                    string="Confirm" class="oe_highlight"/>
+                <button name="cancel_confirmed" type="object"
+                    invisible="state not in ('confirmed')"
+                    string="Cancel/Back to Draft" groups="ez_payroll.group_hr_payroll_manager"/>
+                <field name="state" widget="statusbar" readonly="1"/>
+            </header>
+
+            <sheet>
+                <widget name="web_ribbon" title="Confirmed" bg_color="text-bg-success" invisible="state!='confirmed'"/>
+                <div class="oe_title">
+                <label for="name" class="oe_edit_only"/>
+                <h1>
+                    <field name="name" readonly="state not in ['draft']" 
+                    required="1" placeholder="eg. SSS Loan No. A12344"/>
+                </h1>
+                </div> 
+
+                <group>
+                    <group>
+                        <field name="employee_id" widget="many2one_avatar_user" readonly="state not in ['draft']"/> 
+                        <!-- domain="[('company_id','=',company_id)]"/> -->
+                        <field name="loan_type_id" readonly="state not in ['draft']"/>
+                    </group>
+                    <group>
+                        <field name="amount" readonly="state not in ['draft']"/>
+                        <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                    </group>
+                </group>
+
+                <notebook colspan="4">
+                    <page name="loan-details" string="Loan Details">
+                        <group>
+                            <group>
+                                <field name="date" readonly="state not in ['draft']"/>
+                                <field name="date_start" readonly="state not in ['draft']"/>
+                                <field name="cpayments" string="Payments"/>
+                                <field name="cbalance" string="Balance"/>
+                            </group>
+                            <group>
+                                <!-- <field name="init_amortization" readonly="state not in ['draft']"/>
+                                <field name="init_amort_count" readonly="state not in ['draft']"/> -->
+                                <field name="amortization" readonly="state not in ['draft']"/>
+                                <field name="payment_days" readonly="state not in ['draft']"/>
+                            </group>
+                        </group>
+                    </page>
+
+                    <page name="page_payments" string="Payments">
+                        <field colspan="4" name="payment_line" nolabel="1" readonly="1">
+                            <list string="Payments" decoration-danger="state=='draft'">
+                                <field name="payroll_number" />
+                                <field name="date_from"/>
+                                <field name="date_to"/>
+                                <field name="amount" />
+                                <field name="state"/>
+                            </list>
+                            <form string="Payments">
+                                <group>
+                                    <group>
+                                        <field name="payroll_number" />
+                                        <field name="date_from"/>
+                                        <field name="date_to"/>
+                                    </group>
+                                    <group>
+                                        <field name="amount" />
+                                        <field name="state"/>
+                                    </group>
+                                </group>
+                            </form>
+                        </field>
+                    </page>
+                    <page name="page_notes" string="Notes">
+                        <field name="note" nolabel="1"/>
+                    </page>
+                </notebook>
+            </sheet>
+
+            <chatter/>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_ph_loan_view_tree" model="ir.ui.view">
+        <field name="name">hr.ph.loan.tree</field>
+        <field name="model">hr.ph.loan</field>
+        <field name="arch" type="xml">
+            <list string="Loans" 
+                decoration-danger="state == 'draft'" 
+                decoration-muted="balance &lt;= 0.0" 
+            >
+                <!-- <field name="company_id" groups="base.group_multi_company"/> -->
+                <field name="employee_id"/>
+                <field name="date"/>
+                <field name="name"/>
+                <field name="loan_type_id"/>
+                <field name="date_start" optional="hide"/>
+                <field name="amortization" optional="hide"/>
+                <field name="amount"/>
+                <field name="cpayments" string="Payments"/>
+                <field name="cbalance" string="Balance"/>
+                <field name="state" widget="badge" 
+                    decoration-danger="state=='draft'"
+                    decoration-success="state=='confirmed'"
+                />
+                <field name="note"/>
+                <field name="balance" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="hr_ph_loans_view_search" model="ir.ui.view">
+        <field name="name">hr.ph.loan.search</field>
+        <field name="model">hr.ph.loan</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Loans">
+                <filter name="with_balance" string="Loans with balance"
+                    domain="[('balance','&gt;',0.0)]"
+                    help="Show loans with balance"/>
+                <field name="employee_id"/>
+                <field name="name"/>
+                <field name="loan_type_id"/>
+                <field name="date"/>
+                <field name="note"/>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="open_view_hr_ph_loan" model="ir.actions.act_window">
+        <field name="name">Loans</field>
+        <field name="res_model">hr.ph.loan</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hr_ph_loans_view_search"/>
+        <field name="context">{'search_default_with_balance': 1}</field>
+    </record>
+
+
+    <menuitem
+        id="menu_hr_ph_loan"
+        groups="ez_payroll.group_hr_payroll_user"
+        action="open_view_hr_ph_loan"
+        sequence="40"
+        parent="menu_hr_payroll_main"/>
+
+    <!-- ###################################################### -->
+
+    <record id="hr_ph_loan_view_tree_mgr" model="ir.ui.view">
+        <field name="name">hr.ph.loan.tree.mgr</field>
+        <field name="model">hr.ph.loan</field>
+        <field name="inherit_id" ref="ez_payroll.hr_ph_loan_view_tree"/>
+        <!-- <field name="groups_id" eval="[(6, 0, [ref('ez_payroll.group_hr_payroll_user') ])]"/> -->
+        <field name="arch" type="xml">
+
+            <field name="employee_id" position="attributes">
+                <t group="ez_payroll.group_hr_payroll_user">
+                    <!-- <field name="employee_id" widget="many2one_avatar_employee"/> -->
+                    <attribute name="widget">many2one_avatar_employee</attribute>
+                </t>
+            </field>
+
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+<data noupdate="1">
+
+    <record model="hr.ph.loan.type" id="hr_ph_loan_type_1">
+        <field name="name">SSS Loan</field>
+        <field name="active">True</field>
+    </record>
+
+    <record model="hr.ph.loan.type" id="hr_ph_loan_type_2">
+        <field name="name">SSS Loan Condonation</field>
+        <field name="active">True</field>
+    </record>
+
+    <record model="hr.ph.loan.type" id="hr_ph_loan_type_3">
+        <field name="name">HDMF/Pagibig Loan</field>
+        <field name="active">True</field>
+    </record>
+
+    <record model="hr.ph.loan.type" id="hr_ph_loan_type_4">
+        <field name="name">Salary Loan</field>
+        <field name="active">True</field>
+    </record>
+
+</data>
+</odoo>

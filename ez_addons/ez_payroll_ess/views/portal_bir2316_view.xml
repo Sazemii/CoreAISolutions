@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+    <template
+        id="portal_layout_bir2316"
+        name="Portal layout: BIR21316 menu entry"
+        inherit_id="portal.portal_breadcrumbs"
+        priority="40"
+    >
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li
+                t-if="page_name == 'bir2316' or bir2316"
+                t-attf-class="breadcrumb-item #{'active ' if not payslip else ''}"
+            >
+                <a
+                    t-if="bir2316"
+                    t-attf-href="/my/bir2316s?{{ keep_query() }}"
+                >BIR Form 2316</a>
+                <t t-else="">BIR Form 2316</t>
+            </li>
+            <li t-if="bir2316" class="breadcrumb-item active text-truncate">
+                <span t-field="bir2316.name" />
+            </li>
+        </xpath>
+    </template>
+
+    <template
+        id="portal_my_home_bir2316"
+        name="Portal My Home : BIR2316"
+        inherit_id="ez_payroll_ess.portal_my_home_ess"
+        priority="36"
+        customize_show="True"
+    >
+        <div id="portal_ess_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/purchase/static/src/img/calculator.svg'"/>
+                <t t-set="title">Your BIR Form 2316</t>
+                <t t-set="text">List and download your BIR Form 2316</t>
+                <t t-set="url" t-value="'/my/bir2316s'" />
+                <t t-set="placeholder_count" t-value="'bir2316_count'" />
+            </t>
+        </div>
+    </template>
+
+
+    <template id="portal_my_bir2316" name="My BIR Form 2316">
+      <t t-call="portal.portal_layout">
+        <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+        <t t-call="portal.portal_searchbar">
+            <t t-set="title">BIR Form 2316</t>
+        </t>
+        <t t-if="not records">
+            <p class="alert alert-warning">There are currently no records in your account.</p>
+        </t>
+        <t t-if="records" t-call="portal.portal_table">
+            <thead>
+                <tr class="active">
+                    <th class="d-none d-md-table-cell">Alphalist</th>
+                    <th>Year</th>
+                    <th class="d-none d-md-table-cell">Date From</th>
+                    <th class="d-none d-md-table-cell">Date To</th>
+                    <th class="text-end">Net Taxable</th>
+                    <th class="text-end">Tax Due</th>
+                    <th class="d-none d-md-table-cell">Form 2316</th>
+                </tr>
+            </thead>
+            <tbody>
+                <t t-foreach="records" t-as="bir2316">
+                    <tr>
+                        <td class="d-none d-md-table-cell">
+                            <span t-field="bir2316.alphalist_id.name"/>
+                        </td>
+                        <td>
+                            <span t-field="bir2316.alphalist_id.year"/>
+                        </td>
+                        <td class="d-none d-md-table-cell">
+                            <span t-field="bir2316.hired"/>
+                        </td>
+                        <td class="d-none d-md-table-cell">
+                            <span t-field="bir2316.date_end"/>
+                        </td>
+                        <td class="text-end"><span t-field="bir2316.net_taxable_income"/></td>
+                        <td class="text-end"><span t-field="bir2316.tax_due"/></td>
+                        <!-- <t t-set="url" t-value="(schedule==1 and '/bir2316-sched1/%s' or '/bir2316-sched2/%s') % bir2316.id"/> -->
+                        <td>
+                            <t t-if="schedule==1">
+                                <a t-att-href="'/bir2316-sched1/%s' % bir2316.id" 
+                                    target="_blank"
+                                    t-att-title="bir2316.employee_id.name"
+                                >
+                                    <i class="fa fa-fw fa-download" aria-label="Download" title="Download" role="img"/>
+                                    <span class="d-none d-md-inline"> Download</span>
+                                </a>
+                            </t><t t-else="">
+                                <a t-att-href="'/bir2316-sched2/%s' % bir2316.id" 
+                                    target="_blank"
+                                    t-att-title="bir2316.employee_id.name"
+                                >
+                                    <i class="fa fa-fw fa-download" aria-label="Download" title="Download" role="img"/>
+                                    <span class="d-none d-md-inline"> Download</span>
+                                </a>
+                            </t>
+                        </td>
+                    </tr>
+                </t>
+            </tbody>
+        </t>
+      </t>
+    </template>
+
+</odoo>

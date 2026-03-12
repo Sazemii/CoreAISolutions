@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+    <record id="paper_coe" model="report.paperformat">
+        <field name="name">Certificate of Employment Paper</field>
+        <field name="format">Letter</field>
+        <field name="orientation">Portrait</field>
+        <field name="header_spacing">17</field>
+        <field name="margin_top">30</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">20</field>
+        <field name="margin_right">20</field>
+        <field name="header_line" eval="False"/>
+        <field name="dpi">80</field>
+        <field name="default" eval="False"/>
+    </record>
+
+    <record id="coe_report" model="ir.actions.report">
+        <field name="name">Certificate of Employment</field>
+        <field name="model">hr.ph.coe</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ez_payroll_coe.print_coe</field>
+        <field name="report_file">ez_payroll_coe.print_coe</field>
+        <field name="binding_model_id" ref="ez_payroll_coe.model_hr_ph_coe"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Certificate of Employment'</field>
+        <field name="paperformat_id" ref="ez_payroll_coe.paper_coe"/>
+    </record>
+
+    <template id="coe_certified">
+        <div style="position: relative; left: 0; top: 0;">
+            <!-- <img src="signature-coe.png" style="position: absolute; top: 0; left: 0;"/> -->
+            <div class="signature-image"/>
+            <div class="coe_paragraph" style="position:absolute; top: 75px; left:0px; width:650px; line-height: 1.5;">
+                <b t-esc="o.certified_name">John Doe</b><br/>
+                <b t-esc="o.certified_position">HR Manager</b><br/>
+                <t t-esc="o.certified_department">HUMAN RESOURCES</t>
+            </div>
+        </div>
+    </template>
+
+    <template id="coe_assignment">
+        <b t-esc="o.assignment">Service Management Operations</b> <span>department</span>
+    </template>
+
+    <!-- &#160;  -->
+    <template id="without_compensation_body1">
+        <p class="coe_paragraph">
+            This is to certify that 
+            <b t-esc="o.title">Mr.</b> <b t-esc="o.employee_id.name">Mr. ABAD, GENESIS REY MEDIJA</b>
+            is a <b t-field="o.employment_status">project-based</b> employee of 
+            <b t-esc="o.company">Novare Technologies, Inc. (formerly known as Micro-D International, Inc.)</b> 
+            with office address at
+            <t t-esc="o.company_address">MDI Corporate Center, 10th Avenue corner 39th Street, Fort Bonifacio, Taguig City, Philippines 1634</t>, 
+            phone number <t t-esc="o.company_phone">(02) 812-2124 local 1007</t>
+            and with email address <t t-esc="o.company_email">hr@novare.com.hk</t>.
+        </p>
+        <br class="pt-2"/>
+        <p class="coe_paragraph">
+            <t t-esc="o.pronoun">He</t> is employed as 
+            <b t-esc="o.position">Technical Support Engineer</b> 
+            assigned at the &#160; <t t-call="ez_payroll_coe.coe_assignment"/>.
+            <t t-esc="o.pronoun">He</t> has been with the company since 
+            <b t-field="o.date_from" t-options='{"widget": "date","format": "MMMM d, yyyy"}'>August 29, 2023</b>.        
+        </p>
+        <br class="pt-2"/>
+        <p class="coe_paragraph">
+            This certification is being issued upon the request of the above-named employee as a
+            requirement for <t t-esc="o.possessive_pronoun">his</t> 
+            <t t-if="o.purpose=='Visa Application'">
+                <b t-esc="o.country">US</b> <b t-esc="o.purpose">Visa Application</b>.
+            </t><t t-elif="o.purpose=='Others'">
+                <b t-esc="o.others_purpose">Credit Card Application</b>.
+            </t><t t-else="">
+                <b t-esc="o.purpose">Credit Card Application</b>.
+            </t>
+        </p>
+    </template>
+
+    <template id="separated_body">
+        <t t-if="o.date_to">
+            <p class="coe_paragraph">
+                This is to certify that 
+                <b t-esc="o.title">Mr.</b> <b t-esc="o.employee_id.name">Mr. ABAD, GENESIS REY MEDIJA</b> 
+                was an employee of 
+                <b t-esc="o.company">Novare Technologies, Inc. (formerly known as Micro-D International, Inc.)</b>.
+                <t t-esc="o.pronoun">He</t> is employed as 
+                <b t-esc="o.position">Technical Support Engineer</b> assigned at the 
+                <t t-call="ez_payroll_coe.coe_assignment"/>
+                from <b t-field="o.date_from" t-options='{"widget": "date","format": "MMMM d, yyyy"}'>August 29, 2023</b>
+                until <t t-esc="o.possessive_pronoun">his</t> separation effective 
+                <b t-field="o.date_to" t-options='{"widget": "date","format": "MMMM d, yyyy"}'>September 17, 2024</b>.
+            </p>
+            <!-- &#160;  -->
+            <br class="pt-2"/>
+            <p class="coe_paragraph">
+                This certifies that 
+                <b t-esc="o.title">Mr.</b> <b t-esc="o.employee_id.last_name">Berdin</b> 
+                has been cleared from any liability to the company arising from, 
+                relating to or in connection with <t t-esc="o.possessive_pronoun">his</t> employment with the 
+                company. This certification is being issued upon 
+                the request of the above-named employee for whatever legal purpose this may serve.
+            </p>
+        </t><t t-else="">
+            <center>
+                NO SEPARATION DATE DEFINED
+            </center>
+        </t>
+    </template>
+
+    <template id="with_compensation_body1">
+        <p class="coe_paragraph">
+            This is to certify that
+            <b t-esc="o.title">Mr.</b> <b t-esc="o.employee_id.name">ABAD, GENESIS REY MEDIJA</b>
+            is a <b t-field="o.employment_status">project-based</b> employee of 
+            <b t-esc="o.company">Novare Technologies, Inc. (formerly known as Micro-D International, Inc.)</b>.            
+            <t t-esc="o.pronoun">He</t> is employed as 
+            <b t-esc="o.position">Technical Support Engineer</b>
+            assigned at the <t t-call="ez_payroll_coe.coe_assignment"/>.
+            <t t-esc="o.pronoun">He</t> has been with the company since 
+            <b t-field="o.date_from" t-options='{"widget": "date","format": "MMMM d, yyyy"}'>e August 29, 2023</b>.
+        </p>
+    </template>
+
+    <template id="with_compensation_body2">
+        <p class="coe_paragraph">
+            The total annual gross compensation in PESOS:
+            <b t-esc="o.gross_words">TWO HUNDRED ONE THOUSAND AND 0/100</b> 
+            Pesos only <b>(Php <span t-field="o.gross">201,000.00</span>)</b>
+            broken down as follows:
+        </p>
+
+        <div class="container">
+            <t t-foreach="o.salary_ids" t-as="s">
+                <div class="row">
+                    <div class="col-1"/>
+                    <div class="col-6 ps-4 text-right">
+                        <t t-esc="s.name"/>
+                    </div>
+                    <div class="col-4 pe-4 text-end">
+                        Php <span t-field="s.amount"/>
+                    </div>
+                    <div class="col-1"/>
+                </div>
+            </t>
+            <div class="row">
+                <div class="col-1"/>
+                <div class="col-6 ps-4 text-start border-dark border-top">
+                    <b>Total</b>
+                </div>
+                <div class="col-4 pe-4 text-end border-dark border-top">
+                    <b>Php <span t-field="o.gross"/></b>
+                </div>
+                <div class="col-1"/>
+            </div>
+        </div>
+        <br class="pt-2"/>
+        <p class="coe_paragraph">
+            This certification is being issued upon the request
+            of the above-named employee as a requirement for
+            <t t-esc="o.possessive_pronoun">his</t>
+            <t t-if="o.purpose=='Visa Application'">
+                <b t-esc="o.country">US</b> <b t-esc="o.purpose">Visa Application</b>.
+            </t><t t-elif="o.purpose=='Others'">
+                <b t-esc="o.others_purpose">Credit Card Application</b>.
+            </t><t t-else="">
+                <b t-esc="o.purpose">Credit Card Application</b>.
+            </t>
+        </p>
+    </template>
+
+    <template id="certificate_page">
+        <div class="page">
+            <t t-set="o" t-value="o.with_context({'lang': lang})"/>
+            <!-- <br class="pt-2"/>
+            <br class="pt-2"/> -->
+            <!-- <br class="pt-2"/> -->
+            <br class="pt-2"/>
+            <br class="pt-2"/>
+            <h3>
+                <center>
+                    <t t-if="not o.state=='done'">
+                        <strong style="color:red;">DRAFT Certificate of Employment</strong>
+                    </t><t t-else="">
+                        <strong>Certificate of Employment</strong>
+                    </t>
+                </center>
+            </h3>
+            <!-- <br/> -->
+            <br class="pt-2"/>
+
+            <t t-if="o.certificate_type=='without-compensation'">
+                <t t-call="ez_payroll_coe.without_compensation_body1"/>
+            </t><t t-elif="o.certificate_type=='separated'">
+                <t t-call="ez_payroll_coe.separated_body"/>
+            </t><t t-else="">
+                <t t-call="ez_payroll_coe.with_compensation_body1"/>
+                <br class="pt-2"/>
+                <t t-call="ez_payroll_coe.with_compensation_body2"/>
+            </t>
+
+            <br class="pt-2"/>
+            <p class="coe_paragraph" style="text-align: justify; line-height: 1.5;">
+                Issued this <b t-esc="o.proper_date">16th day of September 2024</b> in Taguig City.
+            </p>
+            <br class="pt-2"/>
+            <!-- <br class="pt-2"/> -->
+            <div class="coe_paragraph">
+                Certified True and Correct,
+            </div>
+            <t t-call="ez_payroll_coe.coe_certified" />
+            <div style="page-break-after: always;"> </div>
+        </div>
+    </template>
+
+    <template id="print_coe">
+        <t t-call="web.html_container">
+            <!-- <t t-set="data_report_margin_top" t-value="12"/>
+            <t t-set="data_report_margin_left" t-value="40"/>
+            <t t-set="data_report_margin_right" t-value="40"/>
+            <t t-set="data_report_header_spacing" t-value="9"/>
+            <t t-set="data_report_dpi" t-value="80"/> -->
+
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="ez_payroll_coe.certificate_page" />
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+    <record id="res_partner_bir" model="res.partner">
+        <field name="name">Bureau of Internal Revenue</field>
+        <field name="is_company">1</field>
+        <field name="country_id" ref="base.ph"/>
+        <field name="image_1920" type="base64" file="ez_payroll_account/static/img/bir.png"/>
+    </record>
+
+    <record id="res_partner_sss" model="res.partner">
+        <field name="name">Social Security System</field>
+        <field name="is_company">1</field>
+        <field name="country_id" ref="base.ph"/>
+        <field name="image_1920" type="base64" file="ez_payroll_account/static/img/sss.png"/>
+    </record>
+
+    <record id="res_partner_hdmf" model="res.partner">
+        <field name="name">Home Development Mutual Fund</field>
+        <field name="is_company">1</field>
+        <field name="country_id" ref="base.ph"/>
+        <field name="image_1920" type="base64" file="ez_payroll_account/static/img/hdmf.png"/>
+    </record>
+
+    <record id="res_partner_philhealth" model="res.partner">
+        <field name="name">Philippine Health Insurance Corp.</field>
+        <field name="is_company">1</field>
+        <field name="country_id" ref="base.ph"/>
+        <field name="image_1920" type="base64" file="ez_payroll_account/static/img/philhealth.jpg"/>
+    </record>
+
+
+</odoo>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+  <data noupdate="1">
+
+    <record id="decimal_pay_unit" model="decimal.precision">
+      <field name="name">Payslip Line Unit</field>
+      <field name="digits">4</field>
+    </record>
+
+    <record id="decimal_pay_amount" model="decimal.precision">
+      <field name="name">Payroll Amount</field>
+      <field name="digits">2</field>
+    </record>
+
+    <!-- configuration -->
+    <record id="config_is_monthly_holiday_paid" model="ir.config_parameter">
+      <field name="key">ez_timekeeping.is_monthly_holiday_paid</field>
+      <field name="value">0</field>
+    </record>
+    <record id="config_is_no_holiday_if_absent_before" model="ir.config_parameter">
+      <field name="key">ez_timekeeping.is_no_holiday_if_absent_before</field>
+      <field name="value">1</field>
+    </record>
+    <record id="config_is_no_holiday_if_absent_after" model="ir.config_parameter">
+      <field name="key">ez_timekeeping.is_no_holiday_if_absent_after</field>
+      <field name="value">1</field>
+    </record>
+    <record id="config_sh_work_factor" model="ir.config_parameter">
+      <field name="key">ez_timekeeping_payroll.sh_work_factor</field>
+      <field name="value">0.3</field>
+    </record>
+
+    <record id="config_bank_file_format" model="ir.config_parameter">
+      <field name="key">ez_payroll.bank_file_format</field>
+      <field name="value">{ 
+          "filename": "RCBC-bank-file",
+          "title": [
+            ["Bank Report"],
+            ["[name]"],
+            []
+          ],
+          "header": [
+            "Account #",
+            "Amount",
+            "Employee Name"
+          ],
+          "alignment": [
+            "left",
+            "right",
+            "left"
+          ],
+          "data": [
+            "atm_no",
+            "net_pay",
+            "name"
+          ]
+      }</field>
+    </record>
+
+  </data>
+
+</odoo>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2017
+======================================== -->
+<odoo>
+
+  <record id="batch_active" model="ir.config_parameter">
+      <field name="key">timekeeping_batch_active</field>
+      <field name="value">0</field>
+  </record>
+
+<!--
+  <record id="batch_date1" model="ir.config_parameter">
+      <field name="key">timekeeping_batch_date1</field>
+      <field name="value"></field>
+  </record>
+
+  <record id="batch_date2" model="ir.config_parameter">
+      <field name="key">timekeeping_batch_date2</field>
+      <field name="value"></field>
+  </record>
+-->
+
+  <data noupdate="1">
+    <record id="gen_timecards" model="ir.cron">
+      <field name="name">Batch Generate Timecards</field>
+      <field name="model_id" ref="model_wz_timecard_batch"/>
+      <field name="state">code</field>
+      <field name="code">model.batch_gen_timecards()</field>
+      <field name="user_id" ref="base.user_root"/>
+      <field name="interval_number">1</field>
+      <field name="interval_type">minutes</field>
+      <field name="active" eval="False"/>
+    </record>
+  </data>
+
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Your existing hr views or other content -->
+    <record id="hr_employee_view_form_inherit_signature" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit.signature</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <group name="identification_group" position="inside">
+                <field name="signature_enabled" invisible="1"/>
+                <separator string="E-Signature" invisible="not signature_enabled"/>
+                <label for="signature_name_override" invisible="not signature_enabled"/>
+                <div name="signature" invisible="not signature_enabled">
+                    <field name="signature_name_override"/>
+                    <field name="signature_image" widget="image" nolabel="1"/>
+                    <button name="action_generate_signature" type="object" string="Generate Signature" class="oe_highlight"/>
+                </div>
+            </group>
+        </field>
+    </record>
+</odoo>

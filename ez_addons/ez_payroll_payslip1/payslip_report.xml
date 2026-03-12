@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2023
+======================================== -->
+<odoo>
+
+  <template id="html_container_ntt1" inherit_id="web.report_layout">
+    <xpath expr="//head" position="inside">
+      <link rel="stylesheet" href="/ez_payroll_payslip1/static/src/css/print.css"/>
+    </xpath>
+  </template>
+
+  <template id="html_container_ntt2" inherit_id="web.minimal_layout">
+    <xpath expr="//head" position="inside">
+      <link rel="stylesheet" href="/ez_payroll_payslip1/static/src/css/print.css"/>
+    </xpath>
+  </template>
+
+  <!-- ####################################################### -->
+
+  <template id="report_payslip_summary">
+    <div style="padding-top: 30px;"/>
+    <div class="border border-secondary">
+
+      <div class="row pt-1 pb-1 ps-2 pe-2"> 
+        <div class="col-12">
+          <span>
+            <t t-if="ps.state=='draft'">
+              <b style="color:red">DRAFT Payslip Summary</b>
+            </t><t t-else="">
+              <b>Payslip Summary</b>
+            </t>
+          </span>
+        </div>
+      </div>
+
+      <div class="row border-top pt-1 pb-1 ps-2 pe-2"> 
+        <div class="col-6">
+          <span>Total Gross</span>
+        </div>
+        <div class="col-6 text-end">
+          <span t-field="ps.gross_pay"/>
+        </div>
+      </div>
+
+      <div class="row border-top pt-1 pb-1 ps-2 pe-2"> 
+        <div class="col-6">
+          <span>Less: Total Taxes</span>
+        </div>
+        <div class="col-6 text-end">
+          <span t-esc="'{:,.2f}'.format(ps.get_taxes(ps.id))"/>
+        </div>
+      </div>
+
+      <div class="row border-top pt-1 pb-1 ps-2 pe-2"> 
+        <div class="col-6">
+          <span>Less: Total Deductions</span>
+        </div>
+        <div class="col-6 text-end">
+          <span t-esc="'{:,.2f}'.format(data['ded_b4_tax'][2] + data['ded_after_tax'][2])"/>
+        </div>
+      </div>
+
+      <div class="row border-top pt-1 pb-1 ps-2 pe-2"> 
+        <div class="col-6">
+          <span>&#160;&#160;&#160;&#160;Total Before Tax Deductions</span>
+        </div>
+        <div class="col-3 text-end">
+          <span t-esc="'{:,.2f}'.format(data['ded_b4_tax'][2])"/>
+        </div>
+        <div/>
+      </div>
+
+      <div class="row border-top pt-1 pb-1 ps-2 pe-2"> 
+        <div class="col-6">
+          <span>&#160;&#160;&#160;&#160;Total After Tax Deductions</span>
+        </div>
+        <div class="col-3 text-end">
+          <span t-esc="'{:,.2f}'.format(data['ded_after_tax'][2])"/>
+        </div>
+        <div/>
+      </div>
+
+      <div class="row box-netpay border-top pt-1 pb-1 ps-2 pe-2"> 
+        <div class="col-6">
+          <b><span>Net Pay</span></b>
+        </div>
+        <div class="col-6 text-end">
+          <b><span t-field="ps.net_pay"/></b>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="report_payslip_header">
+
+    <div>
+      <div class="row">
+        <t t-if="ps.company_id.logo">
+         <div class="col-12">
+          <img t-att-src="image_data_uri(ps.company_id.logo)" alt="Logo" class="image-logo"/>
+         </div>
+        </t>
+        <t t-else="">
+         <div class="col-12 pt-5 pb-5">
+          <h1 class="text-center">
+            NO LOGO
+          </h1>
+         </div>
+        </t>
+      </div>
+      
+      <div class="row">
+       <div class="col-12 text-center">
+        <h5 t-esc="ps.print_header"/>
+       </div>
+      </div>
+
+      <div class="row">
+        <div class="col-3">
+          <span>
+            Name
+          </span>
+        </div>
+        <div class="col-9">
+          <span t-esc="ps.employee_id.name"/>           
+        </div>
+      </div>
+
+      <t t-set="job_title" t-value="ps.employee_id.sudo().job_title"/>
+      <div class="row" t-if="job_title">
+        <div class="col-3">
+          <span>Position</span>
+        </div>
+        <div class="col-9">
+          <span t-esc="job_title"/>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-3">
+          <span>
+            Employee ID
+          </span>
+        </div>
+        <div class="col-9">
+          <span t-esc="ps.sudo().employee_id.identification_id"/>
+        </div>
+      </div>
+
+      <t t-if="'cost_center' in ps">
+        <div class="row">
+          <div class="col-3">
+            <span>
+              Cost Center
+            </span>
+          </div>
+          <div class="col-9">
+            <span t-esc="ps.cost_center"/>
+          </div>
+        </div>
+      </t>
+
+      <div class="row">
+        <div class="col-3">
+          <span>
+            Salary Rate
+          </span>
+        </div>
+        <div class="col-9">
+          <span t-field="ps.salary_rate"/>
+          <span t-field="ps.salary_rate_period"/>
+        </div>
+      </div>
+
+      <t t-set="pr" t-value="ps.payroll_id"/>
+      <t t-if="'cost_center' in pr">
+        <div class="row">
+          <div class="col-3">
+            <span>
+              Pay Date
+            </span>
+          </div>
+          <div class="col-9">
+            <span t-field="ps.payroll_id.pay_date"/>
+          </div>
+        </div>
+      </t>
+
+      <div class="row">
+        <div class="col-3">
+          <span>
+            Pay Period
+          </span>
+        </div>
+        <div class="col-9">
+          <span t-field="ps.payroll_id.date_from"/> &#160;to&#160;
+          <span t-field="ps.payroll_id.date_to"/>
+        </div>
+      </div>
+    </div>
+  </template>
+
+
+  <!-- Earnings -->
+  <template id="report_payslip_breakdown">
+    <div class="border-secondary border">
+
+      <div class="row payslip-summary4-header border-secondary border-bottom">
+        <div class="col-12 text-center pt-1 pb-1">
+          <b t-esc="report_title"/>
+        </div>
+      </div>
+
+      <div class="row payslip-summary4-body border-bottom">
+        <div class="col-6">
+          <div class="row border-secondary border-bottom">
+            <div class="border-secondary border-end col-7 ps-1 pe-1">
+              <span>
+                <b>Description</b>
+              </span>
+            </div>
+            <div class="text-end border-secondary border-end col-5 ps-1 pe-1">
+              <span>
+                <b>Current</b>
+              </span>
+            </div>
+          </div>
+          <div class="row border-secondary border-bottom" t-foreach="res[0]" t-as="recs">
+            <div class="text-name border-secondary border-end col-7 ps-1 pe-1">
+              <span>
+                <t t-esc="recs['name']"/>
+              </span>
+            </div>
+            <div class="text-end border-secondary border-end col-5 ps-1 pe-1">
+              <span>
+                <t t-if="recs['amount']">
+                  <t t-esc="'{:,.2f}'.format(recs['amount'])"/>
+                </t><t t-else="">
+                  -
+                </t>
+              </span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="payslip-summary4-header border-secondary border-end col-7 ps-1 pe-1">
+              <span>
+                <b>TOTAL</b>
+              </span>
+            </div>
+            <div class="text-end payslip-summary4-header border-secondary border-end col-5 ps-1 pe-1">
+              <span>
+                <b><t t-esc="'{:,.2f}'.format(res[2])"/></b>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-6">
+          <div class="row border-secondary border-bottom">
+            <div class="border-secondary border-end col-7 ps-1 pe-1">
+              <span>
+                <b>Description</b>
+              </span>
+            </div>
+            <div class="text-end col-5 ps-1 pe-1">
+              <span>
+                <b>YTD</b>
+              </span>
+            </div>
+          </div>
+          <div class="row border-secondary border-bottom" t-foreach="res[1]" t-as="recs">
+            <div class="text-name border-secondary border-end col-7 ps-1 pe-1">
+              <span>
+                <t t-esc="recs['name']"/>
+              </span>
+            </div>
+            <div class="text-end col-5 ps-1 pe-1">
+              <span>
+                <t t-if="recs['amount']">
+                  <t t-esc="'{:,.2f}'.format(recs['amount'])"/>
+                </t><t t-else="">
+                  -
+                </t>
+              </span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="payslip-summary4-header border-secondary border-end col-7 ps-1 pe-1">
+              <span>
+                <b>TOTAL</b>
+              </span>
+            </div>
+            <div class="text-end payslip-summary4-header col-5 ps-1 pe-1">
+              <span>
+                <b><t t-esc="'{:,.2f}'.format(res[3])"/></b>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="report_payslip_template">
+    <div class="container">  
+
+      <t t-set="data" t-value="ps.get_breakdowns()"/>
+
+      <!-- header -->
+      <div class="row">
+       <div class="col-6">
+          <t t-call="ez_payroll_payslip1.report_payslip_header" />
+       </div>
+       <div class="col-6">
+          <t t-call="ez_payroll_payslip1.report_payslip_summary" />
+       </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 payslip-separator1">
+          <span class="ps-1">
+            Payslip Breakdown
+          </span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6 box-payslip4">
+          <t t-set="res" t-value="data['earnings']"/>
+          <t t-set="report_title" t-value="'Earnings'"/>
+          <t t-call="ez_payroll_payslip1.report_payslip_breakdown"/>
+        </div>
+        <div class="col-6 box-payslip4">
+          <t t-set="res" t-value="data['ded_b4_tax']"/>
+          <t t-set="report_title" t-value="'Before Tax Deductions'"/>
+          <t t-call="ez_payroll_payslip1.report_payslip_breakdown"/>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6 box-payslip4">
+          <t t-set="res" t-value="data['ded_after_tax']"/>
+          <t t-set="report_title" t-value="'After Tax Deductions'"/>
+          <t t-call="ez_payroll_payslip1.report_payslip_breakdown"/>
+        </div>
+        <div class="col-6 box-payslip4">
+          <t t-set="res" t-value="data['employer_benefits']"/>
+          <t t-set="report_title" t-value="'Employer Benefits'"/>
+          <t t-call="ez_payroll_payslip1.report_payslip_breakdown"/>
+        </div>
+      </div>
+    </div>
+
+    <div t-if="ps.note" class="container">
+      <div class="pt-3 pb-1">
+        Notes:
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <t t-foreach="ps.note.split('\n')" t-as="note">
+            <t t-esc="note"/><br/>
+          </t>
+        </div>
+      </div>
+    </div>
+
+  </template>
+
+  <!-- ############################################ -->
+
+  <template id="report_single_payslip">
+    <t t-call="web.basic_layout">
+      <t t-foreach="docs" t-as="ps">
+        <div class="header"></div>
+        <div class="page">
+          <t t-call="ez_payroll_payslip1.report_payslip_template" />
+          <div style="page-break-after: always;"><br/></div>            
+        </div>
+        <div class="footer"></div>
+      </t>
+    </t>
+  </template>
+
+  <template id="report_payslip">
+    <t t-call="web.basic_layout">
+      <t t-foreach="docs" t-as="o">
+        <t t-foreach="o.payslip" t-as="ps">
+          <div class="header"></div>
+          <div class="page" style="vertical-align:top;">
+            <t t-call="ez_payroll_payslip1.report_payslip_template" />
+            <div style="page-break-after: always;"><br/></div>            
+          </div>
+          <div class="footer"></div>
+        </t>
+      </t>
+    </t>
+  </template>
+
+  <!-- ############################################ -->
+
+  <record id="payslip_format" model="report.paperformat">
+    <field name="name">Payslip NTT Format</field>
+    <field name="format">Letter</field>
+    <field name="orientation">Portrait</field>
+    <field name="header_spacing">0</field>
+    <field name="margin_top">15</field>
+    <field name="margin_bottom">15</field>
+    <field name="margin_left">10</field>
+    <field name="margin_right">10</field>
+    <field name="header_line" eval="False"/>
+    <field name="dpi">90</field>
+    <field name="default" eval="False"/>
+  </record>
+
+  <record id="ez_payroll.action_print_single_payslip" model="ir.actions.report">
+    <field name="name">Payslip</field>
+    <field name="model">hr.ph.payslip</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">ez_payroll_payslip1.report_single_payslip</field>
+    <field name="report_file">ez_payroll_payslip1.report_single_payslip</field>
+    <field name="binding_model_id" ref="ez_payroll.model_hr_ph_payslip"/>
+    <field name="binding_type">report</field>
+    <field name="paperformat_id" ref="ez_payroll_payslip1.payslip_format"/>
+  </record>    
+
+  <record id="ez_payroll.action_print_payslip" model="ir.actions.report">
+    <field name="name">Payslips</field>
+    <field name="model">hr.ph.payroll</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">ez_payroll_payslip1.report_payslip</field>
+    <field name="report_file">ez_payroll_payslip1.report_payslip</field>
+    <field name="binding_model_id" ref="ez_payroll.model_hr_ph_payroll"/>
+    <field name="binding_type">report</field>
+    <field name="paperformat_id" ref="ez_payroll_payslip1.payslip_format"/>
+  </record>
+
+</odoo>

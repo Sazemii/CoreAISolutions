@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+    <data noupdate="1">
+
+        <record id="wtg_default" model="ez.work.type.group">
+            <field name="name">Default</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="wt_reg_norm" model="ez.work.type">
+            <field name="seq" eval="10" />
+            <field name="name">Regular</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.0" />
+            <field name="basic_pay" eval="True" />
+            <field name="taxable" eval="True" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_reg_norm_night" model="ez.work.type">
+            <field name="seq" eval="12" />
+            <field name="name">Night Differential</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="0.1" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="True" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_reg_norm_night2" model="ez.work.type">
+            <field name="seq" eval="13" />
+            <field name="name">Night Work</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.1" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="True" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_reg_absent" model="ez.work.type">
+            <field name="seq" eval="15" />
+            <field name="name">Absent</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="-1.0" />
+            <field name="basic_pay" eval="True" />
+            <field name="taxable" eval="True" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_reg_shutdown" model="ez.work.type">
+            <field name="seq" eval="16" />
+            <field name="name">Shutdown</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="-1.0" />
+            <field name="basic_pay" eval="True" />
+            <field name="taxable" eval="True" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_reg_late" model="ez.work.type">
+            <field name="seq" eval="20" />
+            <field name="name">Late</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="-1.0" />
+            <field name="basic_pay" eval="1" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_reg_undertime" model="ez.work.type">
+            <field name="seq" eval="30" />
+            <field name="name">Undertime</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="-1.0" />
+            <field name="basic_pay" eval="True" />
+            <field name="taxable" eval="True" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_reg_ot" model="ez.work.type">
+            <field name="seq" eval="40" />
+            <field name="name">Regular Overtime</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.25" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_reg_ot_night" model="ez.work.type">
+            <field name="seq" eval="50" />
+            <field name="name">Regular Overtime (night)</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.375" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_do_norm" model="ez.work.type">
+            <field name="seq" eval="60" />
+            <field name="name">Restday Work</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.3" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_do_norm_night" model="ez.work.type">
+            <field name="seq" eval="70" />
+            <field name="name">Restday Work (night)</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.43" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_do_ot" model="ez.work.type">
+            <field name="seq" eval="80" />
+            <field name="name">Restday Overtime</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.69" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_do_ot_night" model="ez.work.type">
+            <field name="seq" eval="90" />
+            <field name="name">Restday Overtime (night)</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.859" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_lh_norm" model="ez.work.type">
+            <field name="seq" eval="100" />
+            <field name="name">Regular Holiday Work</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="2.0" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_lh_norm_night" model="ez.work.type">
+            <field name="seq" eval="110" />
+            <field name="name">RH Work (night)</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="2.2" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_lh_ot" model="ez.work.type">
+            <field name="seq" eval="120" />
+            <field name="name">RH Overtime</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="2.6" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_lh_ot_night" model="ez.work.type">
+            <field name="seq" eval="130" />
+            <field name="name">RH Overtime (night)</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="2.86" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_sh_norm" model="ez.work.type">
+            <field name="seq" eval="140" />
+            <field name="name">Special Holiday Work</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.3" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_sh_norm_night" model="ez.work.type">
+            <field name="seq" eval="150" />
+            <field name="name">SH Work (night)</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.43" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_sh_ot" model="ez.work.type">
+            <field name="seq" eval="160" />
+            <field name="name">SH Work Overtime</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.69" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_sh_ot_night" model="ez.work.type">
+            <field name="seq" eval="170" />
+            <field name="name">SH Work Overtime (night)</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.859" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_do_lh_norm" model="ez.work.type">
+            <field name="seq" eval="180" />
+            <field name="name">RH+RD Work</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="2.6" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_do_lh_norm_night" model="ez.work.type">
+            <field name="seq" eval="190" />
+            <field name="name">RH+RD Work (night)</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="2.86" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_do_lh_ot" model="ez.work.type">
+            <field name="seq" eval="200" />
+            <field name="name">RH+RD Overtime</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="3.38" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_do_lh_ot_night" model="ez.work.type">
+            <field name="seq" eval="210" />
+            <field name="name">RH+RD Overtime (night)</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="3.718" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_do_sh_norm" model="ez.work.type">
+            <field name="seq" eval="220" />
+            <field name="name">SH+RD Work</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.5" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_do_sh_norm_night" model="ez.work.type">
+            <field name="seq" eval="230" />
+            <field name="name">SH+RD Work (night)</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.65" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_do_sh_ot" model="ez.work.type">
+            <field name="seq" eval="240" />
+            <field name="name">SH+RD Overtime</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.95" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_do_sh_ot_night" model="ez.work.type">
+            <field name="seq" eval="250" />
+            <field name="name">SH+RD Overtime (night)</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="2.145" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <!-- non-attendance ============== -->
+
+        <record id="wt_LHP" model="ez.work.type">
+            <field name="seq" eval="260" />
+            <field name="name">Regular Holiday Paid</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.0" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_SL" model="ez.work.type">
+            <field name="seq" eval="270" />
+            <field name="name">Sick Leave</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.0" />
+            <field name="basic_pay" eval="1" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_SIL" model="ez.work.type">
+            <field name="seq" eval="280" />
+            <field name="name">Service Incentive Leave</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.0" />
+            <field name="basic_pay" eval="1" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_LWOP" model="ez.work.type">
+            <field name="seq" eval="290" />
+            <field name="name">Leave w/o Pay</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="-1.0" />
+            <field name="basic_pay" eval="1" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_ML" model="ez.work.type">
+            <field name="seq" eval="300" />
+            <field name="name">Maternity Leave</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.0" />
+            <field name="basic_pay" eval="1" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_PL" model="ez.work.type">
+            <field name="seq" eval="310" />
+            <field name="name">Paternity Leave</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.0" />
+            <field name="basic_pay" eval="1" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_CL" model="ez.work.type">
+            <field name="seq" eval="320" />
+            <field name="name">Compensatory Leave</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.0" />
+            <field name="basic_pay" eval="1" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_VL" model="ez.work.type">
+            <field name="seq" eval="350" />
+            <field name="name">Vacation Leave</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.0" />
+            <field name="basic_pay" eval="1" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_SPL" model="ez.work.type">
+            <field name="seq" eval="360" />
+            <field name="name">Solo Parent Leave</field>
+            <field name="unit">hour</field>
+            <field name="factor" eval="1.0" />
+            <field name="basic_pay" eval="1" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+        <record id="wt_ADJ" model="ez.work.type">
+            <field name="seq" eval="370" />
+            <field name="name">Adjustments</field>
+            <field name="unit">fixed</field>
+            <field name="factor" eval="1.0" />
+            <field name="basic_pay" eval="False" />
+            <field name="taxable" eval="1" />
+            <field name="work_type_group_id" ref="ez_payroll.wtg_default" />
+        </record>
+
+    </data>
+
+</odoo>

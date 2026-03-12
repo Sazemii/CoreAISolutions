@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2021
+======================================== -->
+<odoo>
+
+    <!-- <report
+        id="timecard_report"
+        string="Time Card"
+        model="ez.time.card"
+        report_type="qweb-pdf"
+        name="ez_timekeeping.print_timecard"
+        file="ez_timekeeping.print_timecard"
+        print_report_name="'dtr'"
+    /> -->
+
+    <record id="timecard_report" model="ir.actions.report">
+      <field name="name">Time Card</field>
+      <field name="model">ez.time.card</field>
+      <field name="report_type">qweb-pdf</field>
+      <field name="report_name">ez_timekeeping.print_timecard</field>
+      <field name="report_file">ez_timekeeping.print_timecard</field>
+      <field name="binding_model_id" ref="ez_timekeeping.model_ez_time_card"/>
+      <field name="binding_type">report</field>
+      <field name="print_report_name">'dtr'</field>
+    </record>
+
+
+    <template id="print_timecard">
+      <t t-call="web.html_container">
+        <t t-set="data_report_margin_top" t-value="12"/>
+        <t t-set="data_report_header_spacing" t-value="9"/>
+        <t t-set="data_report_dpi" t-value="110"/>
+        <!-- <t t-call="web.internal_layout"> -->
+        <t t-call="web.basic_layout">
+          <t t-foreach="docs" t-as="o">
+            <div class="page">
+              <t t-set="o" t-value="o.with_context({'lang': lang})"/>
+              <h3>
+                <center>
+                  <strong>
+                    Time Card / Daily Time Record<br/>
+                  </strong>
+                  <span style="font-size:16pt" t-field="o.employee_id"/>
+                  <span style="font-size:16pt" t-field="o.date1"/>
+                  <span style="font-size:16pt">to</span>
+                  <span style="font-size:16pt" t-field="o.date2"/>
+                </center>
+              </h3>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th class="text-start">Date</th>
+                    <th class="text-start">Type</th>
+                    <th class="text-start">Time Log</th>
+                    <th class="text-end">Auth</th>
+                    <th class="text-start">Normal</th>
+                    <th class="text-start">Overtime</th>
+                    <th class="text-start">Remarks</th>
+                    <th class="text-start">Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr t-foreach="o.details" t-as="line">
+                    <td class="text-start"><span t-field="line.name"/></td>
+                    <td class="text-start"><span t-field="line.day_type"/></td>
+                    <td class="text-start"><span t-field="line.timelog"/></td>
+                    <td class="text-end">
+                      <span t-esc="line.auth_hrs and '{0:,.4f}'.format(line.auth_hrs) or ''"/>
+                    </td>
+                    <td class="text-start"><span t-field="line.vnorm_time"/></td>
+                    <td class="text-start"><span t-field="line.vot_time"/></td>
+                    <td class="text-start"><span t-field="line.vremarks"/></td>
+                    <td><span t-field="line.note"/></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <hr/>
+              <hr/>
+              <strong>SUMMARY:</strong>
+
+              <table class="table table-sm">
+                <tbody>
+                  <tr>
+                    <th class="text-end">Day Type</th>
+                    <th class="text-end">Normal Time</th>
+                    <th class="text-start">Night</th>
+                    <th class="text-end">Overtime</th>
+                    <th class="text-end">Overtime Night</th>
+                    <th class="text-end">Absent</th>
+                    <th class="text-end">Late</th>
+                    <th class="text-end">Undertime</th>
+                  </tr>
+                  <tr t-foreach="o.summary" t-as="s">
+                    <td class="text-end"><span t-field="s.name"/></td>
+                    <td class="text-end"><span t-field="s.norm"/></td>
+                    <td class="text-end"><span t-field="s.norm_night"/></td>
+                    <td class="text-end"><span t-field="s.ot"/></td>
+                    <td class="text-end"><span t-field="s.ot_night"/></td>
+                    <!-- bug reversed, corrected by reversing 3 items below -->
+                    <td class="text-end"><span t-field="s.absent"/></td>
+                    <td class="text-end"><span t-field="s.late"/></td>
+                    <td class="text-end"><span t-field="s.undertime"/></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div style="page-break-after: always;"> </div>
+            </div>
+          </t>
+        </t>
+      </t>
+    </template>
+
+</odoo>

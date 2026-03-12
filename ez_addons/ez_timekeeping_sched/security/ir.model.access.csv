@@ -1,0 +1,7 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+
+acc_ez_shift_sched,acc_ez_shift_sched,model_ez_shift_sched,ez_timekeeping.group_timekeeping_manager,1,1,1,1
+acc_ez_shift_sched2,acc_ez_shift_sched2,model_ez_shift_sched,base.group_user,1,0,0,0
+
+acc_ez_shift_sched_line,acc_ez_shift_sched_line,model_ez_shift_sched_line,ez_timekeeping.group_timekeeping_manager,1,1,1,1
+acc_ez_shift_sched_line2,acc_ez_shift_sched_line2,model_ez_shift_sched_line,base.group_user,1,0,0,0

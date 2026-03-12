@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+    <data>
+
+        <function model="ez.payroll.account.setting" name="create_demo_data"/>
+
+        <record id="demo_payroll_account_setting" model="ez.payroll.account.setting">
+            <field name="name">Journal Entry Setup</field>
+            <field name="salary_expense_acct_id" model="account.account" 
+                eval="obj().search([('name','=','Salary Expenses')],limit=1).id"></field>
+            <field name="bank_acct_id" model="account.account" 
+                eval="obj().search([('name','=','Bank')],limit=1).id"></field>
+            <field name="other_ded_acct_id" model="account.account" 
+                eval="obj().search([('name','=','Current Liabilities')],limit=1).id"></field>
+            <field name="wtax_acct_id" model="account.account" 
+                eval="obj().search([('name','=','Tax Payable')],limit=1).id"></field>
+            <field name="sss_acct_id" model="account.account" 
+                eval="obj().search([('name','=','Tax Payable')],limit=1).id"></field>
+            <field name="philhealth_acct_id" model="account.account" 
+                eval="obj().search([('name','=','Tax Payable')],limit=1).id"></field>
+            <field name="hdmf_acct_id" model="account.account" 
+                eval="obj().search([('name','=','Tax Payable')],limit=1).id"></field>
+        </record>
+
+    </data>
+</odoo>

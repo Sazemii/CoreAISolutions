@@ -1,0 +1,61 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_ez_deminimis_user","ez_deminimis hr user","model_ez_deminimis","hr.group_hr_user",1,1,1,1
+"access_ez_deminimis_payroll_user","ez_deminimis payroll user","model_ez_deminimis","group_hr_payroll_user",1,1,1,1
+
+"access_wtax_user","hr.ph.wtax.user","model_hr_ph_wtax","group_hr_payroll_user",1,0,0,0
+"access_wtax_manager","hr.ph.wtax.manager","model_hr_ph_wtax","group_hr_payroll_manager",1,1,1,1
+"access_wtax_user2023","hr.ph.wtax.user.2023","model_hr_ph_wtax2023","group_hr_payroll_user",1,0,0,0
+"access_wtax_manager2023","hr.ph.wtax.manager.2023","model_hr_ph_wtax2023","group_hr_payroll_manager",1,1,1,1
+
+"access_sss_user","hr.ph.sss.user","model_hr_ph_sss","group_hr_payroll_user",1,0,0,0
+"access_sss_manager","hr.ph.sss.manager","model_hr_ph_sss","group_hr_payroll_manager",1,1,1,1
+
+"access_phic_user","hr.ph.phic.user","model_hr_ph_phic","group_hr_payroll_user",1,0,0,0
+"access_phic_manager","hr.ph.phic.manager","model_hr_ph_phic","group_hr_payroll_manager",1,1,1,1
+
+"access_work_type_group_user","ez.work.type user","model_ez_work_type_group","base.group_user",1,0,0,0
+"access_work_type_manager","ez.work.type manager","model_ez_work_type","group_hr_payroll_manager",1,1,1,1
+
+"access_work_type_user","ez.work.type user","model_ez_work_type","base.group_user",1,0,0,0
+"access_work_type_group_manager","ez.work.type manager","model_ez_work_type_group","group_hr_payroll_manager",1,1,1,1
+
+access_user_payslip,hr.ph.payslip.user,model_hr_ph_payslip,base.group_user,1,0,0,0
+access_payuser_payslip,hr.ph.payslip.payuser,model_hr_ph_payslip,group_hr_payroll_user,1,1,1,1
+
+access_payuser_payroll,hr.ph.payroll.payuser,model_hr_ph_payroll,group_hr_payroll_user,1,1,1,0
+access_paymgr_payroll,hr.ph.payroll.paymgr,model_hr_ph_payroll,group_hr_payroll_manager,1,1,1,1
+
+access_user_pay_computation,hr.ph.pay.computation.user,model_hr_ph_pay_computation,base.group_user,1,0,0,0
+access_payuser_pay_computation_template,hr.ph.pay.computation.template.payuser,model_hr_ph_payslip_line_template,group_hr_payroll_user,1,1,1,1
+access_payuser_pay_computation,hr.ph.pay.computation.payuser,model_hr_ph_pay_computation,group_hr_payroll_user,1,1,1,1
+
+access_user_pay_deduction,hr.ph.pay.deduction.user,model_hr_ph_pay_deduction,base.group_user,1,0,0,0
+access_payuser_pay_deduction,hr.ph.pay.deduction.payuser,model_hr_ph_pay_deduction,group_hr_payroll_user,1,1,1,1
+
+access_user_loan,hr.ph.loan.user,model_hr_ph_loan,base.group_user,1,0,0,0
+access_payuser_loan,hr.ph.loan.payuser,model_hr_ph_loan,group_hr_payroll_user,1,1,1,0
+access_paymgr_loan,hr.ph.loan.paymgr,model_hr_ph_loan,group_hr_payroll_manager,1,1,1,1
+
+access_user_loan_payment,hr.ph.loan.payment.user,model_hr_ph_loan_payment,base.group_user,1,0,0,0
+access_payuser_loan_payment,hr.ph.loan.payment.payuser,model_hr_ph_loan_payment,group_hr_payroll_user,1,1,1,1
+
+access_user_loan_type,hr.ph.loan.type.user,model_hr_ph_loan_type,base.group_user,1,0,0,0
+access_payuser_loan_type,hr.ph.loan.type.payuser,model_hr_ph_loan_type,group_hr_payroll_user,1,1,1,1
+
+access_payuser_gov_deductions,hr.ph.gov.deductions.payuser,model_hr_ph_gov_deductions,group_hr_payroll_user,1,1,1,0
+access_paymgr_gov_deductions,hr.ph.gov.deductions.paymgr,model_hr_ph_gov_deductions,group_hr_payroll_manager,1,1,1,1
+
+access_hr_ph_pay_deduction_entry,access_hr_ph_pay_deduction_entry,model_hr_ph_pay_deduction_entry,group_hr_payroll_user,1,1,1,1
+access_hr_ph_pay_deduction_entry_details,access_hr_ph_pay_deduction_entry_details,model_hr_ph_pay_deduction_entry_details,group_hr_payroll_user,1,1,1,1
+
+access_ez_work_summary_sheet,access_ez_work_summary_sheet,model_ez_work_summary_sheet,group_hr_payroll_user,1,1,1,1
+access_ez_work_summary_line,access_ez_work_summary_line,model_ez_work_summary_line,group_hr_payroll_user,1,1,1,1
+
+access_ded_wiz,access_ded_wiz,model_ez_deduction_wizard,group_hr_payroll_user,1,1,1,1
+access_bank_wiz,access_bank_wiz,model_ez_bank_wizard,group_hr_payroll_user,1,1,1,1
+
+access_hr_employee_group_user,access_hr_employee_group_user,model_ez_employee_group,group_hr_payroll_user,1,1,1,1
+access_hr_employee_group_emp,access_hr_employee_group_emp,model_ez_employee_group,base.group_user,1,0,0,0
+
+access_ym,access_ym,model_hr_ph_pay_year_month,base.group_user,1,0,0,0
+access_year,access_year,model_hr_ph_pay_year,base.group_user,1,0,0,0

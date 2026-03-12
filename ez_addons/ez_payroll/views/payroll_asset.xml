@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+  <template id="html_container1" inherit_id="web.report_layout">
+    <xpath expr="//head" position="inside">
+      <link rel="stylesheet" href="/ez_payroll/static/src/css/print.css"/>
+    </xpath>
+  </template>
+  <template id="html_container1" inherit_id="web.minimal_layout">
+    <xpath expr="//head" position="inside">
+      <link rel="stylesheet" href="/ez_payroll/static/src/css/print.css"/>
+    </xpath>
+  </template>
+
+</odoo>

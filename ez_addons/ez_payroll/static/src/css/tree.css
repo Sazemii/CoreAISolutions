@@ -1,0 +1,37 @@
+.ez_compensation_tree th[data-id='note']
+{
+  min-width:100px;
+}
+
+.ez_compensation_tree th[data-id='qty'],
+.ez_compensation_tree th[data-id='factor'],
+.ez_compensation_tree th[data-id='amount']
+{
+  text-align:right;
+}
+
+/***************************************/
+.ez_payroll_tree th[data-id='note']
+{
+  min-width:100px;
+}
+
+.ez_payroll_tree th[data-id='payments'],
+.ez_payroll_tree th[data-id='balance'],
+.ez_payroll_tree th[data-id='amount'],
+.ez_payroll_tree th[data-id='qty'],
+.ez_payroll_tree th[data-id='factor'],
+.ez_payroll_tree th[data-id='basic_pay'],
+.ez_payroll_tree th[data-id='gross_pay'],
+.ez_payroll_tree th[data-id='taxable'],
+.ez_payroll_tree th[data-id='total_deductions'],
+.ez_payroll_tree th[data-id='total_loan_payments'],
+.ez_payroll_tree th[data-id='net_pay'],
+.ez_payroll_tree th[data-id='seq'],
+.ez_payroll_tree th[data-id='er_amount'],
+.ez_payroll_tree th[data-id='loan_amount'],
+.ez_payroll_tree th[data-id='ee_amount'],
+.ez_payroll_tree th[data-id='ec_amount']
+{
+  text-align:right;
+}

@@ -1,0 +1,3 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+access_ez_time_card_group,access_ez_time_card_group,model_ez_time_card_group,ez_timekeeping.group_timekeeping_user,1,0,0,0
+

@@ -1,0 +1,4 @@
+from odoo import api,fields,models,tools,_
+from odoo.exceptions import ValidationError
+class HrEmployee(models.Model):_inherit='hr.employee';shift_id=fields.Many2one('ez.shift','Shift',ondelete='set null');exclude_create_timecard=fields.Boolean('Exclude Create Time Card',help='Do not create time card on batch process.');timekeeping_manager_id=fields.Many2one('res.users','Timekeeping',domain="[('share', '=', False), ('company_ids', 'in', company_id)]",ondelete='set null')
+class HrEmployeePublic(models.Model):_inherit='hr.employee.public';shift_id=fields.Many2one('ez.shift','Shift',ondelete='set null');exclude_create_timecard=fields.Boolean('Exclude Create Time Card',help='Do not create time card on batch process.');timekeeping_manager_id=fields.Many2one('res.users','Timekeeping',domain="[('share', '=', False), ('company_ids', 'in', company_id)]",ondelete='set null')

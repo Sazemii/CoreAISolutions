@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2021
+======================================== -->
+<odoo>
+
+  <record model="ir.ui.view" id="pivot_timerecord">
+    <field name="name">pivot_timerecord</field>
+    <field name="model">ez.time.record</field>
+    <field name="arch" type="xml">
+      <pivot>
+        <!-- <field name="date" interval="month" type="row"/> -->
+        <field name="employee_id" type="row"/>
+        <field name="norm_minutes" type="measure"/>
+        <field name="late_minutes" type="measure"/>
+        <field name="undertime_minutes" type="measure"/>
+        <field name="absent_minutes" type="measure"/>
+        <field name="norm_night_minutes" type="measure"/>
+        <field name="ot_night_minutes" type="measure"/>
+        <field name="ot_minutes" type="measure"/>
+      </pivot>
+    </field>
+  </record>
+
+  <record id="tree_timerecord" model="ir.ui.view">
+    <field name="name">tree_timerecord</field>
+    <field name="model">ez.time.record</field>
+    <field name="arch" type="xml">
+      <list default_order="date desc,identification_id"
+        create="0" class="timecard_tree_details"
+        decoration-danger="day_type!='reg'"
+        editable="bottom"
+      >
+        <field name="date" readonly="1"/>
+        <field name="name" optional="hide"/>
+        <field name="employee_id" options="{'no_open': True, 'no_create': True}" widget="many2one_avatar_employee"/>
+        <field name="schedule" readonly="done or not edit_schedule" optional="show"/>
+        <!-- axttrs="{'readonly':['|',('done','=',True),('edit_schedule','=',False)]}" -->
+        <field name="day_type" readonly="done"/>
+        <field name="timelog" readonly="done"/>
+        <field name="auth_hrs" readonly="done"/>
+        <field name="vnorm_time" string="Norm"/>
+        <field name="vot_time" string="OT"/>
+        <field name="done"/>
+        <field name="edit_schedule" column_invisible="1"/>
+        <field name="vremarks"/>
+        <field name="note" optional="hide"/>
+        <field name="category_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="hide"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="search_timerecord" model="ir.ui.view">
+    <field name="name">search_timerecord</field>
+    <field name="model">ez.time.record</field>
+    <field name="arch" type="xml">
+      <search string="Search">
+        <field name="employee_id"/>
+        <field name="category_ids"/>
+        <field name="vremarks"/>
+        <field name="identification_id"/>
+        <field name="name"/>
+        <field name="schedule"/>
+        <field name="timelog"/>
+        <filter name="gemp" string="Employee" context="{'group_by':'employee_id'}"/>
+        <filter name="gdate" string="Date" context="{'group_by':'date'}"/>
+        <separator/>
+        <filter name="fndone" string="Not Done" domain="[('done','=',False)]"/>
+        <separator/>
+        <filter name="fnoauth" string="Not authorized" domain="[('vremarks','ilike','NoAuth')]"/>
+        <filter name="fot" string="Overtime" domain="[('vremarks','ilike','Overtime')]"/>
+        <filter name="fabsent" string="Absent" domain="[('vremarks','ilike','Absent')]"/>
+        <filter name="flate" string="Late" domain="[('vremarks','ilike','Late')]"/>
+        <filter name="fnight" string="Night" domain="[('vremarks','ilike','night')]"/>
+        <separator/>
+        <filter name="dt_reg" string="Normal Day" domain="[('day_type','=','reg')]"/>
+        <filter name="dt_do" string="Rest Day" domain="[('day_type','=','do')]"/>
+        <filter name="dt_lh" string="Regular Holiday" domain="[('day_type','=','lh')]"/>
+        <filter name="dt_sh" string="Special Holiday" domain="[('day_type','=','sh')]"/>
+        <filter name="dt_do_lh" string="Regular Holiday and Rest Day " domain="[('day_type','=','do_lh')]"/>
+        <filter name="dt_do_sh" string="Special Holiday and Rest Day" domain="[('day_type','=','do_sh')]"/>
+
+      </search>
+    </field>
+  </record>
+
+  <record id="open_timerecord" model="ir.actions.act_window">
+    <field name="name">Time Records</field>
+    <field name="res_model">ez.time.record</field>
+    <field name="view_mode">list,pivot</field>
+    <field name="context">{}</field>
+    <!-- <field name="context">{'search_default_fndone':1}</field> -->
+  </record>
+
+  <menuitem id="menu_timerecord"
+    action="open_timerecord"
+    parent="menu_timekeeping_config"
+    groups="ez_timekeeping.group_timekeeping_user"
+    sequence="15000"/>
+
+</odoo>

@@ -1,0 +1,808 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+  <data noupdate="1">
+
+     <!-- 2018 new table -->
+
+     <record model="hr.ph.gov.deductions" id="govded_version_2018">
+       <field name="name">Version 2</field>
+       <field name="date_from">2018-01-08</field>
+       <field name="date_to">2021-12-31</field>
+       <field name="ee_code">( (gross &lt;= 1500.0) and (gross * 0.01) ) or ( (gross &lt; 5000.0) and (gross * 0.02) ) or 100.0</field>
+       <field name="er_code">( (gross &lt; 5000.0) and (gross * 0.02) ) or 100.0</field>
+       <field name="phic_code">self.compute_phic(payslip.basic_pay + pbasic_pay, date, percent=2.75)</field>
+       <!-- self.compute_phic(payslip.basic_pay + pbasic_pay, date, percent=3.0, limit=60000.0) -->
+       <field name="non_taxable_13thmp">90000</field>
+       <!--
+       <field name="phealth_ee_code">(gross &lt;= 10000.00 and 137.5) or (gross &lt; 40000.00 and gross*0.0275) or 550.00</field>
+       <field name="phealth_er_code">(gross &lt;= 10000.00 and 137.5) or (gross &lt; 40000.00 and gross*0.0275) or 550.00</field>
+     -->
+     </record>
+
+     <record id="hr_ph_sss_id_2018_0" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">0.00</field>
+       <field name="range_to">999.99</field>
+       <field name="salary_credit">0.00</field>
+       <field name="ee_premium">0.00</field>
+       <field name="er_premium">0.00</field>
+       <field name="ec_premium">0.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_1" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">1000.00</field>
+       <field name="range_to">1250.00</field>
+       <field name="salary_credit">1000.00</field>
+       <field name="ee_premium">36.30</field>
+       <field name="er_premium">73.70</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_2" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">1250.00</field>
+       <field name="range_to">1750.00</field>
+       <field name="salary_credit">1500.00</field>
+       <field name="ee_premium">54.50</field>
+       <field name="er_premium">110.50</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_3" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">1750.00</field>
+       <field name="range_to">2250.00</field>
+       <field name="salary_credit">2000.00</field>
+       <field name="ee_premium">72.70</field>
+       <field name="er_premium">147.30</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_4" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">2250.00</field>
+       <field name="range_to">2750.00</field>
+       <field name="salary_credit">2500.00</field>
+       <field name="ee_premium">90.80</field>
+       <field name="er_premium">184.20</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_5" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">2750.00</field>
+       <field name="range_to">3250.00</field>
+       <field name="salary_credit">3000.00</field>
+       <field name="ee_premium">109.00</field>
+       <field name="er_premium">221.00</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_6" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">3250.00</field>
+       <field name="range_to">3750.00</field>
+       <field name="salary_credit">3500.00</field>
+       <field name="ee_premium">127.20</field>
+       <field name="er_premium">257.80</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_7" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">3750.00</field>
+       <field name="range_to">4250.00</field>
+       <field name="salary_credit">4000.00</field>
+       <field name="ee_premium">145.30</field>
+       <field name="er_premium">294.70</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_8" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">4250.00</field>
+       <field name="range_to">4750.00</field>
+       <field name="salary_credit">4500.00</field>
+       <field name="ee_premium">163.50</field>
+       <field name="er_premium">331.50</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_9" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">4750.00</field>
+       <field name="range_to">5250.00</field>
+       <field name="salary_credit">5000.00</field>
+       <field name="ee_premium">181.70</field>
+       <field name="er_premium">368.30</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_10" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">5250.00</field>
+       <field name="range_to">5750.00</field>
+       <field name="salary_credit">5500.00</field>
+       <field name="ee_premium">199.80</field>
+       <field name="er_premium">405.20</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_11" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">5750.00</field>
+       <field name="range_to">6250.00</field>
+       <field name="salary_credit">6000.00</field>
+       <field name="ee_premium">218.00</field>
+       <field name="er_premium">442.00</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_12" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">6250.00</field>
+       <field name="range_to">6750.00</field>
+       <field name="salary_credit">6500.00</field>
+       <field name="ee_premium">236.20</field>
+       <field name="er_premium">478.80</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_13" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">6750.00</field>
+       <field name="range_to">7250.00</field>
+       <field name="salary_credit">7000.00</field>
+       <field name="ee_premium">254.30</field>
+       <field name="er_premium">515.70</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_14" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">7250.00</field>
+       <field name="range_to">7750.00</field>
+       <field name="salary_credit">7500.00</field>
+       <field name="ee_premium">272.50</field>
+       <field name="er_premium">552.50</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_15" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">7750.00</field>
+       <field name="range_to">8250.00</field>
+       <field name="salary_credit">8000.00</field>
+       <field name="ee_premium">290.70</field>
+       <field name="er_premium">589.30</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_16" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">8250.00</field>
+       <field name="range_to">8750.00</field>
+       <field name="salary_credit">8500.00</field>
+       <field name="ee_premium">308.80</field>
+       <field name="er_premium">626.20</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_17" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">8750.00</field>
+       <field name="range_to">9250.00</field>
+       <field name="salary_credit">9000.00</field>
+       <field name="ee_premium">327.00</field>
+       <field name="er_premium">663.00</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_18" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">9250.00</field>
+       <field name="range_to">9750.00</field>
+       <field name="salary_credit">9500.00</field>
+       <field name="ee_premium">345.20</field>
+       <field name="er_premium">699.80</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_19" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">9750.00</field>
+       <field name="range_to">10250.00</field>
+       <field name="salary_credit">10000.00</field>
+       <field name="ee_premium">363.30</field>
+       <field name="er_premium">736.70</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_20" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">10250.00</field>
+       <field name="range_to">10750.00</field>
+       <field name="salary_credit">10500.00</field>
+       <field name="ee_premium">381.50</field>
+       <field name="er_premium">773.50</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_21" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">10750.00</field>
+       <field name="range_to">11250.00</field>
+       <field name="salary_credit">11000.00</field>
+       <field name="ee_premium">399.70</field>
+       <field name="er_premium">810.30</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_22" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">11250.00</field>
+       <field name="range_to">11750.00</field>
+       <field name="salary_credit">11500.00</field>
+       <field name="ee_premium">417.80</field>
+       <field name="er_premium">847.20</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_23" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">11750.00</field>
+       <field name="range_to">12250.00</field>
+       <field name="salary_credit">12000.00</field>
+       <field name="ee_premium">436.00</field>
+       <field name="er_premium">884.00</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_24" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">12250.00</field>
+       <field name="range_to">12750.00</field>
+       <field name="salary_credit">12500.00</field>
+       <field name="ee_premium">454.20</field>
+       <field name="er_premium">920.80</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_25" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">12750.00</field>
+       <field name="range_to">13250.00</field>
+       <field name="salary_credit">13000.00</field>
+       <field name="ee_premium">472.30</field>
+       <field name="er_premium">957.70</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_26" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">13250.00</field>
+       <field name="range_to">13750.00</field>
+       <field name="salary_credit">13500.00</field>
+       <field name="ee_premium">490.50</field>
+       <field name="er_premium">994.50</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_27" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">13750.00</field>
+       <field name="range_to">14250.00</field>
+       <field name="salary_credit">14000.00</field>
+       <field name="ee_premium">508.70</field>
+       <field name="er_premium">1031.30</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_28" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">14250.00</field>
+       <field name="range_to">14750.00</field>
+       <field name="salary_credit">14500.00</field>
+       <field name="ee_premium">526.80</field>
+       <field name="er_premium">1068.20</field>
+       <field name="ec_premium">10.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_29" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">14750.00</field>
+       <field name="range_to">15250.00</field>
+       <field name="salary_credit">15000.00</field>
+       <field name="ee_premium">545.00</field>
+       <field name="er_premium">1105.00</field>
+       <field name="ec_premium">30.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_30" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">15250.00</field>
+       <field name="range_to">15750.00</field>
+       <field name="salary_credit">15500.00</field>
+       <field name="ee_premium">563.20</field>
+       <field name="er_premium">1141.80</field>
+       <field name="ec_premium">30.00</field>
+     </record>
+     <record id="hr_ph_sss_id_2018_31" model="hr.ph.sss">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="range_from">15750.00</field>
+       <field name="range_to">99999999.99</field>
+       <field name="salary_credit">16000.00</field>
+       <field name="ee_premium">581.30</field>
+       <field name="er_premium">1178.70</field>
+       <field name="ec_premium">30.00</field>
+     </record>
+
+     <!-- daily -->
+
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_0">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="seq">10</field>
+       <field name="period">Daily</field>
+       <field name="name">Tax</field>
+       <field name="t1">0.0</field>
+       <field name="t2">0.0</field>
+       <field name="t3">0.0</field>
+       <field name="t4">0.0</field>
+       <field name="t5">82.19</field>
+       <field name="t6">356.16</field>
+       <field name="t7">1342.47</field>
+       <field name="t8">6602.74</field>
+       <field name="is_compute"></field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_1">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="seq">20</field>
+       <field name="period">Daily</field>
+       <field name="name">Over %</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">20</field>
+       <field name="t5">25</field>
+       <field name="t6">30</field>
+       <field name="t7">32</field>
+       <field name="t8">35</field>
+       <field name="is_compute"></field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_2">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="seq">30</field>
+       <field name="period">Daily</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">685</field>
+       <field name="t5">1096</field>
+       <field name="t6">2192</field>
+       <field name="t7">5479</field>
+       <field name="t8">21918</field>
+       <field name="is_compute">True</field>
+       <field name="name">Z</field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_3">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="seq">40</field>
+       <field name="period">Daily</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">685</field>
+       <field name="t5">1096</field>
+       <field name="t6">2192</field>
+       <field name="t7">5479</field>
+       <field name="t8">21918</field>
+       <field name="is_compute">True</field>
+       <field name="name">S/ME</field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_4">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="seq">50</field>
+       <field name="period">Daily</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">685</field>
+       <field name="t5">1096</field>
+       <field name="t6">2192</field>
+       <field name="t7">5479</field>
+       <field name="t8">21918</field>
+       <field name="is_compute">True</field>
+       <field name="name">ME1/S1</field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_5">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="seq">60</field>
+       <field name="period">Daily</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">685</field>
+       <field name="t5">1096</field>
+       <field name="t6">2192</field>
+       <field name="t7">5479</field>
+       <field name="t8">21918</field>
+       <field name="is_compute">True</field>
+       <field name="name">ME2/S2</field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_6">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="seq">70</field>
+       <field name="period">Daily</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">685</field>
+       <field name="t5">1096</field>
+       <field name="t6">2192</field>
+       <field name="t7">5479</field>
+       <field name="t8">21918</field>
+       <field name="is_compute">True</field>
+       <field name="name">ME3/S3</field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_7">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="seq">80</field>
+       <field name="period">Daily</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">685</field>
+       <field name="t5">1096</field>
+       <field name="t6">2192</field>
+       <field name="t7">5479</field>
+       <field name="t8">21918</field>
+       <field name="is_compute">True</field>
+       <field name="name">ME4/S4</field>
+     </record>
+
+     <!-- weekly -->
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_8">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="seq">90</field>
+       <field name="period">Weekly</field>
+       <field name="name">Tax</field>
+       <field name="t1">0.0</field>
+       <field name="t2">0.0</field>
+       <field name="t3">0.0</field>
+       <field name="t4">0.0</field>
+       <field name="t5">576.92</field>
+       <field name="t6">2500</field>
+       <field name="t7">9423.08</field>
+       <field name="t8">46346.15</field>
+       <field name="is_compute"></field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_9">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="seq">100</field>
+       <field name="period">Weekly</field>
+       <field name="name">Over %</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">20</field>
+       <field name="t5">25</field>
+       <field name="t6">30</field>
+       <field name="t7">32</field>
+       <field name="t8">35</field>
+       <field name="is_compute"></field>
+     </record>
+
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_10">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="period">Weekly</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">4808</field>
+       <field name="t5">7692</field>
+       <field name="t6">15385</field>
+       <field name="t7">38462</field>
+       <field name="t8">153846</field>
+       <field name="seq">110</field>
+       <field name="is_compute">True</field>
+       <field name="name">Z</field>
+     </record>
+
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_11">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="period">Weekly</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">4808</field>
+       <field name="t5">7692</field>
+       <field name="t6">15385</field>
+       <field name="t7">38462</field>
+       <field name="t8">153846</field>
+       <field name="seq">120</field>
+       <field name="is_compute">True</field>
+       <field name="name">S/ME</field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_12">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="period">Weekly</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">4808</field>
+       <field name="t5">7692</field>
+       <field name="t6">15385</field>
+       <field name="t7">38462</field>
+       <field name="t8">153846</field>
+       <field name="seq">130</field>
+       <field name="is_compute">True</field>
+       <field name="name">ME1/S1</field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_13">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="period">Weekly</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">4808</field>
+       <field name="t5">7692</field>
+       <field name="t6">15385</field>
+       <field name="t7">38462</field>
+       <field name="t8">153846</field>
+       <field name="seq">140</field>
+       <field name="is_compute">True</field>
+       <field name="name">ME2/S2</field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_14">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="period">Weekly</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">4808</field>
+       <field name="t5">7692</field>
+       <field name="t6">15385</field>
+       <field name="t7">38462</field>
+       <field name="t8">153846</field>
+       <field name="seq">150</field>
+       <field name="is_compute">True</field>
+       <field name="name">ME3/S3</field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_15">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="period">Weekly</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">4808</field>
+       <field name="t5">7692</field>
+       <field name="t6">15385</field>
+       <field name="t7">38462</field>
+       <field name="t8">153846</field>
+       <field name="seq">160</field>
+       <field name="is_compute">True</field>
+       <field name="name">ME4/S4</field>
+     </record>
+
+     <!-- semi-monthly -->
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_sm_tax">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="name">Tax</field>
+       <field name="t1">0.0</field>
+       <field name="t2">0.0</field>
+       <field name="t3">0.0</field>
+       <field name="t4">0.0</field>
+       <field name="t5">1250</field>
+       <field name="t6">5416.67</field>
+       <field name="t7">20416.67</field>
+       <field name="t8">100416.67</field>
+       <field name="seq">170</field>
+       <field name="is_compute"></field>
+       <field name="period">Semi-monthly</field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_sm_pct">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="name">Over %</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">20</field>
+       <field name="t5">25</field>
+       <field name="t6">30</field>
+       <field name="t7">32</field>
+       <field name="t8">35</field>
+       <field name="seq">180</field>
+       <field name="is_compute"></field>
+       <field name="period">Semi-monthly</field>
+     </record>
+
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_18">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="period">Semi-monthly</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">10417</field>
+       <field name="t5">16667</field>
+       <field name="t6">33333</field>
+       <field name="t7">83333</field>
+       <field name="t8">333333</field>
+       <field name="seq">190</field>
+       <field name="is_compute">True</field>
+       <field name="name">Z</field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_19">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="period">Semi-monthly</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">10417</field>
+       <field name="t5">16667</field>
+       <field name="t6">33333</field>
+       <field name="t7">83333</field>
+       <field name="t8">333333</field>
+       <field name="seq">200</field>
+       <field name="is_compute">True</field>
+       <field name="name">S/ME</field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_20">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="period">Semi-monthly</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">10417</field>
+       <field name="t5">16667</field>
+       <field name="t6">33333</field>
+       <field name="t7">83333</field>
+       <field name="t8">333333</field>
+       <field name="seq">210</field>
+       <field name="is_compute">True</field>
+       <field name="name">ME1/S1</field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_21">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="period">Semi-monthly</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">10417</field>
+       <field name="t5">16667</field>
+       <field name="t6">33333</field>
+       <field name="t7">83333</field>
+       <field name="t8">333333</field>
+       <field name="seq">220</field>
+       <field name="is_compute">True</field>
+       <field name="name">ME2/S2</field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_22">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="period">Semi-monthly</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">10417</field>
+       <field name="t5">16667</field>
+       <field name="t6">33333</field>
+       <field name="t7">83333</field>
+       <field name="t8">333333</field>
+       <field name="seq">230</field>
+       <field name="is_compute">True</field>
+       <field name="name">ME3/S3</field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_23">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="period">Semi-monthly</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">10417</field>
+       <field name="t5">16667</field>
+       <field name="t6">33333</field>
+       <field name="t7">83333</field>
+       <field name="t8">333333</field>
+       <field name="seq">240</field>
+       <field name="is_compute">True</field>
+       <field name="name">ME4/S4</field>
+     </record>
+
+     <!-- monthly -->
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_montly_tax">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="name">Tax</field>
+       <field name="t1">0.0</field>
+       <field name="t2">0.0</field>
+       <field name="t3">0.0</field>
+       <field name="t4">0.0</field>
+       <field name="t5">2500</field>
+       <field name="t6">10833.33</field>
+       <field name="t7">40833.33</field>
+       <field name="t8">200833.33</field>
+       <field name="seq">250</field>
+       <field name="is_compute"></field>
+       <field name="period">Monthly</field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_montly_pct">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="name">Over %</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">20</field>
+       <field name="t5">25</field>
+       <field name="t6">30</field>
+       <field name="t7">32</field>
+       <field name="t8">35</field>
+       <field name="seq">260</field>
+       <field name="is_compute"></field>
+       <field name="period">Monthly</field>
+     </record>
+
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_26">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="period">Monthly</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">20833</field>
+       <field name="t5">33333</field>
+       <field name="t6">66667</field>
+       <field name="t7">166667</field>
+       <field name="t8">666667</field>
+       <field name="seq">270</field>
+       <field name="is_compute">True</field>
+       <field name="name">Z</field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_27">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="period">Monthly</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">20833</field>
+       <field name="t5">33333</field>
+       <field name="t6">66667</field>
+       <field name="t7">166667</field>
+       <field name="t8">666667</field>
+       <field name="seq">280</field>
+       <field name="is_compute">True</field>
+       <field name="name">S/ME</field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_28">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="period">Monthly</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">20833</field>
+       <field name="t5">33333</field>
+       <field name="t6">66667</field>
+       <field name="t7">166667</field>
+       <field name="t8">666667</field>
+       <field name="seq">290</field>
+       <field name="is_compute">True</field>
+       <field name="name">ME1/S1</field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_29">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="period">Monthly</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">20833</field>
+       <field name="t5">33333</field>
+       <field name="t6">66667</field>
+       <field name="t7">166667</field>
+       <field name="t8">666667</field>
+       <field name="seq">300</field>
+       <field name="is_compute">True</field>
+       <field name="name">ME2/S2</field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_30">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="period">Monthly</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">20833</field>
+       <field name="t5">33333</field>
+       <field name="t6">66667</field>
+       <field name="t7">166667</field>
+       <field name="t8">666667</field>
+       <field name="seq">310</field>
+       <field name="is_compute">True</field>
+       <field name="name">ME3/S3</field>
+     </record>
+     <record model="hr.ph.wtax" id="hr_ph_wtax_2018_31">
+       <field name="govded_id" ref="govded_version_2018"/>
+       <field name="period">Monthly</field>
+       <field name="t1">0</field>
+       <field name="t2">0</field>
+       <field name="t3">0</field>
+       <field name="t4">20833</field>
+       <field name="t5">33333</field>
+       <field name="t6">66667</field>
+       <field name="t7">166667</field>
+       <field name="t8">666667</field>
+       <field name="seq">320</field>
+       <field name="is_compute">True</field>
+       <field name="name">ME4/S4</field>
+     </record>
+
+   </data>
+ </odoo>

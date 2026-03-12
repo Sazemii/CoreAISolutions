@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2022
+======================================== -->
+<odoo>
+  <record id="form_timecard_attendance_inherit" model="ir.ui.view">
+    <field name="name">form_timecard_attendance_inherit</field>
+    <field name="model">ez.time.card</field>
+    <field name="inherit_id" ref="ez_timekeeping.form_timecard"/>
+    <field name="arch" type="xml">
+
+      <button name="del_time_lines" position="after">
+        <button name="fill_from_attendance" string="Fill from Attendance"
+          confirm="Are you sure to fill data from attendance?"
+          invisible="state not in ('draft')" type="object"/>
+        <!-- <button name="test_demo" string="Test Demo" type="object"/> -->
+      </button>
+
+    </field>
+  </record>
+
+  <record id="form_batch_att_inh" model="ir.ui.view">
+    <field name="name">form_batch_att_inh</field>
+    <field name="model">wz.timecard.batch</field>
+    <field name="inherit_id" ref="ez_timekeeping.form_batch"/>
+    <field name="arch" type="xml">
+
+      <xpath expr="//footer/button[2]" position="after">
+        <button string="Generate Timecard and Fill From Attendance" 
+          confirm="This may take a long time. Continue?"
+          class="btn-primary" name="batch_generate_fill_attendance" type="object"/>
+        <button string="Fill From Attendance" 
+          confirm="This may take a long time. Continue?"
+          name="batch_fill_attendance" type="object"/>
+      </xpath>
+
+    </field>
+  </record>
+
+  <!-- Remove private info on My Profile -->
+  <!-- <record id="hr_user_view_form_inh" model="ir.ui.view">
+    <field name="name">hr_user_view_form_inh</field>
+    <field name="model">res.users</field>
+    <field name="inherit_id" ref="hr_attendance.hr_user_view_form"/>
+    <field name="arch" type="xml">
+
+      <field name="employee_ids" position="replace"/>
+
+    </field>
+  </record> -->
+
+  <record id="multi_fill_attendance" model="ir.actions.server">
+      <field name="name">Fill from Attendance</field>
+      <field name="type">ir.actions.server</field>
+      <field name="model_id" ref="model_ez_time_card"/>
+      <field name="state">code</field>
+      <field name="code">
+allowed_group = env.ref('ez_timekeeping.group_timekeeping_manager').id
+user_group = env.user.group_ids.ids
+if records and allowed_group in user_group:
+  action = records.fill_from_attendance()
+      </field>
+      <field name="binding_model_id" ref="model_ez_time_card"/>
+  </record>
+
+</odoo>

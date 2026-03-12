@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+    <record id="ez_payroll_res_config_settings_view_form_inh" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.ez_payroll</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="70"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+
+                <app data-string="Payroll" string="Payroll" name="ez_payroll" groups="ez_payroll.group_hr_payroll_manager">
+                    <block title="Payroll Settings" name="payroll_setting_container">
+                        <setting help="Text header that is printed on top of payslip report." id="id_payslip_header">
+                            <field name="resource_payslip_header" class="o_light_label" placeholder="ABC Corporation..."/>
+                        </setting>
+                        <setting id="id_default_emr_days" 
+                            help="Number of working days in a year. Used as reference to compute daily rate of employees with monthly salary base."> 
+                            <field name="default_emr_days" class="o_light_label"/>
+                        </setting>
+                        <setting id="id_default_emr_days"
+                            help="Link leaves management to Philippine Payroll module." >
+                            <field name="module_ez_leaves" class="o_light_label"/>
+                        </setting>
+                        <setting id="id_ez_hr_namesplit"
+                            help="Split name of employee into family, first and middle names.">
+                            <field name="module_ez_hr_namesplit" class="o_light_label"/>
+                        </setting>
+                        <setting id="id_ez_hr_showid"
+                            help="Displays company ID together with name.">
+                            <field name="module_ez_hr_showid" class="o_light_label"/>
+                        </setting>
+                        <setting id="id_ez_payroll_alphalist"
+                            help="Enable BIR Alphalist Report.">
+                            <field name="module_ez_payroll_alphalist" class="o_light_label"/>
+                        </setting>
+                        <setting id="id_ez_payroll_account"
+                            help="PH Payroll link to accounting.">
+                            <field name="module_ez_payroll_account" class="o_light_label"/>
+                        </setting>
+                        <setting id="id_ez_payroll_salary"
+                            help="Salary info on individual compensation sheet lines and in Timekeeping.">
+                            <field name="module_ez_payroll_salary" class="o_light_label"/>
+                        </setting>
+                        <setting id="id_ez_payroll_payslip1"
+                            help="Alternate payslip format #1.">
+                            <field name="module_ez_payroll_payslip1" class="o_light_label"/>
+                        </setting>
+                        <setting id="id_default_ym_adjustment"
+                            help="Ajustment in days for year-month computation." >
+                            <field name="default_ym_adjustment" class="o_light_label"/>
+                        </setting>
+                        <setting id="id_module_ez_payroll_salary_increase"
+                            help="Process salary increase that happens in the middle of a period using pro-rated salary." >
+                            <field name="module_ez_payroll_salary_increase" class="o_light_label"/>
+                        </setting>
+                        <setting id="id_module_ez_payroll_coe"
+                            help="Automatic creation of Certificate of Employment for employees." >
+                            <field name="module_ez_payroll_coe" class="o_light_label"/>
+                            <div invisible="not module_ez_payroll_coe">
+                                <span>Certified By:</span><field name="coe_certified_id" class="o_light_label"/>
+                            </div>
+                        </setting>
+                        <setting id="id_module_ez_payroll_variance"
+                            help="Variance report of employee payroll between months." >
+                            <field name="module_ez_payroll_variance" class="o_light_label"/>
+                        </setting>
+                    </block>
+
+                    <block title="Timekeeping Settings" name="payroll_setting_container">
+                        <setting id="id_module_ez_timekeeping"
+                            help="Timelogs, shift and schedules for timekeeping.">
+                            <field name="module_ez_timekeeping" class="o_light_label"/>
+                        </setting>
+                        <setting id="id_module_ez_timekeeping_attendance"
+                            help="Enable Timekeeping link to Attendance.">
+                            <field name="module_ez_timekeeping_attendance" class="o_light_label"/>
+                        </setting>
+                        <setting id="id_module_ez_timekeeping_payroll"
+                            help="Enable Timekeeping link to Attendance.">
+                            <field name="module_ez_timekeeping_payroll" class="o_light_label"/>
+                            <div invisible="not module_ez_timekeeping_payroll">
+                                <field name="is_no_holiday_if_absent" class="o_light_label"/>
+                                <span class="ps-1">Regular Holiday paid not added if absent</span>
+                            </div>
+                            <div invisible="not (module_ez_timekeeping_payroll and is_no_holiday_if_absent)">
+                                <field name="is_monthly_holiday_paid" class="o_light_label"/>
+                                <span class="ps-1">Add Regular Holiday Paid if monthly</span>
+                            </div>
+                            <div invisible="not module_ez_timekeeping_payroll">
+                                <span>Special Holiday Work factor for monthly </span>
+                                <field name="sh_work_factor" class="o_light_label"/>
+                            </div>
+                        </setting>
+                        <setting id="id_module_ez_timekeeping_log"
+                            help="Enable Timekeeping using DTR Machine Log Recording.">
+                            <field name="module_ez_timekeeping_log" class="o_light_label"/>
+                        </setting>
+                        <setting id="id_module_ez_timekeeping_request"
+                            help="Request and approval of overtime and official business for Timekeeping.">
+                            <field name="module_ez_timekeeping_request" class="o_light_label"/>
+                        </setting>
+                        <setting id="id_module_ez_timekeeping_request_sch"
+                            help="Request on schedule change for Timekeeping.">
+                            <field name="module_ez_timekeeping_request_sch" class="o_light_label"/>
+                        </setting>
+                        <setting id="id_module_ez_timekeeping_sched"
+                            help="Custom work schedule on date range.">
+                            <field name="module_ez_timekeeping_sched" class="o_light_label"/>
+                        </setting>
+
+
+
+                    </block>
+
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="payroll_config_settings_action" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'module' : 'ez_payroll'}</field>
+    </record>
+
+    <menuitem id="payroll_menu_configuration"
+        name="Settings"
+        parent="menu_config_payroll"
+        sequence="2"
+        action="payroll_config_settings_action"
+        groups="base.group_system"/>
+
+    <!-- <menuitem id="hr_menu_configuration"
+        name="Settings"
+        parent="menu_human_resources_configuration"
+        sequence="0"
+        action="hr_config_settings_action"
+        groups="base.group_system"/> -->
+
+</odoo>

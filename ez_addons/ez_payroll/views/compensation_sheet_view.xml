@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+    <record id="list_compensation_lines" model="ir.ui.view">
+      <field name="name">list_compensation_lines</field>
+      <field name="model">ez.work.summary.line</field>
+      <field name="arch" type="xml">
+        <list string="Details" class="ez_compensation_tree">
+          <field name="seq" widget="handle"/>
+          <field name="date"/>
+          <field name="name"/>
+          <field name="employee_id" widget="many2one_avatar_employee"/>
+          <field name="work_type_id"/>
+          <field name="qty" string="Qty"/>
+          <field name="unit"/>
+          <field name="factor" string="Factor"/>
+          <field name="basic_pay" string="BP"/>
+          <field name="taxable" string="Tax"/>
+        </list>
+      </field>
+    </record>
+
+    <record id="tree_ez_work_summary_sheet" model="ir.ui.view">
+        <field name="name">ez.work.summary.sheet.tree</field>
+        <field name="model">ez.work.summary.sheet</field>
+        <field name="arch" type="xml">
+          <list string="Compensation Sheets" decoration-danger="state=='draft'">
+            <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            <field name="name"/>
+            <field name="date"/>
+            <field name="work_type_group_id"/>
+            <field name="xls_file" filename="filename"/>
+            <field name="filename" column_invisible="1"/>
+            <field name="state" widget="badge" 
+              decoration-danger="state == 'draft'"
+              decoration-success="state == 'done'"
+            />
+            <!-- <field name="note"/> -->
+          </list>
+        </field>
+    </record>
+
+    <record id="form_ez_work_summary_line" model="ir.ui.view">
+      <field name="name">form_ez_work_summary_line</field>
+      <field name="model">ez.work.summary.line</field>
+      <field name="arch" type="xml">
+        <form string="Compensation Sheet Lines">
+          <sheet>
+            <group>
+              <group>
+                <field name="seq"/>
+                <field name="employee_id" widget="many2one_avatar_user" domain="[('company_id','=',parent.company_id)]"/>
+                <field name="work_type_id" domain="[('work_type_group_id','=',parent.work_type_group_id)]"/>
+              </group>
+              <group>
+                <field name="qty" string="Quantity"/>
+                <field name="unit"/>
+                <field name="factor" string="Factor"/>
+              </group>
+            </group>
+            <group>
+              <group>
+                <field name="basic_pay" string="Basic Pay"/>
+                <field name="taxable" string="Taxable"/>
+              </group>
+              <group>
+                <field name="date"/>
+                <field name="payroll_name"/>
+                <field name="name" invisible="1"/>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+
+    <record id="form_ez_work_summary_sheet" model="ir.ui.view">
+        <field name="name">form_ez_work_summary_sheet</field>
+        <field name="model">ez.work.summary.sheet</field>
+        <field name="arch" type="xml">
+          <form string="Compensation Sheet">
+            <header>
+              <button name="set_as_done"
+                invisible="state not in ('draft')"
+                string="Set as Done" type="object" class="oe_highlight"/>
+              <button name="cancel_done"
+                invisible="state not in ('done')"
+                groups="ez_payroll.group_hr_payroll_manager"
+                string="Cancel/Back to Draft" type="object"/>
+              <field name="state" widget="statusbar" statusbar_visible="draft,done"
+                statusbar_colors='{"done":"blue","draft":"red"}' readonly="1"/>
+            </header>
+            <sheet>
+              <widget name="web_ribbon" title="Done" bg_color="text-bg-success" invisible="state!='done'"/>
+              <div class="oe_title">
+                <label for="name" class="oe_edit_only"/>
+                <h1>
+                  <field name="name" required="1" readonly="state not in ['draft']"
+                    placeholder="eg. Allowances Sept 2021 A"/>
+                </h1>
+              </div> 
+
+              <group>
+                <group name="info1">
+                  <field name="date" readonly="state not in ['draft']"/>
+                  <field name="work_type_group_id" readonly="state not in ['draft']"/>
+                  <field name="company_id" invisible="1"/>
+                </group>
+                <group name="info2">
+                  <label for="filename" string="Excel File"/>
+                  <div>
+                    <field name="xls_file" filename="filename" readonly="state not in ['draft']"/>
+                    <field name="filename" invisible="1"/>
+                    <button name="import_excel" 
+                      invisible="state != 'draft' or xls_file==False"
+                      confirm="Are you sure to import excel file?"
+                      string="Import" type="object" />
+                  </div>
+                  <!-- axttrs="{'invisible':['|',('xls_file', '=', False),('state','!=','draft')]}" -->
+                </group>
+              </group>
+              <notebook>
+                  <page string="Details">
+                      <field name="work_summary_line"
+                        readonly="state not in ['draft']"
+                        context="{
+                          'default_work_type_id': default_work_type_id,
+                          'default_unit': default_unit,
+                          'default_qty': default_qty,
+                          'work_summary_line': work_summary_line,
+                        }">
+                        <list string="Details" class="ez_compensation_tree">
+                            <field name="seq" widget="handle"/>
+                            <field name="employee_id" widget="many2one_avatar_employee"/>
+                            <field name="work_type_id" domain="[('work_type_group_id','=',parent.work_type_group_id)]"/>
+                            <field name="qty" string="Qty"/>
+                            <field name="unit"/>
+                            <field name="factor" string="Factor"/>
+                            <field name="amount" optional="show" sum="Total Amount1"/>
+                            <field name="basic_pay" string="BP"/>
+                            <field name="taxable" string="Tax"/>
+                            <field name="payroll_name" optional="hide"/>
+                            <field name="payslip_id" optional="hide"/>
+                            <field name="name" column_invisible="1"/>
+                        </list>
+                      </field>
+                  </page>
+                  <page string="Default / Bulk Entry" 
+                    invisible="state not in ('draft')"
+                  >
+                    <group>
+                      <group string="Defaults">
+                        <field name="emp_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" readonly="state not in ['draft']"/>
+                        <field name="default_work_type_id" readonly="state not in ['draft']"
+                          domain="[('work_type_group_id','=',work_type_group_id)]"/>
+                        <field name="default_qty" readonly="state not in ['draft']"/>
+                        <label for="default_unit" readonly="state not in ['draft']"/>
+                        <div>
+                          <field name="default_unit"/>
+                          <!-- domain="[('work_type_group_id','=',work_type_group_id)]" -->
+                          <button name="add_bulk_lines"
+                            type="object"
+                            invisible="state not in ('draft')"
+                            class="oe_highlight"
+                            confirm="This will delete existing detail lines. Are you sure to continue?"
+                            string="Add Bulk"/>
+                        </div>
+                        <!--
+                        <field name="next_seq"/>
+                      -->
+                      </group>
+                    </group>
+                  </page>
+                  <page string="Notes">
+                      <field name="note"/>
+                  </page>
+              </notebook>
+            </sheet>
+            <chatter/>
+          </form>
+        </field>
+    </record>
+
+<!--
+    <record id="tree_ez_work_summary_line" model="ir.ui.view">
+      <field name="name">ez.work.summary.line.tree</field>
+      <field name="model">ez.work.summary.line</field>
+        <field name="arch" type="xml">
+            <list string="Work Summary Lines">
+                <field name="seq"/>
+                <field name="employee_id"/>
+                <field name="work_type_id" domain="[('work_type_group_id','=',parent.work_type_group_id)]"/>
+                <field name="qty" string="Qty"/>
+                <field name="unit"/>
+                <field name="factor" string="Factor"/>
+                <field name="basic_pay" string="BP"/>
+                <field name="taxable" string="Tax"/>
+                <field name="payroll_name"/>
+                <field name="name" invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="form_ez_work_summary_line" model="ir.ui.view">
+      <field name="name">ez.work.summary.line.form</field>
+      <field name="model">ez.work.summary.line</field>
+        <field name="arch" type="xml">
+            <form string="Work Summary Lines">
+              <group>
+                <group>
+                  <field name="seq"/>
+                  <field name="employee_id"/>
+                  <field name="work_type_id" domain="[('work_type_group_id','=',parent.work_type_group_id)]"/>
+                  <field name="qty" string="Qty"/>
+                  <field name="unit"/>
+                  <field name="factor" string="Factor"/>
+                </group>
+                <group>
+                  <field name="basic_pay" string="BP"/>
+                  <field name="taxable" string="Tax"/>
+                  <field name="payroll_name"/>
+                  <field name="name" invisible="1"/>
+                </group>
+              </group>
+            </form>
+        </field>
+    </record>
+  -->
+
+    <record id="search_ez_work_summary_sheet" model="ir.ui.view">
+      <field name="name">ez.work.summary.sheet.search</field>
+      <field name="model">ez.work.summary.sheet</field>
+      <field name="arch" type="xml">
+        <search string="Compensation Sheets">
+          <field name="name"/>
+          <field name="date"/>
+          <filter name="filter_draft" string="Draft" domain="[('state','=','draft')]"/>
+          <filter name="filter_done" string="Done" domain="[('state','=','done')]"/>
+        </search>
+      </field>
+    </record>
+
+    <record id="open_ez_work_summary_sheet" model="ir.actions.act_window">
+        <field name="name">Compensation Sheets</field>
+        <field name="res_model">ez.work.summary.sheet</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="search_ez_work_summary_sheet"/>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to create a compensation sheet.
+          </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_ez_work_summary_sheet"
+        action="open_ez_work_summary_sheet"
+        parent="ez_payroll.menu_hr_payroll_main"
+        groups="ez_payroll.group_hr_payroll_user"
+        sequence="20" />
+
+</odoo>

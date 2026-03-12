@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2021
+======================================== -->
+<odoo>
+
+  <record id="hr_leave_view_tree_inh" model="ir.ui.view">
+    <field name="name">hr_leave_view_tree_inh</field>
+    <field name="model">hr.leave</field>
+    <field name="inherit_id" ref="hr_holidays.hr_leave_view_tree"/>
+    <field name="arch" type="xml">
+
+      <field name="state" position="before">
+        <field name="payroll_name"/>
+      </field>
+
+    </field>
+  </record>
+
+
+  <record id="hr_leave_view_form_manager_inh" model="ir.ui.view">
+    <field name="name">hr_leave_view_form_manager_inh</field>
+    <field name="model">hr.leave</field>
+    <field name="inherit_id" ref="hr_holidays.hr_leave_view_form_manager"/>
+    <field name="arch" type="xml">
+
+      <field name="state" position="before">
+        <field name="payroll_name"/>
+      </field>
+
+    </field>
+  </record>
+
+  <record id="edit_holiday_status_form_inh" model="ir.ui.view">
+    <field name="name">hr.leave.type.form.inherit</field>
+    <field name="model">hr.leave.type</field>
+    <field name="inherit_id" ref="hr_holidays.edit_holiday_status_form"/>
+    <field name="arch" type="xml">
+
+      <field name="leave_validation_type" position="after">
+        <field name="unpaid"/>
+      </field>
+
+    </field>
+  </record>
+
+
+  <!-- <record id="edit_holiday_status_form_inh" model="ir.ui.view">
+    <field name="name">edit_holiday_status_form_inh</field>
+    <field name="model">hr.leave.type</field>
+    <field name="inherit_id" ref="hr_holidays.edit_holiday_status_form"/>
+    <field name="arch" type="xml">
+
+      <field name="time_type" position="after">
+        <field name="unpaid"/>
+      </field>
+
+    </field>
+  </record> -->
+
+  <!-- Time off types  ################################################# -->
+
+  <data noupdate="1">
+
+    <record id="holiday_status_el" model="hr.leave.type">
+      <field name="name">Emergency Leave</field>
+      <field name="requires_allocation">yes</field>
+      <field name="employee_requests">no</field>
+      <field name="leave_validation_type">manager</field>
+      <field name="allocation_validation_type">hr</field>
+      <field name="responsible_ids" eval="[(4, ref('base.user_admin'))]"/>
+      <field name="icon_id" ref="hr_holidays.icon_1"/>
+      <field name="color">4</field>
+      <field name="company_id" eval="False"/>
+      <field name="country_id" eval="False"/>
+      <field name="sequence">100</field>
+      <field name="request_unit">half_day</field>
+      <field name="leave_notif_subtype_id" ref="hr_holidays.mt_leave"/>
+      <field name="allocation_notif_subtype_id" ref="hr_holidays.mt_leave_allocation"/>
+    </record>
+
+    <record id="holiday_status_sil" model="hr.leave.type">
+      <field name="name">Service Incentive Leave</field>
+      <field name="requires_allocation">yes</field>
+      <field name="employee_requests">no</field>
+      <field name="leave_validation_type">manager</field>
+      <field name="allocation_validation_type">hr</field>
+      <field name="responsible_ids" eval="[(4, ref('base.user_admin'))]"/>
+      <field name="icon_id" ref="hr_holidays.icon_14"/>
+      <field name="color">6</field>
+      <field name="company_id" eval="False"/>
+      <field name="sequence">110</field>
+      <field name="request_unit">half_day</field>
+      <field name="country_id" eval="False"/>
+      <field name="leave_notif_subtype_id" ref="hr_holidays.mt_leave"/>
+      <field name="allocation_notif_subtype_id" ref="hr_holidays.mt_leave_allocation"/>
+    </record>
+
+    <record id="holiday_status_csr" model="hr.leave.type">
+      <field name="name">CSR Leave</field>
+      <field name="requires_allocation">yes</field>
+      <field name="employee_requests">no</field>
+      <field name="leave_validation_type">manager</field>
+      <field name="allocation_validation_type">hr</field>
+      <field name="responsible_ids" eval="[(4, ref('base.user_admin'))]"/>
+      <field name="icon_id" ref="hr_holidays.icon_14"/>
+      <field name="color">7</field>
+      <field name="company_id" eval="False"/>
+      <field name="sequence">120</field>
+      <field name="request_unit">half_day</field>
+      <field name="country_id" eval="False"/>
+      <field name="leave_notif_subtype_id" ref="hr_holidays.mt_leave"/>
+      <field name="allocation_notif_subtype_id" ref="hr_holidays.mt_leave_allocation"/>
+    </record>
+
+    <record id="holiday_status_mh" model="hr.leave.type">
+      <field name="name">Mental Health Leave</field>
+      <field name="requires_allocation">yes</field>
+      <field name="employee_requests">no</field>
+      <field name="leave_validation_type">manager</field>
+      <field name="allocation_validation_type">hr</field>
+      <field name="responsible_ids" eval="[(4, ref('base.user_admin'))]"/>
+      <field name="icon_id" ref="hr_holidays.icon_21"/>
+      <field name="color">7</field>
+      <field name="company_id" eval="False"/> 
+      <field name="sequence">130</field>
+      <field name="request_unit">half_day</field>
+      <field name="country_id" eval="False"/>
+      <field name="leave_notif_subtype_id" ref="hr_holidays.mt_leave"/>
+      <field name="allocation_notif_subtype_id" ref="hr_holidays.mt_leave_allocation"/>
+    </record>
+
+    <record id="holiday_status_maternity" model="hr.leave.type">
+      <field name="name">Maternity Leave</field>
+      <field name="requires_allocation">no</field>
+      <field name="employee_requests">no</field>
+      <field name="responsible_ids" eval="[(4, ref('base.user_admin'))]"/>
+      <field name="support_document">True</field>
+      <field name="leave_validation_type">manager</field>
+      <field name="icon_id" ref="hr_holidays.icon_17"/>
+      <field name="color">8</field>
+      <field name="company_id" eval="False"/> 
+      <field name="sequence">140</field>
+      <field name="country_id" eval="False"/>
+      <field name="leave_notif_subtype_id" ref="hr_holidays.mt_leave"/>
+      <field name="allocation_notif_subtype_id" ref="hr_holidays.mt_leave_allocation"/>
+    </record>
+
+    <record id="holiday_status_paternity" model="hr.leave.type">
+      <field name="name">Paternity Leave</field>
+      <field name="requires_allocation">no</field>
+      <field name="employee_requests">no</field>
+      <field name="responsible_ids" eval="[(4, ref('base.user_admin'))]"/>
+      <field name="support_document">True</field>
+      <field name="leave_validation_type">manager</field>
+      <field name="icon_id" ref="hr_holidays.icon_17"/>
+      <field name="color">9</field>
+      <field name="company_id" eval="False"/> 
+      <field name="sequence">150</field>
+      <field name="country_id" eval="False"/>
+      <field name="leave_notif_subtype_id" ref="hr_holidays.mt_leave"/>
+      <field name="allocation_notif_subtype_id" ref="hr_holidays.mt_leave_allocation"/>
+    </record>
+
+    <record id="holiday_status_mcw" model="hr.leave.type">
+      <field name="name">Magna Carta of Women Leave</field>
+      <field name="requires_allocation">no</field>
+      <field name="employee_requests">no</field>
+      <field name="responsible_ids" eval="[(4, ref('base.user_admin'))]"/>
+      <field name="support_document">True</field>
+      <field name="leave_validation_type">manager</field>
+      <field name="icon_id" ref="hr_holidays.icon_21"/>
+      <field name="color">10</field>
+      <field name="company_id" eval="False"/> 
+      <field name="sequence">160</field>
+      <field name="country_id" eval="False"/>
+      <field name="leave_notif_subtype_id" ref="hr_holidays.mt_leave"/>
+      <field name="allocation_notif_subtype_id" ref="hr_holidays.mt_leave_allocation"/>
+    </record>
+
+    <record id="holiday_status_solo_parent" model="hr.leave.type">
+      <field name="name">Solo Parent Leave</field>
+      <field name="requires_allocation">no</field>
+      <field name="employee_requests">no</field>
+      <field name="responsible_ids" eval="[(4, ref('base.user_admin'))]"/>
+      <field name="support_document">True</field>
+      <field name="leave_validation_type">manager</field>
+      <field name="icon_id" ref="hr_holidays.icon_17"/>
+      <field name="color">11</field>
+      <field name="company_id" eval="False"/> 
+      <field name="sequence">160</field>
+      <field name="country_id" eval="False"/>
+      <field name="leave_notif_subtype_id" ref="hr_holidays.mt_leave"/>
+      <field name="allocation_notif_subtype_id" ref="hr_holidays.mt_leave_allocation"/>
+    </record>
+
+    <record id="holiday_status_vawc" model="hr.leave.type">
+      <field name="name">Violence Against Women and their Children Leave</field>
+      <field name="requires_allocation">no</field>
+      <field name="employee_requests">no</field>
+      <field name="responsible_ids" eval="[(4, ref('base.user_admin'))]"/>
+      <field name="support_document">True</field>
+      <field name="leave_validation_type">manager</field>
+      <field name="icon_id" ref="hr_holidays.icon_4"/>
+      <field name="color">12</field>
+      <field name="company_id" eval="False"/> 
+      <field name="sequence">160</field>
+      <field name="country_id" eval="False"/>
+      <field name="leave_notif_subtype_id" ref="hr_holidays.mt_leave"/>
+      <field name="allocation_notif_subtype_id" ref="hr_holidays.mt_leave_allocation"/>
+    </record> 
+
+  </data>
+
+</odoo>

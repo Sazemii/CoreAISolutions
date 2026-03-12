@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<odoo>
+
+  <record id="day_shift" model="ez.shift">
+    <field name="name">Day Shift</field>
+    <field name="default_schedule">08:00-11:30 12:30-17:00</field>
+    <field name="auto_auth" eval="True"/>
+  </record>
+
+</odoo>

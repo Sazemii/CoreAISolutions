@@ -1,0 +1,1 @@
+from.import deduction_wizard,bank_wizard

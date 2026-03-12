@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+  <record model="ir.ui.view" id="view_annual_graph">
+      <field name="name">hr.ph.payslip.report_graph</field>
+      <field name="model">hr.ph.payslip</field>
+      <field name="priority">20</field>
+      <field name="arch" type="xml">
+          <pivot string="Annualization">
+              <!-- <field name="minimum_wage" type="row"/> -->
+              <field name="name" type="row"/>
+              <field name="gross_pay" type="measure"/>
+              <field name="basic_pay" type="measure"/>
+
+              <field name="holiday_pay" type="measure"/>
+              <field name="overtime_pay" type="measure"/>
+              <field name="night_diff" type="measure"/>
+              <field name="hazard_pay" type="measure"/>
+              <field name="amount_13mp" type="measure"/>
+              <!-- <field name="nt_income" type="measure"/> -->
+              <field name="de_minimis" type="measure"/>
+              <field name="other_pay" type="measure"/>
+              <field name="td_deductions" type="measure"/>
+
+              <field name="taxable" type="measure"/>
+              <field name="wtax" type="measure"/>
+          </pivot>
+      </field>
+  </record>
+
+  <record model="ir.actions.act_window" id="action_annual_report">
+      <field name="name">Annualization</field>
+      <field name="res_model">hr.ph.payslip</field>
+      <field name="view_mode">pivot</field>
+      <field name="view_ids" eval="[
+        (5, 0, 0), (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_annual_graph')}),
+      ]"/>
+      <field name="context">{'search_default_this_year': 1}</field>
+      <field name="domain">[('state','!=','draft')]</field>
+  </record>
+
+  <menuitem
+    name="Annualization"
+    id="menu_annual_report"
+    action="action_annual_report"
+    parent="ez_payroll.menu_reporting_payroll" sequence="10" />
+
+
+  <!-- ################################################# -->
+
+  <record model="ir.ui.view" id="pivot_1601c">
+    <field name="name">pivot_1601c</field>
+    <field name="model">hr.ph.payslip</field>
+    <field name="priority">100</field>
+    <field name="arch" type="xml">
+      <pivot string="1601C Summary">
+        <!-- <field name="minimum_wage" type="row"/> -->
+        <field name="year_month" type="row"/>
+        <field name="name" type="row"/>
+
+        <field name="gross_pay" type="measure"/>
+        <field name="mwe_basic_pay" type="measure"/>
+        <field name="mwe_hol" type="measure"/>
+
+        <field name="amount_13mp" type="measure"/>
+        <field name="de_minimis" type="measure"/>
+        <field name="td_deductions" type="measure"/>
+        <field name="total_non_tax" type="measure"/>
+        <field name="total_taxable" type="measure"/>
+        <field name="total_250k" type="measure"/>
+        <field name="net_taxable" type="measure"/>
+
+        <field name="wtax" type="measure"/>
+      </pivot>
+    </field>
+  </record>
+
+  <record model="ir.actions.act_window" id="action_1601c">
+    <field name="name">1601C Summary</field>
+    <field name="res_model">hr.ph.payslip</field>
+    <field name="view_mode">pivot</field>
+    <field name="view_id" ref="pivot_1601c"/>
+    <field name="context">{'search_default_this_year': 1}</field>
+    <field name="domain">[('state','!=','draft')]</field>
+  </record>
+
+  <menuitem
+    name="1601C Summary"
+    id="menu_1601C"
+    action="action_1601c"
+    parent="ez_payroll.menu_reporting_payroll" sequence="12"/>
+
+
+</odoo>

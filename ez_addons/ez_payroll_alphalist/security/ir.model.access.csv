@@ -1,0 +1,7 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+acc_alphalist,acc_alphalist,model_ez_bir_alphalist,ez_payroll.group_hr_payroll_user,1,1,1,1
+acc_alphalist_user,acc_alphalist_user,model_ez_bir_alphalist,base.group_user,1,0,0,0
+acc_sch1,acc_sch1,model_ez_bir_alphalist_schedule1,ez_payroll.group_hr_payroll_user,1,1,1,1
+acc_sch2,acc_sch2,model_ez_bir_alphalist_schedule2,ez_payroll.group_hr_payroll_user,1,1,1,1
+acc_sch1_user,acc_sch1_user,model_ez_bir_alphalist_schedule1,base.group_user,1,0,0,0
+acc_sch2_user,acc_sch2_user,model_ez_bir_alphalist_schedule2,base.group_user,1,0,0,0

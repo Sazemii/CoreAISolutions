@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ez_payroll_email_ez_payroll_email,ez_payroll_email.ez_payroll_email,model_ez_payroll_email_ez_payroll_email,base.group_user,1,1,1,1

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2021
+======================================== -->
+<odoo>
+
+  <record id="morning_shift" model="ez.shift">
+    <field name="name">Morning</field>
+    <field name="default_schedule">06:00-14:00</field>
+  </record>
+
+  <record id="afternoon_shift" model="ez.shift">
+    <field name="name">Afternoon</field>
+    <field name="default_schedule">14:00-22:00</field>
+  </record>
+
+  <record id="night_shift" model="ez.shift">
+    <field name="name">Night</field>
+    <field name="default_schedule">22:00-N06:00</field>
+  </record>
+
+  <record id="rot_shift1" model="ez.shift">
+    <field name="name">Rotate Shift 1</field>
+    <field name="default_schedule">00:00-00:00</field>
+    <field name="is_rotate_shift">True</field>
+    <!-- <field name="rotate_date_start" eval="'2018/06/04'"/> -->
+    <!-- eval="time.strftime('%Y-%m-12 18:55:05')" -->
+    <field name="rotate_date_start" eval="time.strftime('%Y-01-01')"/>
+  </record>
+
+  <record id="rot_shift1_ln1" model="ez.shift.rotate">
+    <field name="shift_id" ref="rot_shift1"/>
+    <field name="line_shift_id" ref="afternoon_shift"/>
+    <field name="sequence" eval="10"/>
+  </record>
+
+  <record id="rot_shift1_ln2" model="ez.shift.rotate">
+    <field name="shift_id" ref="rot_shift1"/>
+    <field name="line_shift_id" ref="morning_shift"/>
+    <field name="sequence" eval="20"/>
+  </record>
+
+  <record id="rot_shift1_ln3" model="ez.shift.rotate">
+    <field name="shift_id" ref="rot_shift1"/>
+    <field name="line_shift_id" ref="night_shift"/>
+    <field name="sequence" eval="30"/>
+  </record>
+
+</odoo>

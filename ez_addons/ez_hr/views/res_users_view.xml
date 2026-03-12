@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+  <record id="res_users_view_form_profile_ez_hr_inh" model="ir.ui.view">
+    <field name="name">res_users_view_form_profile_ez_hr_inh</field>
+    <field name="model">res.users</field>
+    <field name="inherit_id" ref="hr.res_users_view_form_profile"/>
+    <field name="arch" type="xml">
+
+      <field name="private_phone" position="after">
+        <field name="provincial_address"/>
+        <field name="provincial_zip"/>
+      </field>
+
+      <xpath expr="//notebook/page[@name='personal_information']/group" position="inside">
+        <group string="Hiring Info">
+          <field name="hired"/>
+          <field name="date_end"/>
+          <field name="regularization_date"/>
+          <field name="years_service"/>
+          <field name="employment_status"/>
+          <field name="separation_reason"/>
+        </group>
+      </xpath>
+
+      <field name="birthday" position="after">
+        <field name="age"/>
+      </field>
+
+      <field name="identification_id" position="before">
+        <field name="nationality"/>
+      </field>
+
+      <field name="ssnid" position="attributes">
+        <attribute name="invisible">1</attribute>
+      </field>
+
+      <field name="ssnid" position="after">
+        <field name="tin_no"/>
+        <field name="sss_no"/>
+        <field name="phic_no"/>
+        <field name="pagibig_no"/>
+        <field name="atm_no"/>
+        <field name="hmo_no"/>
+      </field>
+
+    </field>
+  </record>
+
+</odoo>

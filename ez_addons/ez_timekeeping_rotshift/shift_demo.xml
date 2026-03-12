@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2021
+======================================== -->
+<odoo>
+<data noupdate="1">
+
+  <function 
+    model="ez.shift" name="create_details"
+    eval="[[ref('morning_shift'),ref('afternoon_shift'),ref('night_shift')]]"
+  />
+
+</data>
+</odoo>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="ez_payroll_ess.TkRequestCardWidget" owl="1">
+        <!-- <t t-set="rec" t-value="props.data"/> -->
+        <div class="col-md-4">
+            <div t-att-class="'card shadow rounded mb-3 ' + (state.record.state=='draft' ? 'bg-danger' : state.record.state=='sent' ? 'bg-warning' : state.record.state=='approved' ? 'bg-secondary' : state.record.state=='denied' ? 'bg-danger' : 'bg-secondary')">
+                <div class="card-body" t-on-click="() => this._onItemClick(state.record)">
+                    <div class="d-flex justify-content-between">
+                        <div class="me-1 text-truncate">
+                            <h5 class="card-title">
+                                <span t-esc="state.record.name"/>
+                            </h5>
+                        </div>
+                        <TkStatePillWidget data="state.record" lookup="state.lookups.state"/>
+                    </div>
+                    <div class="fw-bold" t-esc="state.record.employee_id[1]"/>
+                    <table class="table table-sm table-borderless mb-0">
+                        <tr>
+                            <td class="me-1"><i class="fa fa-calendar fa-sm"/></td>
+                            <td class="text-nowrap pe-2" t-esc="state.record.date"/>
+                            <td class="text-truncate" t-esc="state.lookups.type[state.record.type]" width="100%"/>
+                        </tr>
+                        <tr t-if="state.record.type=='ot' || state.record.type=='ob'">
+                            <td class="me-1"><i class="fa fa-hourglass-o fa-sm"/></td>
+                            <td class="text-nowrap me-2">Auth Hrs:</td>
+                            <td class="text-truncate" t-esc="state.record.auth_hrs"/> 
+                        </tr>
+                        <tr t-if="state.record.type=='ob'">
+                            <td class="me-1"><i class="fa fa-clock-o fa-sm"/></td>
+                            <td class="text-nowrap me-2">Time Range:</td>
+                            <td t-esc="state.record.time"/> 
+                        </tr>
+                        <t t-if="state.record.type=='sch'">
+                            <tr t-if="state.record.day_type">
+                                <t t-set="dt" t-value="state.record.day_type"/>
+                                <td><i class="fa fa-umbrella"/></td>
+                                <td class="text-nowrap me-2">Day Type:</td>
+                                <td class="text-truncate" t-esc="state.lookups.day_type[dt]"/>
+                            </tr>
+                            <tr t-if="state.record.schedule">
+                                <td><i class="fa fa-clock-o"/></td>
+                                <td class="text-nowrap me-2">Schedule:</td>
+                                <td t-esc="state.record.schedule"/>
+                            </tr>
+                        </t>
+                        <tr t-if="state.record.note">
+                            <td><i class="fa fa-comment"/></td>
+                            <td colspan="2" t-esc="state.record.note or ''"/>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <!-- CARD: <t t-esc="props.data.name"/> -->
+        </div>
+    </t>
+
+
+    <t t-name="ez_payroll_ess.TkRequestDialog" owl="1">
+        <t t-if="state.record.state=='draft'" t-set="dialog_title" t-value="'Edit Timekeeping Request'"/>
+        <t t-elif="state.record.state=='sent'" t-set="dialog_title" t-value="'Approve Timekeeping Request'"/>
+        <t t-else="" t-set="dialog_title" t-value="'Timekeeping Request'"/>
+        <Dialog title="dialog_title" size="'md'">
+            <div class="p-3">
+                <FormInputWidget prev_state="state" readonly="1"
+                    label="'Employee'" 
+                    name="'name'"
+                    value="state.record.employee_id[1]"/>
+
+                 <FormInputWidget prev_state="state" readonly="state.record.state!='draft'"
+                    label="'Description'" 
+                    name="'name'"
+                    value="state.record.name"/>
+
+                <FormInputWidget prev_state="state" readonly="state.record.state!='draft'"
+                    label="'Date'" 
+                    type="'date'"
+                    name="'date'"
+                    value="state.record.date"/>
+
+                <FormInputWidget prev_state="state" readonly="state.record.state!='draft'"
+                    label="'Request Type'" 
+                    type="'selection'"
+                    selection="state.selections.type"
+                    name="'type'"
+                    value="state.record.type"/>
+
+                <t t-if="state.record.type=='ot' || state.record.type=='ob'">
+                    <FormInputWidget
+                        prev_state="state" readonly="state.record.state!='draft'"
+                        label="'Authorized Hours'" 
+                        name="'auth_hrs'"
+                        value="state.record.auth_hrs"/>
+                </t>
+
+                <t t-if="state.record.type=='ob'">
+                    <FormInputWidget
+                        prev_state="state" readonly="state.record.state!='draft'"
+                        label="'Time Range'" 
+                        name="'time'"
+                        value="state.record.time"/>
+                </t>
+
+                <t t-if="state.record.type=='sch'">
+                    <FormInputWidget 
+                        prev_state="state" readonly="state.record.state!='draft'"
+                        label="'Day Type'" 
+                        type="'selection'"
+                        selection="state.selections.day_type"
+                        name="'day_type'"
+                        value="state.record.day_type"/>
+
+                    <FormInputWidget 
+                        prev_state="state" readonly="state.record.state!='draft'"
+                        label="'Schedule'" 
+                        name="'schedule'"
+                        value="state.record.schedule"/>
+                </t>
+
+                <FormInputWidget 
+                    prev_state="state" readonly="state.record.state!='draft'"
+                    label="'Notes'" 
+                    name="'note'"
+                    value="state.record.note"/>
+
+                <FormInputWidget 
+                    readonly="1"
+                    type="'selection'"
+                    label="'Status'" 
+                    selection="state.selections.state"
+                    value="state.record.state"/>
+
+            </div>
+            <t t-set-slot="footer">
+                <t t-if="!props.approve">
+                    <t t-if="props.record.state=='draft'">
+                        <button t-if="state.isEdited" class="btn btn-primary" t-on-click="_onConfirm">Save Changes</button>
+                        <button t-if="state.isEdited" class="btn btn-secondary" t-on-click="_quitDialog">Discard</button>
+                        <button t-if="!state.isEdited" class="btn btn-primary" t-on-click="_forApproval">For Approval</button>
+                        <button t-if="!state.isEdited" class="btn btn-secondary" t-on-click="_quitDialog">Close</button>
+                        <button class="btn btn-danger" t-on-click="_deleteRecord">Delete</button>
+                    </t><t t-else="">
+                        <button class="btn btn-primary" t-on-click="props.close">Close</button>
+                    </t>
+                </t><t t-else="">
+                    <t t-if="props.record.state=='sent'">
+                        <button class="btn btn-primary" t-on-click="_approveRequest">Appprove</button>
+                        <button class="btn btn-danger" t-on-click="_denyRequest">Deny</button>
+                        <button class="btn btn-secondary" t-on-click="props.close">Discard</button>
+                    </t><t t-else="">
+                        <button class="btn btn-primary" t-on-click="props.close">Close</button>
+                    </t>
+                </t>
+            </t>
+        </Dialog>
+    </t>
+
+
+</templates>

@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2022
+======================================== -->
+<odoo>
+
+    <record id="search_alphalist_sch1" model="ir.ui.view">
+      <field name="name">search_alphalist_sch1</field>
+      <field name="model">ez.bir.alphalist.schedule1</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="employee_id"/>
+          <field name="tin_no"/>
+        </search>
+      </field>
+    </record>
+
+    <record id="search_alphalist_sch2" model="ir.ui.view">
+      <field name="name">search_alphalist_sch2</field>
+      <field name="model">ez.bir.alphalist.schedule2</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="employee_id"/>
+          <field name="tin_no"/>
+        </search>
+      </field>
+    </record>
+
+
+    <record id="tree_alphalist_sch1" model="ir.ui.view">
+      <field name="name">tree_alphalist_sch1</field>
+      <field name="model">ez.bir.alphalist.schedule1</field>
+      <field name="arch" type="xml">
+        <list decoration-danger="tax_due != tax_withheld" >
+          <field name="alphalist_id" optional="hide"/>
+          <field name="employee_id" widget="many2one_avatar_employee"/>
+          <field name="employee_name" column_invisible="1"/>
+          <field name="tin_no"/>
+          <field name="prev_gross_income" string="Prev Gross" optional="hide"/>
+          <field name="pres_gross_income" string="Pres Gross" optional="hide"/>
+          <field name="net_taxable_income" string="Net Taxable" optional="show"/>
+          <field name="tax_due" optional="show"/>
+          <field name="tax_paid" optional="show"/>
+          <field name="tax_refunded" string="Tax Refund" optional="show"/>
+          <field name="pres_tax_withheld" string="Pres WTax" optional="hide"/>
+          <field name="prev_tax_withheld" string="Prev WTax" optional="hide"/>
+          <field name="tax_withheld" optional="hide"/>
+          <field name="substituted_filing" optional="show"/>
+          <!-- <field name="url_2316" widget="url" text="Download"/> -->
+          <button name="compute_single_pdf" type="object" string="Form 2316"/>
+        </list>
+      </field>
+    </record>
+
+    <record id="form_alphalist_sch1" model="ir.ui.view">
+      <field name="name">form_alphalist_sch1</field>
+      <field name="model">ez.bir.alphalist.schedule1</field>
+      <field name="arch" type="xml">
+        <form>
+
+          <header>
+            <button name="compute_single_pdf" type="object" string="Form 2316"/>
+            <button name="action_calc_wtax" type="object" string="Recalc WTax"/>
+            <field name="state" widget="statusbar" readonly="1"/>
+          </header>
+
+          <sheet>
+
+            <div class="oe_title">
+              <label string="Employee" for="employee_id" class="oe_edit_only"/>
+              <h1>
+                <field name="employee_id" 
+                  domain="[('active', 'in', [True, False])]"
+                  readonly="state not in ['draft']"/>
+              </h1>
+            </div> 
+
+            <notebook>
+              <page string="Info">
+                <group>
+                  <group string="Current Employer">
+                    <field name="tin_no" string="Employee TIN" readonly="state not in ['draft']"/>
+                    <field name="hired" readonly="state not in ['draft']"/>
+                    <field name="date_end" readonly="state not in ['draft']"/>
+                    <field name="employment_status" readonly="state not in ['draft']"/>
+                    <field name="separation_reason" readonly="state not in ['draft']"/>
+                    <field name="nationality" readonly="state not in ['draft']"/>
+                    <field name="pres_gross_income"/>
+                    <field name="prev_gross_income"/>
+                  </group>
+                  <group string="Previous Employer">
+                    <field name="previous_employer_tin" string="Prev Employer TIN" readonly="state not in ['draft']"/>
+
+                    <field name="previous_employer_hired" string="From" readonly="state not in ['draft']"/>
+                    <field name="previous_employer_date_end" string="To" readonly="state not in ['draft']"/>
+                    <field name="previous_employer_employment_status" string="Employment Status"
+                      readonly="state not in ['draft']"/>
+                    <field name="previous_employer_separation_reason" string="Reason of Separation"
+                     readonly="state not in ['draft']"/>
+
+                    <field name="previous_employer" string="Name" readonly="state not in ['draft']"/>
+                    <field name="previous_employer_address" string="Address" readonly="state not in ['draft']"/>
+                    <field name="previous_employer_zip" string="ZIP Code" readonly="state not in ['draft']"/>
+                  </group>
+                  <group string="Others">
+                    <field name="is_main_employer" readonly="state not in ['draft']"/>
+                    <field name="substituted_filing" readonly="state not in ['draft']"/>
+                  </group>
+                  <!-- <group string=".">
+                    <field name="url_2316" widget="url" text="Download"/>
+                  </group> -->
+                </group>
+              </page>
+              <page string="Non-Taxable">
+                <group>
+                  <group string="Present">
+                    <field name="pres_nt_income" string="Basic Salary" readonly="state not in ['draft']"/>
+                    <field name="pres_nt_13mp" string="13th Month Pay" readonly="state not in ['draft']"/>
+                    <field name="pres_nt_deminimis" string="Deminimis" readonly="state not in ['draft']"/>
+                    <field name="pres_nt_govded" string="Govt Deductions" readonly="state not in ['draft']"/>
+                    <field name="pres_nt_others" string="Others" readonly="state not in ['draft']"/>
+                    <field name="pres_nt_total" string="Total Non-Taxable"/>
+                  </group>
+                  <group string="Previous">
+                    <field name="prev_nt_income" string="Basic Salary" readonly="state not in ['draft']"/>
+                    <field name="prev_nt_13mp" string="13th Month Pay" readonly="state not in ['draft']"/>
+                    <field name="prev_nt_deminimis" string="Deminimis" readonly="state not in ['draft']"/>
+                    <field name="prev_nt_govded" string="Govt Deductions" readonly="state not in ['draft']"/>
+                    <field name="prev_nt_others" string="Others" readonly="state not in ['draft']"/>
+                    <field name="prev_nt_total" string="Total Non-Taxable"/>
+                  </group>
+
+                </group>
+              </page>
+
+              <page string="Taxable">
+                <group>
+                  <group string="Present">
+                    <field name="pres_t_income" string="Basic Salary" readonly="state not in ['draft']"/>
+                    <field name="pres_t_13mp" string="13th Month Pay" readonly="state not in ['draft']"/>
+                    <field name="pres_t_others" string="Other Salary" readonly="state not in ['draft']"/>
+                    <field name="pres_t_others_text" string="Other Text" readonly="state not in ['draft']"/>
+                    <field name="pres_t_total" string="Total Income"/>
+                  </group>
+                  <group string="Previous">
+                    <field name="prev_t_income" string="Basic Salary" readonly="state not in ['draft']"/>
+                    <field name="prev_t_13mp" string="13th Month Pay" readonly="state not in ['draft']"/>
+                    <field name="prev_t_others" string="Other Salary" readonly="state not in ['draft']"/>
+                    <field name="prev_t_total" string="Total Income"/>
+                  </group>
+                  <group string="Previous and Present">
+                    <field name="taxable_total" string="Total Taxable Income"/>
+                  </group>
+                  <group>
+                  </group>
+                </group>
+              </page>
+
+              <page string="Other Items">
+                <group>
+                  <group>
+                    <field name="net_taxable_income"/>
+                    <field name="tax_due"/>
+                    <field name="pres_tax_withheld" readonly="state not in ['draft']"/>
+                    <field name="prev_tax_withheld" readonly="state not in ['draft']"/>
+                    <!-- <field name="pera_tax_credit" readonly="state not in ['draft']"/> -->
+                  </group>
+                  <group>
+                    <field name="tax_paid" readonly="state not in ['draft']"/>
+                    <field name="tax_refunded" readonly="state not in ['draft']"/>
+                    <field name="tax_withheld"/>
+                    <field name="notice"/>
+                  </group>
+                </group>
+              </page>
+
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+
+    <record id="tree_alphalist_sch2" model="ir.ui.view">
+      <field name="name">tree_alphalist_sch2</field>
+      <field name="model">ez.bir.alphalist.schedule2</field>
+      <field name="arch" type="xml">
+        <list decoration-danger="tax_due != tax_withheld" >
+          <field name="alphalist_id" optional="hide"/>
+          <field name="employee_id" widget="many2one_avatar_employee"/>
+          <field name="employee_name" column_invisible="1"/>
+          <field name="tin_no"/>
+          <field name="prev_gross_income" string="Prev Gross" optional="hide"/>
+          <field name="pres_gross_income" string="Pres Gross" optional="hide"/>
+          <field name="net_taxable_income" string="Net Taxable" optional="show"/>
+          <field name="tax_due" optional="show"/>
+          <field name="tax_paid" optional="show"/>
+          <field name="tax_refunded" string="Tax Refund" optional="show"/>
+          <field name="pres_tax_withheld" string="Pres WTax" optional="hide"/>
+          <field name="prev_tax_withheld" string="Prev WTax" optional="hide"/>
+          <field name="tax_withheld" optional="hide"/>
+          <field name="substituted_filing" optional="show"/>
+          <!-- <field name="url_2316" widget="url" text="Download"/> -->
+          <button name="compute_single_pdf" type="object" string="Form 2316"/>
+        </list>
+      </field>
+    </record>
+
+    <record id="form_alphalist_sch2" model="ir.ui.view">
+      <field name="name">form_alphalist_sch2</field>
+      <field name="model">ez.bir.alphalist.schedule2</field>
+      <field name="arch" type="xml">
+        <form>
+
+          <header>
+            <button name="compute_single_pdf" type="object" string="Form 2316"/>
+            <field name="state" widget="statusbar" readonly="1"/>
+          </header>
+
+          <sheet>
+
+            <div class="oe_title">
+              <label string="Employee" for="employee_id" class="oe_edit_only"/>
+              <h1>
+                <field name="employee_id" 
+                  domain="[('active', 'in', [True, False])]"
+                  readonly="state not in ['draft']"/>
+              </h1>
+            </div> 
+
+            <notebook>
+              <page string="Info">
+                <group>
+                  <group string="Current Employer">
+                    <field name="tin_no" readonly="state not in ['draft']"/>
+                    <field name="hired" readonly="state not in ['draft']"/>
+                    <field name="date_end" readonly="state not in ['draft']"/>
+                    <field name="employment_status" readonly="state not in ['draft']"/>
+                    <field name="separation_reason" readonly="state not in ['draft']"/>
+                    <field name="nationality" readonly="state not in ['draft']"/>
+                    <field name="pres_gross_income" readonly="state not in ['draft']"/>
+                    <field name="prev_gross_income" readonly="state not in ['draft']"/>
+                  </group>
+
+                  <group string="Previous Employer">
+                    <field name="previous_employer_tin" readonly="state not in ['draft']" string="Prev Employer TIN"/>
+                    <field name="previous_employer_hired" readonly="state not in ['draft']" string="From"/>
+                    <field name="previous_employer_date_end" readonly="state not in ['draft']" string="To"/>
+                    <field name="previous_employer_employment_status"
+                       readonly="state not in ['draft']" string="Employment Status"/>
+                    <field name="previous_employer_separation_reason"
+                       readonly="state not in ['draft']" string="Reason of Separation"/>
+                    <field name="previous_employer" string="Name" readonly="state not in ['draft']"/>
+                    <field name="previous_employer_address" string="Address" readonly="state not in ['draft']"/>
+                    <field name="previous_employer_zip" string="ZIP Code" readonly="state not in ['draft']"/>
+                  </group>
+
+                  <group string="Others">
+                    <field name="mwe_daily_amount"/>
+                    <field name="mwe_monthly_amount" readonly="1"/>
+                    <field name="mwe_yearly_amount" readonly="1"/>
+                    <field name="mwe_days_in_year"/>
+                  </group>
+
+                  <group string=".">
+                    <field name="is_main_employer" readonly="state not in ['draft']"/>
+                    <field name="substituted_filing" readonly="state not in ['draft']"/>
+                    <!-- <field name="url_2316" widget="url" text="Download"/> -->
+                  </group>
+
+                </group>
+              </page>
+              <page string="Non-Taxable">
+                <group>
+                  <group string="Present">
+                    <field name="pres_nt_basic" string="Basic Salary" readonly="state not in ['draft']"/>
+                    <field name="pres_nt_holiday" string="Holiday Pay" readonly="state not in ['draft']"/>
+                    <field name="pres_nt_overtime" string="Overtime Pay" readonly="state not in ['draft']"/>
+                    <field name="pres_nt_night_diff" string="Night Differential" readonly="state not in ['draft']"/>
+                    <field name="pres_nt_hazard" string="Hazard Pay" readonly="state not in ['draft']"/>
+                    <field name="pres_nt_13mp" string="13th Month Pay" readonly="state not in ['draft']"/>
+                    <field name="pres_nt_deminimis" string="Deminimis" readonly="state not in ['draft']"/>
+                    <field name="pres_nt_govded" string="Govt Deductions" readonly="state not in ['draft']"/>
+                    <field name="pres_nt_others" string="Other Income" readonly="state not in ['draft']"/>
+                    <field name="pres_nt_total" string="Total Non-Taxable"/>
+                  </group>
+                  <group string="Previous">
+                    <field name="prev_nt_basic" string="Basic Salary" readonly="state not in ['draft']"/>
+                    <field name="prev_nt_holiday" string="Holiday Pay" readonly="state not in ['draft']"/>
+                    <field name="prev_nt_overtime" string="Overtime Pay" readonly="state not in ['draft']"/>
+                    <field name="prev_nt_night_diff" string="Night Differential" readonly="state not in ['draft']"/>
+                    <field name="prev_nt_hazard" string="Hazard Pay" readonly="state not in ['draft']"/>
+                    <field name="prev_nt_13mp" string="13th Month Pay" readonly="state not in ['draft']"/>
+                    <field name="prev_nt_deminimis" string="Deminimis" readonly="state not in ['draft']"/>
+                    <field name="prev_nt_govded" string="Govt Deductions" readonly="state not in ['draft']"/>
+                    <field name="prev_nt_others" string="Other Income" readonly="state not in ['draft']"/>
+                    <field name="prev_nt_total" string="Total Non-Taxable"/>
+                  </group>
+                </group>
+              </page>
+
+              <page string="Taxable">
+                <group>
+                  <group string="Present">
+                    <field name="pres_t_13mp" string="13th Month Pay" readonly="state not in ['draft']"/>
+                    <field name="pres_t_others" string="Other Salary" readonly="state not in ['draft']"/>
+                    <field name="pres_t_total" string="Total Taxable"/>
+                  </group>
+                  <group string="Previous">
+                    <field name="prev_t_13mp" string="13th Month Pay" readonly="state not in ['draft']"/>
+                    <field name="prev_t_others" string="Other Salary" readonly="state not in ['draft']"/>
+                    <field name="prev_t_total" string="Total Taxable"/>
+                  </group>
+                  <group string="Previous and Present">
+                    <field name="taxable_total" string="Total Taxable Income"/>
+                  </group>
+                  <group>
+                  </group>
+                </group>
+              </page>
+
+              <page string="Other Items">
+                <group>
+                  <group>
+                    <field name="net_taxable_income"/>
+                    <field name="tax_due"/>
+                    <field name="pres_tax_withheld" readonly="state not in ['draft']"/>
+                    <field name="prev_tax_withheld" readonly="state not in ['draft']"/>
+                    <!-- <field name="pera_tax_credit" readonly="state not in ['draft']"/> -->
+                  </group>
+                  <group>
+                    <field name="tax_paid" readonly="state not in ['draft']"/>
+                    <field name="tax_refunded" readonly="state not in ['draft']"/>
+                    <field name="tax_withheld"/>
+                    <field name="notice"/>
+                  </group>
+                </group>
+              </page>
+            </notebook>
+            </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- ################################# -->
+
+    <record id="form_alphalist" model="ir.ui.view">
+      <field name="name">form_alphalist</field>
+      <field name="model">ez.bir.alphalist</field>
+      <field name="arch" type="xml">
+        <form string="BIR 1604C Alphalist">
+
+          <header>
+
+            <button name="set_as_done" type="object" invisible="state not in ['draft']"
+              groups="ez_payroll.group_hr_payroll_user" string="Set as Done" class="oe_highlight"/>
+            <button name="cancel_done" type="object"
+              invisible="state not in ['done']" string="Cancel/Back to Draft"
+              groups="ez_payroll.group_hr_payroll_manager"/>
+            <button name="auto_gen" type="object" invisible="state not in ['draft']"
+              groups="ez_payroll.group_hr_payroll_user" string="Auto-fill"/>
+            <button name="action_swap_lte250K" type="object" invisible="state not in ['draft']"
+              groups="ez_payroll.group_hr_payroll_user" string="Swap &lt;250K Income"
+              confirm="Are you sure to swap taxable to non-taxable and vice-versa?"/>
+            <button name="adjust_wtax" type="object" invisible="state not in ['draft']"
+              groups="ez_payroll.group_hr_payroll_user" string="Rec WTax"
+              confirm="Are you sure to recompute tax payable or refund?"/>
+            <button name="gen_files" type="object" invisible="state not in ['draft']"
+              groups="ez_payroll.group_hr_payroll_user" string="Export Files"/>
+            <button name="recompute_annualization" invisible="1"
+              groups="ez_payroll.group_hr_payroll_user"
+              type="object" string="Recompute Annualization"/>
+            <button name="compute_zip_sched1" type="object" string="Sch1 BIR2316"
+              groups="ez_payroll.group_hr_payroll_user"/>
+            <button name="compute_zip_sched2" type="object" string="Sch2 BIR2316"
+              groups="ez_payroll.group_hr_payroll_user"/>
+            <field name="state" widget="statusbar" readonly="1"/>
+          </header>
+
+          <sheet>
+
+            <widget name="web_ribbon" title="Done" bg_color="text-bg-success" invisible="state!='done'"/>
+
+            <div class="oe_button_box" name="button_box">
+              <button type="object" class="oe_stat_button" icon="fa-bars" name="action_view_schedule1">
+                <div class="o_form_field o_stat_info">
+                  <span class="o_stat_value">
+                    <field name="shedule1_count"/> employees
+                  </span>
+                  <span class="o_stat_text">Schedule 1</span>
+                </div>
+              </button>
+              <button type="object" class="oe_stat_button" icon="fa-bars" name="action_view_schedule2">
+                <div class="o_form_field o_stat_info">
+                  <span class="o_stat_value">
+                    <field name="shedule2_count"/> employees
+                  </span>
+                  <span class="o_stat_text">Schedule 2</span>
+                </div>
+              </button>
+            </div>
+
+            <div class="oe_title">
+              <label for="name" class="oe_edit_only"/>
+              <h1>
+                <field name="name" readonly="state not in ['draft']" placeholder="eg. Alphalist 2022"/>
+              </h1>
+            </div> 
+
+            <notebook>
+              <page name="setup" string="Setup">
+                <group>
+                  <group>
+
+                    <field name="company_vat" readonly="state not in ['draft']"/>
+                    <field name="company_name" readonly="state not in ['draft']"/>
+                    <field name="company_address" readonly="state not in ['draft']"/>
+                    <field name="company_zip" readonly="state not in ['draft']"/>
+
+                    <field name="year" readonly="state not in ['draft']"/>
+                    <field name="region" readonly="state not in ['draft']"/>
+                    <field name="rdo" readonly="state not in ['draft']"/>
+                    <field name="signatory" readonly="state not in ['draft']"/>
+                    <field name="signature_data" filename="signature_filename" groups="ez_payroll.group_hr_payroll_user"/>
+                    <field name="sign_date" groups="ez_payroll.group_hr_payroll_user" readonly="state not in ['draft']"/>
+                    <field name="sig_width" groups="ez_payroll.group_hr_payroll_user" readonly="state not in ['draft']"/>
+                    <field name="sig_position1" groups="ez_payroll.group_hr_payroll_user" readonly="state not in ['draft']"/>
+                    <field name="sig_position2" groups="ez_payroll.group_hr_payroll_user" readonly="state not in ['draft']"/>
+                    <field name="signature_filename" invisible="1"/>
+                  </group>
+                  <group>
+                    <field name="limit_13mp" readonly="state not in ['draft']"/>
+                    <field name="mwe_daily_amount" readonly="state not in ['draft']"/>
+                    <field name="mwe_days_in_year" readonly="state not in ['draft']"/>
+                    <field name="emp_tag_ids" readonly="state not in ['draft']"
+                      widget="many2many_tags" options="{'color_field':'color'}"/>
+                    <!-- <field name="url1_2316" text="Download" widget="url" 
+                      groups="ez_payroll.group_hr_payroll_user"/>
+                    <field name="url2_2316" text="Download" widget="url" 
+                      groups="ez_payroll.group_hr_payroll_user"/> -->
+                  </group>
+                </group>
+              </page>
+
+              <page name="schedule1" string="Schedule 1">
+                <field name="schedule1_ids"/>
+              </page>
+
+              <page name="schedule2" string="Schedule 2 (MWE)">
+                <field name="schedule2_ids"/>
+              </page>
+
+              <!-- <page name="export" string="Exported Files" states="done" groups="ez_payroll.group_hr_payroll_user"> -->
+              <page name="export" string="Exported Files" groups="ez_payroll.group_hr_payroll_user">
+                <group>
+                  <group string="1604C Files">
+                    <field name="bir1604c1_data" readonly="1" filename='bir1604c1_filename'/>
+                    <field name="bir1604c2_data" readonly="1" filename='bir1604c2_filename'/>
+                    <field name="bir1604c1_filename" invisible="1"/>
+                    <field name="bir1604c2_filename" invisible="1"/>
+                  </group>
+                  <group string="DAT Files">
+                    <field name="sch1_data" readonly="1" filename='sch1_filename'/>
+                    <field name="sch2_data" readonly="1" filename='sch2_filename'/>
+                    <field name="sch_combined_data" readonly="1" filename='sch_combined_filename'/>
+                    <field name="sch1_filename" invisible="1"/>
+                    <field name="sch2_filename" invisible="1"/>
+                    <field name="sch_combined_filename" invisible="1"/>
+                  </group>
+                </group>
+              </page>
+
+            </notebook>
+          </sheet>
+
+          <chatter/>
+
+        </form>
+      </field>
+    </record>
+
+    <record id="tree_alphalist" model="ir.ui.view">
+      <field name="name">tree_alphalist</field>
+      <field name="model">ez.bir.alphalist</field>
+      <field name="arch" type="xml">
+        <list string="BIR 1604C Alphalist">
+          <field name="name"/>
+          <field name="year"/>
+          <field name="company_id"/>
+          <field name="emp_tag_ids" widget="many2many_tags" options="{'color_field':'color'}"/>
+          <field name="state" widget="badge" 
+            decoration-danger="state == 'draft'"
+            decoration-success="state == 'done'"
+          />
+          <button name="compute_zip_sched1" type="object" string="Schedule 1 Form 2316"/>
+          <button name="compute_zip_sched2" type="object" string="Schedule 2 Form 2316"/>
+
+          <!-- <field name="url1_2316" text="Download" widget="url"/>
+          <field name="url2_2316" text="Download" widget="url"/> -->
+        </list>
+      </field>
+    </record>
+
+    <record id="open_alphalist" model="ir.actions.act_window">
+      <field name="name">BIR 1604C Alphalist</field>
+      <field name="res_model">ez.bir.alphalist</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem 
+      id="menu_alphalist"
+      action="open_alphalist"
+      parent="ez_payroll.menu_reporting_payroll" 
+      sequence="15" 
+      groups=""
+    />
+
+      <!-- groups="ez_payroll.group_hr_payroll_user" -->
+
+
+</odoo>

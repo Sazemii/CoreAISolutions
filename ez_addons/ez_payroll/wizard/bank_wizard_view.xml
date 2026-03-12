@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+    <record id="view_excel_bank" model="ir.ui.view">
+        <field name="name">view_excel_bank</field>
+        <field name="model">ez.bank.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <!-- <field name="company_id" groups="base.group_multi_company"/> -->
+                    <field name="payroll_id"/>
+                    <field name="xls_file" filename="filename" placeholder="Output excel file..."/>
+                    <field name="filename" invisible="1"/>
+                    <field name="employee_ids">
+                      <list>
+                        <field name="identification_id"/>
+                        <field name="name"/>
+                        <field name="atm_no"/>
+                        <field name="hired"/>
+                        <field name="date_end"/>
+                      </list>
+                    </field>
+                </group>
+                <footer>
+                    <button name="gen_excel" string="Generate Excel File" type="object" class="btn-primary" />
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="open_excel_bank" model="ir.actions.act_window">
+        <field name="name">Bank Report</field>
+        <field name="res_model">ez.bank.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- <menuitem
+        id="menu_excel_bank"
+        groups="ez_payroll.group_hr_payroll_user"
+        action="open_excel_bank"
+        sequence="6"
+        parent="menu_reporting_payroll"
+    /> -->
+
+
+</odoo>

@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+  <record id="search_payslip" model="ir.ui.view">
+    <field name="name">hr.ph.payslip.search</field>
+    <field name="model">hr.ph.payslip</field>
+    <field name="arch" type="xml">
+      <search string="Payslips">
+        <field name="employee_id" string="Employee"/>
+        <field name="year_month" string="Year-Month"/>
+        <field name="category_ids"/>
+        <field name="company_id" groups="base.group_multi_company"/>
+        <field name="payroll_id" string="Payroll"/>
+
+        <field name="date_from"/>
+        <field name="date_to"/>
+
+        <separator/>
+
+        <filter name="filter_date_to" date="date_to" default_period="month" string="Period"/>
+
+        <separator/>
+
+        <filter string="Minimum Ware Earner" name="mwe"
+          domain="[('minimum_wage','=',True)]" />
+        <filter string="Non-Minimum Ware Earner" name="nonmwe"
+          domain="[('minimum_wage','=',False)]" />
+
+      </search>
+    </field>
+  </record>
+
+  <record id="view_payslip_tree" model="ir.ui.view">
+    <field name="name">hr.ph.payslip.tree</field>
+    <field name="model">hr.ph.payslip</field>
+    <field name="arch" type="xml">
+        <list string="Payslips" create="0" delete="0" edit="0" 
+          decoration-danger="state=='draft'"
+          decoration-warning="net_pay &lt;= 0.0"
+        >
+          <field name="company_id" optional="hide"/>
+          <field name="employee_id"/>
+          <field name="payroll_id"/>
+          <field name="year_month"/>
+          <field name="name" column_invisible="1"/>
+          <field name="date_from"/>
+          <field name="date_to"/>
+          <field name="basic_pay" sum="Total Basic Pay" optional="hide"/>
+          <field name="gross_pay" sum="Total Gross Pay" optional="hide"/>
+          <field name="taxable" sum="Total Taxable" optional="hide"/>
+          <field name="total_deductions" sum="Total Deductions" optional="hide"/>
+          <field name="total_loan_payments" string="Loan" sum="Total Loan Payments" optional="hide"/>
+          <field name="net_pay" sum="Total Net Pay" optional="hide"/>
+          <field name="note" optional="hide"/>
+          <field name="category_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="show"/>
+          <field name="state" column_invisible="1"/>
+        </list>
+    </field>
+  </record>
+
+        <record id="view_payslip_form" model="ir.ui.view">
+            <field name="name">hr.ph.payslip.form</field>
+            <field name="model">hr.ph.payslip</field>
+            <field name="arch" type="xml">
+                <form string="Payslip" create="0" delete="0">
+
+                <header>
+                  <button name="recompute_compensation_button" string="Recompute Compensation"
+                    invisible="state not in ('draft')"
+                    type="object" groups="ez_payroll.group_hr_payroll_user"/>
+                  <button name="recompute_deduction" string="Recompute Deductions"
+                    invisible="state not in ('draft')"
+                    type="object"  groups="ez_payroll.group_hr_payroll_user"/>
+                  <button name="recompute_loan" string="Recompute Loan Payments"
+                    invisible="state not in ('draft')"
+                    type="object" groups="ez_payroll.group_hr_payroll_user"/>
+                  <button name="%(ez_payroll.action_print_single_payslip)d"
+                    string="Print" type="action"/>
+                  <!-- <field name="state" invisible="0"/> -->
+                  <field name="state" widget="statusbar" readonly="1"/>
+                </header>
+
+                 <sheet>
+                    <!-- <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/> -->
+                    <div class="oe_button_box" name="button_box">
+                      <!-- <button name="action_view_compensations" type="object" class="oe_stat_button" 
+                          groups="ez_payroll.group_hr_payroll_user" icon="fa-plus-circle" 
+                      >
+                        Comp Sheets
+                      </button>
+                      <button name="action_view_deductions" type="object" class="oe_stat_button" 
+                          groups="ez_payroll.group_hr_payroll_user" icon="fa-minus-circle" 
+                      >
+                        Ded Sheets
+                      </button> -->
+                    </div>
+
+                    <div class="row justify-content-between position-relative w-100 m-0 mb-2">
+                      <div class="oe_title mw-75 ps-0 pe-2">
+                        <label for="employee_id" class="oe_edit_only"/>
+                        <h1 class="d-flex flex-row align-items-center">
+                          <field name="employee_id" widget="many2one_avatar_employee" readonly="1"/>
+                        </h1>
+
+                        <group>
+                          <group>
+                            <field name="payroll_name"/>
+                            <label for="salary_rate" string="Salary"/>
+                            <div>
+                                <field name="salary_rate" class="oe_inline" readonly="1"/>&#x2063;
+                                <field name="salary_rate_period" nolabel="1" readonly="1" class="oe_inline"/>
+                            </div>
+                          </group>
+                          <group>
+                            <label for="date_from" string="Date Range"/>
+                            <div>
+                              <field name="date_from" readonly="1" class="oe_inline"/> 
+                              &#x2063;&#x2063;-&#x2063;&#x2063; 
+                              <field name="date_to" readonly="1" class="oe_inline"/>
+                            </div>
+                            <field name="year_month"/>
+                          </group>
+                        </group>
+                      </div> 
+
+                      <!-- <div class="o_employee_avatar m-0 p-0 col">
+                        <field name="avatar_128" invisible="1"/>
+                        <field name="image_1920" widget="image" class="oe_avatar m-0" 
+                          options="{&quot;zoom&quot;: true, &quot;preview_image&quot;:&quot;avatar_128&quot;}"/>
+                      </div> -->
+
+                    </div>
+
+
+                    <!-- <field name="employee_id" 
+                      options="{'no_quick_create':True,'no_create_edit':True,'no_open': True}"
+                      readonly="1"/> -->
+                    <!-- <field name="emp_number" readonly="1"/> -->
+
+                    <field name="name" invisible="1"/>
+                    <field name="payroll_id" invisible="1"/>
+                    <field name="minimum_wage" invisible="1"/>
+
+                    <notebook>
+
+                        <page string="Compensation">
+                            <field name="pay_computation_line" readonly="state not in ['draft']">
+                              <list editable="bottom" 
+                                decoration-info="amount &lt; 0.0" 
+                              >
+                                <field name="seq" widget="handle"/>
+                                <field name="name"/>
+                                <field name="qty"/>
+                                <field name="unit"/>
+                                <field name="factor"/>
+                                <field name="amount" sum="Total"/>
+                                <field name="basic_pay"/>
+                                <field name="taxable"/>
+                              </list>
+                              <form>
+                                <group>
+                                  <group>
+                                    <field name="seq"/>
+                                    <field name="name"/>
+                                    <field name="qty"/>
+                                    <field name="unit"/>
+                                    <field name="factor"/>
+                                  </group>
+                                  <group>
+                                    <field name="amount" sum="Total"/>
+                                    <field name="basic_pay"/>
+                                    <field name="taxable"/>
+                                  </group>
+                                </group>
+                              </form>
+
+                            </field>
+                        </page>
+
+                        <page string="Deductions">
+                            <field name="deduction_line" readonly="state not in ['draft']">
+                              <list string="Deductions" class="ez_payroll_tree">
+                                  <field name="seq" widget="handle"/>
+                                  <field name="name"/>
+                                  <field name="amount" sum="Total EE"/>
+                                  <field name="er_amount" sum="Total ER"/>
+                                  <field name="tax_deductible" readonly="1"/>
+                              </list>
+                              <form string="Deductions">
+                                <group>
+                                  <group>
+                                    <!-- <field name="seq"/> -->
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="amount"/>
+                                    <!-- <field name="other_deduction_id"/> -->
+                                  </group>
+                                  <group>
+                                    <field name="er_amount1"/>
+                                    <field name="er_amount2"/>
+                                    <field name="tax_deductible"/>
+                                  </group>
+                                </group>
+                              </form>
+                            </field>
+                        </page>
+
+                        <page string="Loan Payments" readonly="state not in ['draft']">
+                            <field name="loan_line" readonly="state not in ['draft']">
+                              <list string="Loan Payments" create="0" editable="bottom" class="ez_payroll_tree">
+                                <field name="seq" widget="handle"/>
+                                <field name="name" readonly="1"/>
+                                <field name="amount" string='Payment' sum="Total"/>
+                                <field name="loan_balance"/>
+                                <field name="loan_amount"/>
+                              </list>
+
+                              <form>
+                                <group>
+                                  <group>
+                                    <!-- <field name="seq"/> -->
+                                    <field name="loan_id"/>
+                                    <field name="loan_type_id"/>
+                                    <field name="amount" string='Payment'/>
+                                  </group>
+                                  <group>
+                                    <field name="loan_balance"/>
+                                    <field name="loan_amount"/>
+                                  </group>
+                                </group>
+                              </form>
+
+                            </field>
+                        </page>
+
+                        <page string="Summary">
+                            <group>
+                                <group>
+                                    <field name="basic_pay"/>
+                                    <field name="gross_pay"/>
+                                    <field name="taxable"/>
+                                    <field name="net_pay"/>
+                                </group>
+                                <group>
+                                    <field name="total_deductions"/>
+                                    <field name="total_loan_payments"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Notes">
+                            <field name="note"/>
+                        </page>
+
+                    </notebook>
+
+                 </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ===================================================== -->
+
+
+        <record id="open_payslip" model="ir.actions.act_window">
+            <field name="name">Payslips</field>
+            <field name="res_model">hr.ph.payslip</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('state','!=','draft')]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="search_payslip"/>
+            <field name="view_id" ref="view_payslip_tree"/>
+        </record>
+
+        <menuitem
+            id="menu_payslip"
+            action="open_payslip"
+            parent="menu_reporting_payroll"
+            sequence="5" />
+
+
+  <!-- ###################################### -->
+
+        <record id="view_payslip_tree_mgr" model="ir.ui.view">
+          <field name="name">view_payslip_tree_mgr</field>
+          <field name="model">hr.ph.payslip</field>
+          <field name="inherit_id" ref="ez_payroll.view_payslip_tree"/>
+          <!-- <field name="groups_id" eval="[(6, 0, [ref('ez_payroll.group_hr_payroll_manager') ])]"/> -->
+          <field name="arch" type="xml">
+
+            <field name="employee_id" position="attributes">
+                <t group="ez_payroll.group_hr_payroll_manager">
+                    <!-- <field name="employee_id" widget="many2one_avatar_employee"/> -->
+                    <attribute name="widget">many2one_avatar_employee</attribute>
+                </t>
+            </field>
+
+          </field>
+        </record>
+
+  <!-- Remove from Debug mode Tags menu ############################ -->
+
+    <menuitem
+        id="hr.menu_human_resources_configuration_employee"
+        name="Employee"
+        parent="hr.menu_human_resources_configuration"
+        groups="hr.group_hr_user"
+        sequence="1"/>
+
+    <menuitem
+        id="hr.menu_view_employee_category_form"
+        name="Tags"
+        action="hr.open_view_categ_form"
+        parent="hr.menu_human_resources_configuration_employee"
+        groups="hr.group_hr_user"
+        sequence="1"/>
+
+</odoo>

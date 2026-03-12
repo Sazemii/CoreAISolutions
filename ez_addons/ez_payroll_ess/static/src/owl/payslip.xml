@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="ez_payroll_ess.PayslipWidget" owl="1">
+        <div class="text-end">
+            TEST
+            <a t-att-onclick="open_payslip();">
+                <t t-esc="props.net_pay"/>
+            </a>
+        </div>
+        <!-- <div class="p-4 border bg-light">
+            <h4>OWL Portal Widget</h4>
+            <p>Current Count: <t t-esc="state.count"/></p>
+            <button class="btn btn-primary" t-on-click="increment">Click Me</button>
+        </div> -->
+    </t>
+</templates>

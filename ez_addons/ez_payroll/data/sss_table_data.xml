@@ -1,0 +1,294 @@
+<?xml version="1.0"?>
+<openerp>
+  <data noupdate="0">
+    <record id="hr_ph_sss_id0" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">0.00</field>
+      <field name="range_to">999.99</field>
+      <field name="salary_credit">0.00</field>
+      <field name="ee_premium">0.00</field>
+      <field name="er_premium">0.00</field>
+      <field name="ec_premium">0.00</field>
+    </record>
+    <record id="hr_ph_sss_id1" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">1000.00</field>
+      <field name="range_to">1250.00</field>
+      <field name="salary_credit">1000.00</field>
+      <field name="ee_premium">36.30</field>
+      <field name="er_premium">73.70</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id2" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">1250.00</field>
+      <field name="range_to">1750.00</field>
+      <field name="salary_credit">1500.00</field>
+      <field name="ee_premium">54.50</field>
+      <field name="er_premium">110.50</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id3" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">1750.00</field>
+      <field name="range_to">2250.00</field>
+      <field name="salary_credit">2000.00</field>
+      <field name="ee_premium">72.70</field>
+      <field name="er_premium">147.30</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id4" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">2250.00</field>
+      <field name="range_to">2750.00</field>
+      <field name="salary_credit">2500.00</field>
+      <field name="ee_premium">90.80</field>
+      <field name="er_premium">184.20</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id5" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">2750.00</field>
+      <field name="range_to">3250.00</field>
+      <field name="salary_credit">3000.00</field>
+      <field name="ee_premium">109.00</field>
+      <field name="er_premium">221.00</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id6" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">3250.00</field>
+      <field name="range_to">3750.00</field>
+      <field name="salary_credit">3500.00</field>
+      <field name="ee_premium">127.20</field>
+      <field name="er_premium">257.80</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id7" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">3750.00</field>
+      <field name="range_to">4250.00</field>
+      <field name="salary_credit">4000.00</field>
+      <field name="ee_premium">145.30</field>
+      <field name="er_premium">294.70</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id8" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">4250.00</field>
+      <field name="range_to">4750.00</field>
+      <field name="salary_credit">4500.00</field>
+      <field name="ee_premium">163.50</field>
+      <field name="er_premium">331.50</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id9" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">4750.00</field>
+      <field name="range_to">5250.00</field>
+      <field name="salary_credit">5000.00</field>
+      <field name="ee_premium">181.70</field>
+      <field name="er_premium">368.30</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id10" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">5250.00</field>
+      <field name="range_to">5750.00</field>
+      <field name="salary_credit">5500.00</field>
+      <field name="ee_premium">199.80</field>
+      <field name="er_premium">405.20</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id11" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">5750.00</field>
+      <field name="range_to">6250.00</field>
+      <field name="salary_credit">6000.00</field>
+      <field name="ee_premium">218.00</field>
+      <field name="er_premium">442.00</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id12" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">6250.00</field>
+      <field name="range_to">6750.00</field>
+      <field name="salary_credit">6500.00</field>
+      <field name="ee_premium">236.20</field>
+      <field name="er_premium">478.80</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id13" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">6750.00</field>
+      <field name="range_to">7250.00</field>
+      <field name="salary_credit">7000.00</field>
+      <field name="ee_premium">254.30</field>
+      <field name="er_premium">515.70</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id14" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">7250.00</field>
+      <field name="range_to">7750.00</field>
+      <field name="salary_credit">7500.00</field>
+      <field name="ee_premium">272.50</field>
+      <field name="er_premium">552.50</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id15" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">7750.00</field>
+      <field name="range_to">8250.00</field>
+      <field name="salary_credit">8000.00</field>
+      <field name="ee_premium">290.70</field>
+      <field name="er_premium">589.30</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id16" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">8250.00</field>
+      <field name="range_to">8750.00</field>
+      <field name="salary_credit">8500.00</field>
+      <field name="ee_premium">308.80</field>
+      <field name="er_premium">626.20</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id17" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">8750.00</field>
+      <field name="range_to">9250.00</field>
+      <field name="salary_credit">9000.00</field>
+      <field name="ee_premium">327.00</field>
+      <field name="er_premium">663.00</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id18" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">9250.00</field>
+      <field name="range_to">9750.00</field>
+      <field name="salary_credit">9500.00</field>
+      <field name="ee_premium">345.20</field>
+      <field name="er_premium">699.80</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id19" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">9750.00</field>
+      <field name="range_to">10250.00</field>
+      <field name="salary_credit">10000.00</field>
+      <field name="ee_premium">363.30</field>
+      <field name="er_premium">736.70</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id20" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">10250.00</field>
+      <field name="range_to">10750.00</field>
+      <field name="salary_credit">10500.00</field>
+      <field name="ee_premium">381.50</field>
+      <field name="er_premium">773.50</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id21" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">10750.00</field>
+      <field name="range_to">11250.00</field>
+      <field name="salary_credit">11000.00</field>
+      <field name="ee_premium">399.70</field>
+      <field name="er_premium">810.30</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id22" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">11250.00</field>
+      <field name="range_to">11750.00</field>
+      <field name="salary_credit">11500.00</field>
+      <field name="ee_premium">417.80</field>
+      <field name="er_premium">847.20</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id23" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">11750.00</field>
+      <field name="range_to">12250.00</field>
+      <field name="salary_credit">12000.00</field>
+      <field name="ee_premium">436.00</field>
+      <field name="er_premium">884.00</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id24" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">12250.00</field>
+      <field name="range_to">12750.00</field>
+      <field name="salary_credit">12500.00</field>
+      <field name="ee_premium">454.20</field>
+      <field name="er_premium">920.80</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id25" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">12750.00</field>
+      <field name="range_to">13250.00</field>
+      <field name="salary_credit">13000.00</field>
+      <field name="ee_premium">472.30</field>
+      <field name="er_premium">957.70</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id26" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">13250.00</field>
+      <field name="range_to">13750.00</field>
+      <field name="salary_credit">13500.00</field>
+      <field name="ee_premium">490.50</field>
+      <field name="er_premium">994.50</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id27" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">13750.00</field>
+      <field name="range_to">14250.00</field>
+      <field name="salary_credit">14000.00</field>
+      <field name="ee_premium">508.70</field>
+      <field name="er_premium">1031.30</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id28" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">14250.00</field>
+      <field name="range_to">14750.00</field>
+      <field name="salary_credit">14500.00</field>
+      <field name="ee_premium">526.80</field>
+      <field name="er_premium">1068.20</field>
+      <field name="ec_premium">10.00</field>
+    </record>
+    <record id="hr_ph_sss_id29" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">14750.00</field>
+      <field name="range_to">15250.00</field>
+      <field name="salary_credit">15000.00</field>
+      <field name="ee_premium">545.00</field>
+      <field name="er_premium">1105.00</field>
+      <field name="ec_premium">30.00</field>
+    </record>
+    <record id="hr_ph_sss_id30" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">15250.00</field>
+      <field name="range_to">15750.00</field>
+      <field name="salary_credit">15500.00</field>
+      <field name="ee_premium">563.20</field>
+      <field name="er_premium">1141.80</field>
+      <field name="ec_premium">30.00</field>
+    </record>
+    <record id="hr_ph_sss_id31" model="hr.ph.sss">
+      <field name="govded_id" ref="govded_version_0"/>
+      <field name="range_from">15750.00</field>
+      <field name="range_to">99999999.99</field>
+      <field name="salary_credit">16000.00</field>
+      <field name="ee_premium">581.30</field>
+      <field name="er_premium">1178.70</field>
+      <field name="ec_premium">30.00</field>
+    </record>
+  </data>
+</openerp>
+

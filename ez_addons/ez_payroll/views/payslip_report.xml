@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+    <template id="report_payslip_template_half">
+
+      <table class="table-borderless table-payslip">
+        <tr>
+          <td class="text-center ps-bottom-line">
+
+            <div style="font-size:14pt;">
+              <strong t-esc="ps.print_header"/>
+              <!-- <t t-if="ps.company_id.payslip_header">
+                <strong t-esc="ps.company_id.payslip_header"/>
+              </t>
+              <t t-if="not ps.company_id.payslip_header">
+                <strong t-esc="ps.company_id.name"/>
+              </t> -->
+            </div>
+
+            <div class="text-center" style="font-size:12pt;">
+              <strong t-if="ps.payroll_id.state=='draft'" style='color:red;'>Draft Payslip</strong>
+              <strong t-if="ps.payroll_id.state!='draft'">Payslip</strong>
+            </div>
+
+            <br/>
+
+            <p style="text-align:justify;font-size:10pt;">
+              I hereby acknowledge to have received the amount of
+              P<span t-field="ps.net_pay"/>
+              representing my salary for the period covered from 
+              <span t-field="ps.date_from"/> to <span t-field="ps.date_to"/>.
+            </p>
+
+            <table class="table-payslip">
+              <tr>
+                <td width="30%"></td>
+                <td width="70%" class="text-center">
+                  <strong t-esc="ps.employee_id.name"/>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td class="text-center" style="border-top:1px solid black;">
+                  Signature
+                </td>
+              </tr>
+            </table>
+
+          </td>
+        </tr>
+
+        <tr class="border-top">
+          <td>
+            <table class="table-payslip">
+              <tr>
+                <td>Name:</td>
+                <td width="100%">
+                  <span t-field="ps.employee_id.name"/> /
+                  <span t-field="ps.identification_id"/>
+                </td>
+              </tr>
+              <tr>
+                <td>Dept.:</td>
+                <td><span t-field="ps.employee_id.department_id.name"/></td>
+              </tr>
+              <tr>
+                <td>Period:</td>
+                <td><span t-field="ps.date_from"/> to <span t-field="ps.date_to"/></td>
+              </tr>
+              <tr>
+                <td>Rate:</td>
+                <td><span t-field="ps.salary_rate"/> <span t-field="ps.salary_rate_period"/></td>
+              </tr>
+            </table>
+
+            <div style="height:8px;"></div>
+
+            <table class="table-payslip">
+
+              <tr class="border-top">
+                <th class="text-start">Compensation</th>
+                <th class="text-end">Qty</th>
+                <th class="text-center">Unit</th>
+                <th class="text-end">Amount</th>
+              </tr>
+
+              <tr t-foreach="ps.pay_computation_line" t-as="pc">
+                <td><span t-field="pc.name"/></td>
+                <td class="text-end"><span t-field="pc.qty"/></td>
+                <td class="text-center"><span t-field="pc.unit"/></td>
+                <td class="text-end"><span t-field="pc.amount"/></td>
+              </tr>
+
+              <tr class="border-bottom">
+                <td colspan="2">Basic Pay:</td>
+                <td class="text-end" colspan="2"><span t-field="ps.basic_pay"/></td>
+              </tr>
+
+              <tr class="border-bottom">
+                <th colspan="2" class="text-start">GROSS PAY:</th>
+                <th class="text-end" colspan="2"><span t-field="ps.gross_pay"/></th>
+              </tr>
+
+              <tr><td style="height:15px"></td></tr>
+
+              <tr class="border-top">
+                <th colspan="3" class="text-start">Deductions</th>
+                <th class="text-end">Amount</th>
+              </tr>
+
+              <tr t-foreach="ps.deduction_line" t-as="ded">
+                <t t-if="ded.amount!=0.0">
+                  <td colspan="3"><span t-field="ded.name"/></td>
+                  <td class="text-end"><span t-field="ded.amount"/></td>
+                </t>
+              </tr>
+
+              <tr class="border-top">
+                <th colspan="2" class="text-start">Total Deductions:</th>
+                <th class="hrb text-end" colspan="2"><span t-field="ps.total_deductions"/></th>
+              </tr>
+
+              <tr><td style="height:15px"></td></tr>
+
+              <t t-if="len(ps.loan_line)>0">
+                <tr class="border-top">
+                  <th colspan="3" class="text-start">Loan Payments</th>
+                  <th class="text-end">Amount</th>
+                </tr>
+
+                <tr t-foreach="ps.loan_line" t-as="loan">
+                  <td colspan="3"><span t-field="loan.name"/></td>
+                  <td class="text-end"><span t-field="loan.amount"/></td>
+                </tr>
+
+                <tr class="border-top">
+                  <th class="text-start" colspan="2">Total Payments:</th>
+                  <th class="text-end" colspan="2"><span t-field="ps.total_loan_payments"/></th>
+                </tr>
+                <tr><td style="height:15px"></td></tr>
+              </t>
+
+              <tr class="border-top">
+                <th class="text-start" colspan="2">NET PAY:</th>
+                <th class="text-end" colspan="2"><span t-field="ps.net_pay"/></th>
+              </tr>
+
+            </table>
+
+            <div t-if="ps.note" class="container">
+              <div class="pt-3 pb-1">
+                Notes:
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <t t-foreach="ps.note.split('\n')" t-as="note">
+                    <t t-esc="note"/><br/>
+                  </t>
+                </div>
+              </div>
+            </div>
+
+          </td>
+
+        </tr>
+
+      </table>
+
+    </template>
+
+    <template id="report_payslip_template">
+      <table class="table-borderless" style="width:100%">
+        <tr>
+          <td style="width:46%; vertical-align:top;">
+            <t t-call="ez_payroll.report_payslip_template_half"/>
+          </td>
+          <td style="width:8%;"></td>
+          <td style="width:46%; vertical-align:top;">
+            <t t-call="ez_payroll.report_payslip_template_half"/>
+          </td>
+        </tr>
+      </table>
+    </template>
+
+    <template id="report_payslip">
+      <t t-call="web.basic_layout">
+        <t t-foreach="docs" t-as="o">
+          <t t-foreach="o.payslip" t-as="ps">
+            <div class="header"></div>
+            <div class="page" style="vertical-align:top;">
+              <t t-call="ez_payroll.report_payslip_template" />
+            </div>
+            <div class="footer"></div>
+          </t>
+        </t>
+      </t>
+    </template>
+
+    <template id="report_single_payslip">
+      <t t-call="web.basic_layout">
+        <t t-foreach="docs" t-as="ps">
+          <div class="header"></div>
+          <div class="page">
+            <t t-call="ez_payroll.report_payslip_template" />
+          </div>
+          <div class="footer"></div>
+        </t>
+      </t>
+    </template>
+
+<!--
+<t t-call="web.basic_layout">
+html_container
+
+  <record id="ez_payroll.action_print_single_payslip" model="ir.actions.report.xml">
+    <field name="paperformat_id" ref="ez_payroll.payslip_format"/>
+  </record>
+-->
+
+  </data>
+</openerp>

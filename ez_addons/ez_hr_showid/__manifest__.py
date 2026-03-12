@@ -1,0 +1,1 @@
+{'name':'Human Resources - Show ID','version':'1.19','category':'Generic Modules/Human Resources','summary':'Show ID Number with name','description':'Show ID Number with name','author':'Regulus Berdin / rberdin@gmail.com','depends':['hr'],'init_xml':[],'data':[],'demo':[],'installable':True,'application':True,'auto_install':False,'qweb':[],'license':'Other proprietary'}

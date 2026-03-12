@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2022
+======================================== -->
+<odoo>
+  <data>
+
+    <record id="company_setting" model="ir.rule">
+      <field name="name">Payroll-Account Setting Company Rule</field>
+      <field name="model_id" ref="model_ez_payroll_account_setting"/>
+      <field name="global" eval="True"/>
+      <field name="domain_force">['|',('company_id','=',False),('company_id','in',company_ids)]</field>
+    </record>
+
+  </data>
+</odoo>

@@ -1,0 +1,3 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+access_geofence_user,access_geofence_user,model_hr_employee_geofence,base.group_user,1,1,1,0
+access_geofence_mgr,access_geofence_mgr,model_hr_employee_geofence,hr.group_hr_manager,1,1,1,1

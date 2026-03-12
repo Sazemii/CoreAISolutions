@@ -1,0 +1,5 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+access_coe_user,access_coe_user,model_hr_ph_coe,base.group_user,1,1,1,0
+access_coe_line_user,access_coe_line_user,model_hr_ph_coe_line,base.group_user,1,1,1,0
+access_coe_mgr,access_coe_mgr,model_hr_ph_coe,group_coe_approver,1,1,1,1
+access_coe_line_mgr,acceaccess_coe_line_mgrss_coe_mgr,model_hr_ph_coe_line,group_coe_approver,1,1,1,1

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin (c) 2025
+======================================== -->
+<odoo>
+
+    <!-- ======================================================== -->
+
+    <record id="tc_groupt_comp_rule" model="ir.rule">
+      <field name="name">Timecard Group Company Rule</field>
+      <field name="model_id" ref="model_ez_time_card_group"/>
+      <field name="domain_force">['|',('company_id','=',False),('company_id','in',company_ids)]</field>
+      <field name="groups" eval="[(4,ref('base.group_user'))]"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2021
+======================================== -->
+<odoo>
+
+  <record id="form_work_schedule" model="ir.ui.view">
+    <field name="name">form_work_schedule</field>
+    <field name="model">ez.shift.sched</field>
+    <field name="arch" type="xml">
+      <form>
+        <header>
+          <button name="gen_schedule_lines"
+            string="Generate Schedule Lines"
+            type="object" class="oe_highlight"/>
+          <button name="delete_schedule_lines"
+            confirm="Are you sure want to do this?"
+            string="Delete Schedule Lines"
+            groups="ez_timekeeping.group_timekeeping_manager"
+            type="object"/>
+        </header>
+
+        <sheet>
+          <div class="oe_title">
+            <label for="name"/>
+            <h1>
+              <field name="name" required="1" placeholder="eg. Sched A..."/>
+            </h1>
+          </div> 
+
+          <group>
+            <group>
+              <field name="date_from" widget="daterange" options="{'end_date_field': 'date_to'}" string="Date Range"/>
+              <field name="date_to" invisible="1" />
+              <!-- <field name="date_from"/>
+              <field name="date_to"/> -->
+            </group>
+            <group>
+              <field name="shift_id"/>
+            </group>
+          </group>
+          <notebook>
+            <page name="note" string="Schedule">
+              <field name="lines">
+                <list editable="bottom" decoration-danger="day_type!='reg'">
+                  <field name="name" column_invisible="1"/>
+                  <field name="date"/>
+                  <field name="dow"/>
+                  <field name="schedule"/>
+                  <field name="day_type"/>
+                  <field name="hours"/>
+                </list>
+                <form>
+                  <group>
+                    <field name="name" invisible="1"/>
+                    <field name="date"/>
+                    <field name="dow"/>
+                    <field name="schedule"/>
+                    <field name="day_type"/>
+                    <field name="hours"/>
+                  </group>
+                </form>
+              </field>
+            </page>
+            <page name="note" string="Notes">
+              <field name="note"/>
+            </page>
+          </notebook>
+        </sheet>
+
+      </form>
+    </field>
+  </record>
+
+  <record id="tree_work_schedule" model="ir.ui.view">
+    <field name="name">tree_work_schedule</field>
+    <field name="model">ez.shift.sched</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="name"/>
+        <field name="shift_id"/>
+        <field name="date_from"/>
+        <field name="date_to"/>
+        <field name="note"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="search_work_schedule" model="ir.ui.view">
+    <field name="name">search_work_schedule</field>
+    <field name="model">ez.shift.sched</field>
+    <field name="arch" type="xml">
+      <search string="Search">
+        <field name="name"/>
+        <field name="shift_id"/>
+        <field name="date_from"/>
+        <field name="date_to"/>
+        <filter string="Date" name="gmonth" context="{'group_by':'date_from'}"/>
+      </search>
+    </field>
+  </record>
+
+  <record id="open_work_schedule" model="ir.actions.act_window">
+    <field name="name">Custom Work Schedules</field>
+    <field name="res_model">ez.shift.sched</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <menuitem
+    id="menu_work_schedule"
+    parent="ez_timekeeping.menu_timekeeping_config"
+    action="open_work_schedule"
+    sequence="1000" />
+
+</odoo>

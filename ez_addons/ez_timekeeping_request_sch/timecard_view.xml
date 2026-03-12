@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2019
+======================================== -->
+<odoo>
+
+  <record id="form_timecard_inherit_officer" model="ir.ui.view">
+    <field name="name">form_timecard_inherit_officer</field>
+    <field name="model">ez.time.card</field>
+    <field name="priority" eval="5"/>
+    <field name="inherit_id" ref="ez_timekeeping.form_timecard"/>
+    <field name="arch" type="xml">
+
+      <xpath expr="//field[@name='details']/list/field[@name='schedule']" position="replace">
+        <field name="schedule" readonly="(not edit_schedule) or done or (not is_timekeeping_user)" optional="show"/>
+      </xpath>
+
+      <xpath expr="//field[@name='details']/list/field[@name='day_type']" position="replace">
+        <field name="day_type" readonly="(not edit_schedule) or done or (not is_timekeeping_user)"/>
+      </xpath>
+
+      <field name="edit_schedule" position="replace">
+        <!-- <field name="is_timekeeping_user" invisible="1"/> -->
+        <field name="edit_schedule" readonly="state not in ('draft')"
+          invisible="(not is_timekeeping_user) or state not in ('draft')"/>
+      </field>
+
+    </field>
+  </record>
+
+</odoo>

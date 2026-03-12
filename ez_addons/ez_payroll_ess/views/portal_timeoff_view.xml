@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+
+/hr_timesheet/static/img/timesheet.svg
+/purchase/static/src/img/calculator.svg
+/appointment/static/src/img/calendar.svg
+
+Request
+/project/static/src/img/tasks.svg
+
+
+/sale/static/src/img/bag.svg
+/web/static/img/folder.svg
+/mrp_subcontracting/static/src/img/manufacturing.svg
+/web/static/img/rfq.svg
+/knowledge/static/src/img/Books.svg
+/documents/static/description/icon.svg
+
+======================================== -->
+<odoo>
+
+    <template
+        id="portal_layout_timeoff"
+        name="Portal layout: Timeoff menu entry"
+        inherit_id="portal.portal_breadcrumbs"
+        priority="40"
+    >
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <t t-if="page_name == 'timeoff' or timeoff">
+                <t t-set="menu_desc" t-value="approve and 'Approve Time Offs' or 'Time Offs'"/>
+                <li t-attf-class="breadcrumb-item #{'active ' if not timeoff else ''}">
+                    <a t-if="timeoff" t-attf-href="/my/timeoffs/{{ approve and 1 or 0 }}?{{ keep_query() }}">
+                        <t t-esc="menu_desc"/>
+                    </a>
+                    <t t-else="" t-esc="menu_desc"/>
+                </li>
+                <li t-if="timeoff" class="breadcrumb-item active text-truncate">
+                    <span t-if="timeoff.holiday_status_id.name" t-field="timeoff.holiday_status_id.name"/>
+                </li>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- Portal My Home -->
+    <template 
+        id="portal_my_home_timeoff" 
+        name="Portal My Home : Time Off" 
+        inherit_id="portal.portal_my_home"
+        priority="35"
+        customize_show="True"
+    >
+        <div id="portal_common_category" position="before">
+            <div class="o_portal_category row g-2 mt-3" id="portal_ess_category">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/hr_timesheet/static/img/timesheet.svg'"/>
+                    <t t-set="title">Your Time Offs</t>
+                    <t t-set="text">Create, list and view all of your Time Offs</t>
+                    <t t-set="url" t-value="'/my/timeoffs/0'" />
+                    <t t-set="placeholder_count" t-value="'timeoff_count'" />
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/hr_timesheet/static/img/timesheet.svg'"/>
+                    <t t-set="title">Approve Time Offs</t>
+                    <t t-set="text">Approve, review, and manage all Time Offs awaiting your approval</t>
+                    <t t-set="url" t-value="'/my/timeoffs/1'" />
+                    <t t-set="placeholder_count" t-value="'timeoff_approve_count'"/>
+                </t>
+            </div>
+        </div>
+    </template>
+
+    <!-- MENU - new and delete -->
+    <template id="portal_searchbar_timeoff" name="Portal Search Bar Inherit" inherit_id="portal.portal_searchbar">
+        <div id="o_portal_navbar_content" position="inside">
+            <div t-if="page_name=='timeoff' and (not approve)" class="ms-lg-2 mt-2 mt-sm-2 mt-lg-0">
+                <div class="btn-group">
+                    <form class="btn-group" method="POST" t-attf-action="/my/timeoff/0">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <button name="portal_my_timeoff_detail" type="action"
+                            class="btn btn-primary">New Time Off</button>
+                    </form>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="unlink_timeoffs();">
+                        <i class="fa fa-trash"/>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- State Pill -->
+    <template id="portal_my_timeoff_state_pill" name="My Time Off State Pill">
+        <!-- 
+        decoration-info="state == 'draft'" 
+        decoration-warning="state in ('confirm','validate1')" 
+        decoration-success="state == 'validate'"/> 
+        -->
+        <div>
+            <div t-if="rec.state=='confirm'" t-field="rec.state" class="badge rounded-pill text-bg-warning"/>
+            <div t-elif="rec.state=='refuse'" t-field="rec.state" class="badge rounded-pill text-bg-danger"/>
+            <div t-elif="rec.state=='validate1'" t-field="rec.state" class="badge rounded-pill text-bg-warning"/>
+            <div t-elif="rec.state=='validate'" t-field="rec.state" class="badge rounded-pill text-bg-success"/>
+            <div t-else="" t-field="rec.state" class="badge rounded-pill text-bg-secondary"/>
+        </div>
+    </template>
+
+    <!-- CARD -->
+    <template id="portal_my_timeoff_card" name="My Time Off Card">
+        <div class="card shadow bg-secondary rounded mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">
+                            <span t-field="rec.holiday_status_id.name"/>
+                        </h5>
+                    </div>
+                    <t t-call="ez_payroll_ess.portal_my_timeoff_state_pill"/>
+                </div>
+
+                <b t-field="rec.employee_id"/>
+
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <span t-field="rec.request_date_from"/>
+                        <t t-if="not (rec.request_unit_half or rec.request_unit_hours)">
+                            - <span t-field="rec.request_date_to"/>
+                        </t><t t-elif="rec.request_unit_half">
+                            <span t-field="rec.request_date_from_period"/>
+                        </t>
+                    </div>
+                    <div>
+                        <t t-if="not (rec.request_unit_half or rec.request_unit_hours)">
+                            <span t-field="rec.number_of_days"/>
+                            <span>Days</span>
+                        </t>
+                        <t t-if="rec.leave_type_request_unit == 'hour'">
+                            <span t-field="rec.number_of_hours"/>
+                            <span>Hours</span>
+                        </t>
+                    </div>
+                </div>
+                <!-- <div t-if="rec.request_unit_hours">
+                    From <span t-field="rec.request_hour_from" /> To <span t-field="rec.request_hour_to"/>
+                </div> -->
+                <div class="d-flex justify-content-between">
+                    <div t-field="rec.private_name" class="me-1"/>
+                    <input t-if="rec.state in ['draft','confirm'] and not approve" type="checkbox" name="unlink_timeoff" t-att-value="rec.id"/>
+                </div>
+            </div>
+            <t t-out="0"/>
+        </div>
+    </template>
+
+    <template id="portal_my_timeoff" name="My Time Off">
+      <t t-call="portal.portal_layout">
+
+        <!-- <t t-call-assets="ez_payroll_ess.timeoff_assets_main"/> -->
+        <script type="text/javascript" src="/ez_payroll_ess/static/src/js/utils.js"></script>
+        <script type="text/javascript" src="/ez_payroll_ess/static/src/js/portal_timeoff_main.js"></script>
+
+        <t t-set="breadcrumbs_searchbar" t-value="True"/>
+        <t t-call="portal.portal_searchbar">
+            <t t-set="title">Time Off</t>
+        </t>
+        <t t-if="not records">
+            <p class="alert alert-warning">There are currently no records in your account.</p>
+        </t>
+        <t t-if="records">
+            <div class="row">
+                <t t-foreach="records" t-as="rec">
+                    <div class="col-md-4">
+                        <a t-att-href="'/my/timeoff/%s/%s' % (rec.id, approve and 1 or 0)" t-att-title="rec.holiday_status_id.name">
+                            <t t-call="ez_payroll_ess.portal_my_timeoff_card"/>
+                        </a>
+                    </div>
+                </t>
+            </div>
+            <div t-if="pager" class="o_portal_pager d-flex justify-content-center my-3">
+                <t t-call="portal.pager"/>
+            </div>
+        </t>
+      </t>
+    </template>
+
+    <!-- # DETAIL -->
+    <template id="portal_timeoff_detail" name="Create Time Off">
+        <t t-call="portal.portal_layout">
+            <t t-set="rec" t-value="timeoff"/>
+            <t t-set="readonly" t-value="(not create) and (approve or rec.state not in ['draft','confirm'])"/>
+            <t t-set="readonly_style" t-value="readonly and 'pointer-events: none;' or ''"/>
+
+            <!-- <t t-call-assets="ez_payroll_ess.timeoff_assets"/> -->
+            <script type="text/javascript" src="/ez_payroll_ess/static/src/js/utils.js"></script>
+            <script type="text/javascript" src="/ez_payroll_ess/static/src/js/portal_timeoff.js"></script>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 t-if="create" class="text-center">Create a new Time Off</h1>
+                        <h1 t-elif="approve and edit" class="text-center">Approve Time Off</h1>
+                        <h1 t-elif="edit" class="text-center">Edit Time Off</h1>
+                        <h1 t-else="" class="text-center">View Time Off</h1>
+                    </div>
+                </div>
+
+                <form t-att-action="'/submitted/timeoff/%s' % approve" method="POST" class="form-horizontal mt32" 
+                    enctype="multipart/form-data" onsubmit="return submit_form_timeoff(event);"
+                >
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <input type="hidden" name="employee_id" t-att-value="employee_id.id"/>
+                    <input type="hidden" name="timeoff_id" t-att-value="rec.id"/>
+                    <input type="hidden" name="create" t-att-value="create"/>
+                    <input type="hidden" name="edit" t-att-value="edit"/>
+                    <input type="hidden" name="approve" id="id_approve" t-att-value="approve"/>
+
+                    <!-- ##### Employee ########################################## -->
+                    <div class="form-group col-md-6 offset-md-3">
+                        <label class="control-label">Employee</label>
+                        <div class="form-control" t-field="employee_id.display_name"/>
+                    </div>
+
+                    <!-- ##### Leave Type ########################################## -->
+                    <div class="form-group col-md-6 offset-md-3">
+                        <label class="control-label">Time Off Type</label>
+                        <div>
+                            <select class="form-control" id="holiday_status_id" name="holiday_status_id" 
+                                required="1" t-att-style="readonly_style"
+                            >
+                                <option t-if="not holiday_status_id" value="0"/>
+                                <t t-foreach="leave_types" t-as="ltype">
+                                    <option t-attf-value="#{ltype.id}" t-att-selected="holiday_status_id == ltype.id">
+                                        <t t-esc="ltype.name"/>
+                                    </option>
+                                </t>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- ##### Date Fields ########################################## -->
+                    <div class="col-md-6 offset-md-3" id="id_date_from_to">
+                        <div class="row">
+                            <!-- from field -->
+                            <div class="col-6 form-group">
+                                <label class="control-label">Date</label>
+                                <div>
+                                    <input id="date_from" name="date_from" type="date" class="form-control" 
+                                        t-att-value="date_from" onclick="on_change_date()" t-att-style="readonly_style"/>
+                                </div>
+                            </div>
+
+                            <!-- to field -->
+                            <div class="col-6 form-group" id="id_date_to">
+                                <label class="control-label">To</label>
+                                <div>
+                                    <input id="date_to" name="date_to" type="date" class="form-control" 
+                                        t-att-value="date_to" onclick="on_change_date()" t-att-style="readonly_style"/>
+                                </div>
+                            </div>
+
+                            <!-- am/pm field -->
+                            <div class="col-6 form-group" id="id_date_am_pm">
+                                <label class="control-label"></label>
+                                <div>
+                                    <select class="form-control" id="request_date_from_period" name="request_date_from_period"
+                                        required="1" t-att-style="readonly_style"
+                                    >
+                                        <t t-foreach="request_date_from_period_data" t-as="key">
+                                            <option t-att-value="key"
+                                                t-att-selected="rec.request_date_from_period == key"
+                                            >
+                                                <t t-esc="request_date_from_period_data[key]"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ##### Time Fields ########################################## -->
+                    <div class="col-md-6 offset-md-3" id="id_request_hour">
+                        <div class="row">
+                            <div class="col-6 form-group">
+                                <label class="control-label">Time From</label>
+                                <div>
+                                    <select class="form-control" id="request_hour_from" name="request_hour_from" 
+                                        required="1" t-att-style="readonly_style"
+                                    >
+                                        <t t-foreach="time_selections" t-as="tm">
+                                            <option t-attf-value="#{tm[0]}" t-att-selected="request_hour_from == tm[0]">
+                                                <t t-esc="tm[1]"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6 form-group">
+                                <label class="control-label">To</label>
+                                <div>
+                                    <select class="form-control" id="request_hour_to" name="request_hour_to" 
+                                        required="1" t-att-style="readonly_style"
+                                    >
+                                        <t t-foreach="time_selections" t-as="tm">
+                                            <option t-attf-value="#{tm[0]}" t-att-selected="request_hour_to == tm[0]">
+                                                <t t-esc="tm[1]"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6 offset-md-3">
+                        <label class="control-label">Description</label>
+                        <div>
+                            <input id="name_field" name="name_field" class="form-control" required="1"
+                                t-att-value="name" t-att-style="readonly_style"/>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 offset-md-3 mt-2">
+                        <div class="row">
+                            <div t-if="readonly" class="col-8 form-group">
+                                <label t-if="rec.request_unit_half">Half Day</label>
+                                <label t-if="rec.request_unit_hours">Custom Hours</label>
+                                <input id="request_unit_half" name="request_unit_half" type="checkbox" class="d-none"
+                                    t-att-value="rec.request_unit_half" t-att-checked="rec.request_unit_half"
+                                />
+                                <input id="request_unit_hours" name="request_unit_hours" type="checkbox" class="d-none" 
+                                    t-att-value="rec.request_unit_hours" t-att-checked="rec.request_unit_hours"
+                                />
+                            </div>
+                            <t t-else="">
+                                <div class="col-4 form-group">
+                                    <input id="request_unit_half" name="request_unit_half" type="checkbox" 
+                                        t-att-value="rec.request_unit_half" t-att-checked="rec.request_unit_half" onclick="click_change_unit_half()"
+                                    />
+                                    <label>Half Day</label>
+                                </div>
+                                <div class="col-4 form-group">
+                                    <input id="request_unit_hours" name="request_unit_hours" type="checkbox" 
+                                        t-att-value="rec.request_unit_hours" t-att-checked="rec.request_unit_hours" onclick="click_change_unit_hours()"
+                                    />
+                                    <label>Custom Hours</label>
+                                </div>
+                            </t>
+                            <div class="col-4 form-group text-end">
+                                <t t-call="ez_payroll_ess.portal_my_timeoff_state_pill"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6 offset-md-3 mt-2">
+                        <button t-if="create" class="btn btn-success btn-lg">Create New</button>
+                        <button t-elif="approve and rec.state=='validate1'" class="btn btn-success btn-lg">Second Approve</button>
+                        <button t-elif="approve and rec.state in ['draft','confirm']" class="btn btn-success btn-lg">Approve</button>
+                        <input t-elif="rec.state in ['draft','confirm']" type="submit" class="btn btn-success btn-lg"/>
+
+                        <input t-if="rec.state != 'refuse' and approve" type="submit" name="btn_refuse" id="btn_refuse" 
+                            value="Refuse" class="btn btn-secondary btn-lg ms-1"/>
+
+                        <input t-if="rec.state=='refuse'" type="submit" name="btn_draft" id="btn_draft" 
+                            value="Mark as Draft" class="btn btn-danger btn-lg ms-1"/>
+
+                        <input t-if="not readonly" type="submit" name="btn_delete" id="btn_delete" 
+                            value="Delete" class="btn btn-danger btn-lg ms-1"/>
+
+                        <input type="submit" name="btn_back" id="btn_back" 
+                            value="Back" class="btn btn-secondary btn-lg ms-1"/>
+                    </div>
+                </form>
+
+            </div>
+
+        </t>
+    </template>
+
+</odoo>

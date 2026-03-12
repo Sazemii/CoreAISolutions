@@ -1,0 +1,14 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_hr_employee_experience_system_user","hr.employee.experience system user","model_hr_employee_experience","base.group_user",1,0,0,0
+"access_hr_employee_infraction_system_user","hr.employee.infraction system user","model_hr_employee_infraction","base.group_user",1,0,0,0
+"access_hr_employee_education_system_user","hr.employee.education system user","model_hr_employee_education","base.group_user",1,0,0,0
+"access_hr_employee_custodianship_system_user","hr.employee.custodianship system user","model_hr_employee_custodianship","base.group_user",1,0,0,0
+"access_hr_employee_dependents_system_user","hr.employee.dependents system user","model_hr_employee_dependents","base.group_user",1,0,0,0
+"access_hr_employee_health_system_user","hr.employee.health system user","model_hr_employee_health","base.group_user",1,0,0,0
+"access_hr_employee_experience_hr_user","hr.employee.experience hr user","model_hr_employee_experience","hr.group_hr_user",1,1,1,1
+"access_hr_employee_infraction_hr_user","hr.employee.infraction hr user","model_hr_employee_infraction","hr.group_hr_user",1,1,1,1
+"access_hr_employee_education_hr_user","hr.employee.education hr user","model_hr_employee_education","hr.group_hr_user",1,1,1,1
+"access_hr_employee_custodianship_hr_user","hr.employee.custodianship hr user","model_hr_employee_custodianship","hr.group_hr_user",1,1,1,1
+"access_hr_employee_dependents_hr_user","hr.employee.dependents hr user","model_hr_employee_dependents","hr.group_hr_user",1,1,1,1
+"access_hr_employee_health_hr_user","hr.employee.health hr user","model_hr_employee_health","hr.group_hr_user",1,1,1,1
+access_training,access_training,model_hr_employee_training,hr.group_hr_user,1,1,1,1

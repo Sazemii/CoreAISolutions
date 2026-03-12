@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2021
+======================================== -->
+<odoo>
+
+    <record id="form_shift_inherit" model="ir.ui.view">
+        <field name="name">form_shift_inherit</field>
+        <field name="model">ez.shift</field>
+        <field name="inherit_id" ref="ez_timekeeping.form_shift"/>
+        <field name="arch" type="xml">
+            <button name="create_details" position="after">
+                <button name="sync_working_schedule" string="Sync Working Schedule"
+                    invisible="invisible_sched" type="object" 
+                    groups="ez_timekeeping.group_timekeeping_manager"/>
+            </button>
+        </field>
+    </record>
+
+</odoo>

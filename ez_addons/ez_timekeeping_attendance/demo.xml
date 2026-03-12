@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2024
+======================================== -->
+<odoo>
+  <data noupdate="1">
+
+    <function model="hr.attendance" name="create_demo_data"/>
+
+  </data>
+</odoo>

@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+    <template
+        id="portal_layout_timecard"
+        name="Portal layout: timecard menu entry"
+        inherit_id="portal.portal_breadcrumbs"
+        priority="40"
+    >
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <t t-if="page_name == 'timecard' or timecard">
+                <t t-set="menu_desc" t-value="approve and 'Approve Time Cards' or 'Time Cards'"/>
+                <li t-attf-class="breadcrumb-item #{'active ' if not timecard else ''}">
+                    <a t-if="timecard" t-attf-href="/my/timecards/{{ approve and 1 or 0 }}?{{ keep_query() }}">
+                        <t t-esc="menu_desc"/>
+                    </a>
+                    <t t-else="" t-esc="menu_desc"/>
+                </li>
+                <li t-if="timecard" class="breadcrumb-item active text-truncate">
+                    <span t-if="timecard.name" t-field="timecard.name"/>
+                </li>
+            </t>
+        </xpath>
+    </template>
+
+    <template 
+        id="portal_my_home_timecard" 
+        name="Portal My Home : Time Card" 
+        inherit_id="portal.portal_my_home"
+        priority="35"
+        customize_show="True"
+    >
+        <div id="portal_common_category" position="before">
+            <div class="o_portal_category row g-2 mt-3" id="portal_ess_category">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/ez_payroll_ess/static/src/img/calendar.svg'"/>
+                    <t t-set="title">Your Time Cards</t>
+                    <t t-set="text">List and download your time cards</t>
+                    <t t-set="url" t-value="'/my/timecards'"/>
+                    <t t-set="placeholder_count" t-value="'timecard_count'" />
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/ez_payroll_ess/static/src/img/calendar.svg'"/>
+                    <t t-set="title">Approve Time Cards</t>
+                    <t t-set="text">Approve, review, and manage all Time Cards awaiting your approval</t>
+                    <t t-set="url" t-value="'/my/timecards/1'" />
+                    <t t-set="placeholder_count" t-value="'timecard_approve_count'" />
+                </t>
+            </div>
+        </div>
+    </template>
+
+    <template id="portal_my_timecard_state_pill" name="My Time Off State Pill">
+        <span>
+            <div t-if="timecard.state=='sent'" t-field="timecard.state" class="badge rounded-pill text-bg-warning"/>
+            <div t-elif="timecard.state=='denied'" t-field="timecard.state" class="badge rounded-pill text-bg-danger"/>
+            <div t-elif="timecard.state=='approved'" t-field="timecard.state" class="badge rounded-pill text-bg-success"/>
+            <div t-else="" t-field="timecard.state" class="badge rounded-pill text-bg-secondary"/>
+        </span>
+    </template>
+
+    <!-- MENU MAIN - Create New Time Card -->
+    <template id="portal_searchbar_timecard" name="Portal Search Bar Inherit" inherit_id="portal.portal_searchbar">
+        <div id="o_portal_navbar_content" position="inside">
+            <div t-if="page_name=='timecard' and not approve" class="ms-lg-2 mt-2 mt-sm-2 mt-lg-0">
+                <div class="btn-group">
+                    <form class="btn-group" method="POST" t-attf-action="/my/timecard/0">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <button name="portal_my_timecard_detail" type="action"
+                            class="btn btn-primary">New Time Card</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="portal_my_timecards" name="My Time Cards">
+      <t t-call="portal.portal_layout">
+
+        <!-- <t t-call-assets="ez_payroll_ess.timecard_assets"/> -->
+        <script type="text/javascript" src="/ez_payroll_ess/static/src/js/utils.js"></script>
+        <link type="text/css" rel="stylesheet" href="/ez_payroll_ess/static/src/css/timecard.css"/>  
+        <script type="text/javascript" src="/ez_payroll_ess/static/src/js/portal_timecard.js"></script>
+
+        <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+        <t t-call="portal.portal_searchbar">
+            <t t-set="title">Time Cards</t>
+        </t>
+        <t t-if="not records">
+            <p class="alert alert-warning">There are currently no time cards in your account.</p>
+        </t>
+        <t t-if="records" t-call="portal.portal_table">
+            <thead>
+                <tr class="active">
+                    <th>
+                        <span>Employee</span>
+                        <span class="d-md-none">/ Date</span>
+                    </th>
+                    <th class="d-none d-md-table-cell">Date</th>
+                    <th>Shift</th>
+                    <th class="d-none d-md-table-cell">Status</th>
+                    <th t-if="not approve">
+                        <a onclick="unlink_timecards()"><i class="fa fa-trash"/></a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <t t-foreach="records" t-as="timecard">
+                    <t t-set="timecard_url" t-value="'/my/timecard/%s/%s' % (timecard.id, approve)"/>
+                    <tr>
+                        <td>
+                            <a t-att-href="timecard_url" t-att-title="timecard.name">
+                                <div t-field="timecard.employee_id"/>
+                                <div class="d-md-none">
+                                    <span t-field="timecard.date1"/> -
+                                    <span t-field="timecard.date2"/>
+                                </div>
+                            </a>
+                        </td>
+                        <td class="d-none d-md-table-cell">
+                            <a t-att-href="timecard_url" t-att-title="timecard.name">
+                                <span t-field="timecard.date1"/> -
+                                <span t-field="timecard.date2"/>
+                            </a>
+                        </td>
+                        <td>
+                            <a t-att-href="timecard_url" t-att-title="timecard.name">
+                                <div t-field="timecard.shift_id"/>
+                                <div class="d-md-none">
+                                    <t t-call="ez_payroll_ess.portal_my_timecard_state_pill"/>
+                                </div>
+                            </a>
+                        </td>
+                        <td class="d-none d-md-table-cell">
+                            <a t-att-href="timecard_url" t-att-title="timecard.name">
+                                <t t-call="ez_payroll_ess.portal_my_timecard_state_pill"/>
+                            </a>
+                        </td>
+                        <td>
+                            <input t-if="timecard.state=='draft' and not approve" type="checkbox" name="unlink" t-att-value="timecard.id"/>
+                        </td>
+                    </tr>
+                </t>
+            </tbody>
+        </t>
+      </t>
+    </template>
+
+    <!-- # DETAIL -->
+    <template id="portal_timecard_detail" name="Time Card Detail">
+        <t t-call="portal.portal_layout">
+            <!-- <t t-call-assets="ez_payroll_ess.timecard_assets"/> -->
+            <script type="text/javascript" src="/ez_payroll_ess/static/src/js/utils.js"></script>
+            <link type="text/css" rel="stylesheet" href="/ez_payroll_ess/static/src/css/timecard.css"/>  
+            <script type="text/javascript" src="/ez_payroll_ess/static/src/js/portal_timecard.js"></script>
+
+            <t t-set="readonly" t-value="timecard and (approve or timecard.state not in ['draft'])"/>
+            <t t-set="readonly_style" t-value="readonly and 'pointer-events: none;' or ''"/>
+            <t t-call="ez_payroll_ess.portal_timecard_modal"/>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 t-if="not timecard" class="text-center">Create a new Time Card</h1>
+                        <h1 t-elif="approve" class="text-center">Approve Time Card</h1>
+                        <h1 t-elif="not readonly" class="text-center">Edit Time Card</h1>
+                        <h1 t-else="" class="text-center">View Time Card</h1>
+                    </div>
+                </div>
+
+                <form t-att-action="'/submitted/timecard/%s' % approve" method="POST" class="form-horizontal mt32" 
+                    enctype="multipart/form-data" onsubmit="return submit_form_timecard(event);"
+                >
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <input type="hidden" name="employee_id" t-att-value="employee_id.id"/>
+                    <input type="hidden" name="timecard_id" t-att-value="timecard.id"/>
+                    <input type="hidden" name="approve" id="approve" t-att-value="approve"/>
+
+                    <!-- Employee ########################################## -->
+                    <div class="form-group col-md-6 offset-md-3">
+                        <label class="control-label">
+                            <span>Employee</span>
+                        </label>
+                        <div class="form-control" t-field="employee_id.display_name"/>
+                    </div>
+
+                    <!-- Date Fields ########################################## -->
+                    <div class="col-md-6 offset-md-3" id="id_date_from_to">
+                        <div class="row">
+                            <!-- from field -->
+                            <div class="form-group col-6">
+                                <label class="control-label">Date</label>
+                                <div>
+                                    <input id="date1" name="date1" type="date" class="form-control" 
+                                        t-att-value="timecard.date1 or current_date" t-att-style="readonly_style"/>
+                                </div>
+                            </div>
+
+                            <!-- to field -->
+                            <div class="form-group col-6 " id="id_date_to">
+                                <label class="control-label">To</label>
+                                <div>
+                                    <input id="date2" name="date2" type="date" class="form-control" 
+                                        t-att-value="timecard.date2 or current_date" t-att-style="readonly_style"/>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 offset-md-3">
+                        <div class="row">
+                            <!-- shift ### -->
+                            <div class="form-group col-6">
+                                <label class="control-label">Shift</label>
+                                <div>
+                                    <select class="form-control" id="shift_id" name="shift_id" 
+                                        required="1" t-att-style="readonly_style"
+                                    >
+                                        <option value="0"/>
+                                        <t t-foreach="shift_ids" t-as="sh">
+                                            <option t-attf-value="#{sh.id}" 
+                                                t-att-selected="(timecard and timecard.shift_id.id or employee_id.shift_id.id) == sh.id"
+                                            >
+                                                <t t-esc="sh.display_name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- state ### -->
+                            <div class="form-group col-6 text-end">
+                                <label class="control-label"/>
+                                <div>
+                                    <t t-call="ez_payroll_ess.portal_my_timecard_state_pill"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Time Logs -->
+                    <div class="col-md-6 offset-md-3">
+                        <t t-call="ez_payroll_ess.portal_timecard_detail_logs"/>
+                    </div>
+
+                    <div class="form-group col-md-6 offset-md-3 mt-2">
+                        <t t-if='not approve'>
+                            <input t-if="not timecard" name="btn_submit" type="submit" value="Create New" class="btn btn-success btn-lg"/>
+                            <input t-if="timecard.state=='draft'" name="btn_submit" type="submit" value="Submit" class="btn btn-success btn-lg"/>
+                            <input t-if="timecard.state=='draft'" name="btn_submit" type="submit" value="Attendance Fill" class="btn btn-info btn-lg"/>
+                            <input t-if="timecard.state=='draft'" type="submit" name="btn_submit" value="For Approval" class="btn btn-primary btn-lg ms-1"/>
+                            <!-- <input t-if="timecard.state=='draft'" type="submit" name="btn_submit" value="Delete" class="btn btn-secondary btn-lg ms-1"/> -->
+                            <input t-if="timecard.state=='denied'" type="submit" name="btn_submit" value="Back to Draft" class="btn btn-secondary btn-lg ms-1"/>
+                        </t><t t-else="">
+                            <input t-if="timecard.state=='sent'" type="submit" name="btn_submit" value="Approve" class="btn btn-success btn-lg ms-1"/>
+                            <input t-if="timecard.state in ['sent','approved']" name="btn_submit" type="submit" value="Deny" class="btn btn-danger btn-lg ms-1"/>
+                            <input type="submit" name="btn_submit" value="Back" class="btn btn-secondary btn-lg"/>
+                        </t>
+                    </div>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_timecard_detail_logs" name="Time Card Detail">
+        <table class="o_list_table position-relative table table-sm o_list_table_ungrouped table-striped o_portal_my_doc_table mb-0">
+            <thead>
+                <tr class="active">
+                    <th><span>Day</span></th>
+                    <th>Sched / Logs</th>
+                    <th class="row">
+                        <div class="col-3">
+                            Auth
+                        </div>
+                        <div class="col-5">
+                            Norm
+                        </div>
+                        <div class="col-4">
+                            OT
+                        </div>
+                    <th t-if="not approve">
+                        <a onclick="unlink_timerecords()"><i class="fa fa-trash"/></a>
+                    </th>
+
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <t t-foreach="timecard.details" t-as="timerec">
+                    <tr 
+                        t-att-class="timerec.day_type!='reg' and 'text-danger cursor-pointer' or 'cursor-pointer'" 
+                    >
+                        <td t-attf-onclick="timecard_show_modal({{ timerec.id }});">
+                            <div t-field="timerec.display_name"/>
+                            <div t-field="timerec.day_type"/>
+                        </td>
+                        <td t-attf-onclick="timecard_show_modal({{ timerec.id }});">
+                            <div class="text-truncate" t-field="timerec.schedule"/>
+                            <div class="text-truncate">
+                                <span t-field="timerec.timelog"/>
+                                <span>&#160;</span>
+                            </div>
+                        </td>
+                        <td t-attf-onclick="timecard_show_modal({{ timerec.id }});">
+                            <div class="row">
+                                <div class="col-3">
+                                    <span t-field="timerec.auth_hrs"/>
+                                </div>
+                                <div class="col-5 text-truncate">
+                                    <span t-field="timerec.vnorm_time"/>
+                                </div>
+                                <div class="col-4 text-truncate">
+                                    <span t-field="timerec.vot_time"/>
+                                </div>
+                            </div>
+                            <div>
+                                <span t-field="timerec.vremarks"/>
+                                <span>&#160;</span>
+                            </div>
+                        </td>
+                        <td>
+                            <input t-if="timerec.state=='draft' and not approve" 
+                                type="checkbox" name="timerecord_unlink" t-att-value="timerec.id"/>
+                        </td>
+                    </tr>
+                </t>
+            </tbody>
+        </table>
+    </template>
+
+    <!-- MODAL -->
+    <template id="portal_timecard_modal" name="Time Card Modal">
+        <div id="detailsModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="modal_title"></h4>
+                        <div class="close" data-bs-dismiss="modal" aria-hidden="true"><i class="fa fa-times"/></div>
+                    </div>
+                    <div class="modal-body" id="modal_body">
+                        <div class="form-floating mb-1">
+                            <input class="form-control" id="trec_date" type="text" value="" aria-label="Date" readonly="1"/>
+                            <label class="control-label">Date</label>
+                        </div>
+                        <div class="form-floating mb-1">
+                            <input class="form-control" id="trec_schedule" type="text" value="" aria-label="Schedule" readonly="1"/>
+                            <label class="control-label">Schedule</label>
+                        </div>
+                        <div class="form-floating mb-1">
+                            <input class="form-control" id="trec_timelog" type="text" value="" aria-label="Time Log" readonly="1"/>
+                            <label class="control-label"><b t-if="not readonly">Time Log</b><t t-else="">Time Log</t></label>
+                        </div>
+                        <div class="form-floating mb-1">
+                            <input class="form-control" id="trec_auth_hrs" type="text" value="" aria-label="Auth. Hrs." readonly="1"/>
+                            <label class="control-label">Auth. Hrs.</label>
+                        </div>
+                        <div class="form-floating mb-1">
+                            <input class="form-control" id="trec_norm_ot" type="text" value="" aria-label="Norm / Overtime" readonly="1"/>
+                            <label class="control-label">Norm / OT</label>
+                        </div>
+                        <div class="form-floating mb-1">
+                            <input class="form-control" id="trec_remarks" type="text" value="" aria-label="Remarks" readonly="1"/>
+                            <label class="control-label">Remarks</label>
+                        </div>
+                        <div class="form-floating mb-1">
+                            <input class="form-control" id="trec_notes" type="text" value="" aria-label="Notes" readonly="1"/>
+                            <label class="control-label"><b t-if="not readonly">Notes</b><t t-else="">Notes</t></label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input id="timerec_id" type="hidden" value=""/>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Close
+                        </button>
+                        <button id="trec_delete" type="button" class="btn btn-secondary" onclick="timerecord_delete();">
+                            Delete
+                        </button>
+                        <button id="trec_save" type="button" class="btn btn-primary" onclick="timerecord_save();">
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>set_close_event();</script>
+    </template>
+
+</odoo>

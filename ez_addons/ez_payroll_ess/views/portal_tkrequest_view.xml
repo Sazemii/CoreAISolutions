@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+
+Request
+/project/static/src/img/tasks.svg
+======================================== -->
+<odoo>
+
+    <template
+        id="portal_layout_tkrequest"
+        name="Portal layout: Request menu entry"
+        inherit_id="portal.portal_breadcrumbs"
+        priority="40"
+    >
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <t t-if="page_name == 'tkrequest' or tkrequest">
+                <t t-set="menu_desc" t-value="approve and 'Approve Requests' or 'Requests'"/>
+                <li t-attf-class="breadcrumb-item #{'active ' if not tkrequest else ''}">
+                    <a t-if="tkrequest" t-attf-href="/my/tkrequest/{{ approve and 1 or 0 }}?{{ keep_query() }}">
+                        <t t-esc="menu_desc"/>
+                    </a>
+                    <t t-else="" t-esc="menu_desc"/>
+                </li>
+                <li t-if="tkrequest" class="breadcrumb-item active text-truncate">
+                    <span t-if="tkrequest.name" t-field="tkrequest.name"/>
+                </li>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- Main Menu -->
+    <template 
+        id="portal_my_home_tkrequest" 
+        name="Portal My Home : Request" 
+        inherit_id="portal.portal_my_home"
+        priority="35"
+        customize_show="True"
+    >
+        <div id="portal_common_category" position="before">
+            <div class="o_portal_category row g-2 mt-3" id="portal_ess_category">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/project/static/src/img/tasks.svg'"/>
+                    <t t-set="title">Your Requests</t>
+                    <t t-set="text">Create, list and view all of your Requests</t>
+                    <t t-set="url" t-value="'/my/tkrequests/0'" />
+                    <t t-set="placeholder_count" t-value="'tkrequest_count'" />
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/project/static/src/img/tasks.svg'"/>
+                    <t t-set="title">Approve Requests</t>
+                    <t t-set="text">Approve, review, and manage all Requests awaiting your approval</t>
+                    <t t-set="url" t-value="'/my/tkrequests/1'" />
+                    <t t-set="placeholder_count" t-value="'tkrequest_approve_count'" />
+                </t>
+            </div>
+        </div>
+    </template>
+
+    <!-- MENU - new and delete -->
+    <!-- <template id="portal_searchbar_tkrequest" name="Portal Search Bar Inherit" inherit_id="portal.portal_searchbar">
+        <div id="o_portal_navbar_content" position="inside">
+            <div t-if="page_name=='tkrequest' and (not approve)" class="ms-lg-2 mt-2 mt-sm-2 mt-lg-0">
+                <div class="btn-group">
+                    <button t-attf-onclick="record_show(0, 0);" class="btn btn-primary">New Request</button>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="unlink_tkrequests();">
+                        <i class="fa fa-trash"/>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template> -->
+
+    <!-- State Pill -->
+    <!-- <template id="portal_my_tkrequest_state_pill" name="My Time Off State Pill">
+        <div>
+            <div t-if="rec.state=='denied'" t-field="rec.state" class="badge rounded-pill text-bg-danger"/>
+            <div t-elif="rec.state=='sent'" t-field="rec.state" class="badge rounded-pill text-bg-warning"/>
+            <div t-elif="rec.state=='approved'" t-field="rec.state" class="badge rounded-pill text-bg-success"/>
+            <div t-else="" t-field="rec.state" class="badge rounded-pill text-bg-secondary"/>
+        </div>
+    </template> -->
+
+    <!-- CARD -->
+    <!-- <template id="portal_my_tkrequest_card" name="My Time Off Card">
+        <div class="card shadow bg-secondary rounded mb-3">
+            <div class="card-body">
+                <div t-attf-onclick="record_show({{ rec.id }}, {{ approve }});" class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">
+                            <span t-field="rec.name"/>
+                        </h5>
+                    </div>
+                    <t t-call="ez_payroll_ess.portal_my_tkrequest_state_pill"/>
+                </div>
+                <div t-attf-onclick="record_show({{ rec.id }}, {{ approve }});" class="fw-bold" t-field="rec.employee_id"/>
+                <div t-attf-onclick="record_show({{ rec.id }}, {{ approve }});">
+                    <span t-field="rec.date"/>
+                    <span class="text-truncate" t-field="rec.type"/>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <div t-field="rec.note" t-attf-onclick="record_show({{ rec.id }}, {{ approve }});"/>
+                    <input t-if="rec.state=='draft' and not approve" type="checkbox" name="unlink_checbox_record" t-att-value="rec.id"/>
+                </div>
+            </div>
+            <t t-out="0"/>
+        </div>
+    </template> -->
+
+    <template id="portal_my_tkrequest" name="My Time Off">
+      <t t-call="portal.portal_layout">
+
+        <!-- <t t-call-assets="ez_payroll_ess.tkrequest_assets"/> -->
+        <!-- <script type="text/javascript" src="/ez_payroll_ess/static/src/js/utils.js"></script>
+        <script type="text/javascript" src="/ez_payroll_ess/static/src/js/portal_tkrequest.js"></script> -->
+
+        <t t-set="breadcrumbs_searchbar" t-value="True"/>
+        <!-- <t t-call="ez_payroll_ess.portal_my_tkrequest_modal"/> -->
+        <t t-call="portal.portal_searchbar">
+            <t t-set="title">Timekeeping Request</t>
+        </t>
+        <t t-if="not records">
+            <p class="alert alert-warning">There are currently no records in your account.</p>
+        </t>
+
+        <t t-if="records">
+            <div class="row">
+                <t t-set="props" t-value="{
+                    'employee_id': employee_id,
+                    'records': records2,
+                    'selections': selections,
+                    'lookups': lookups,
+                    'approve': approve,
+                }"/>
+                <owl-component name="ez_payroll_ess.TimekeepingPortaltWidget" 
+                    t-att-props="json.dumps(props)"
+                />
+                <!-- <t t-foreach="records" t-as="rec">
+                    <div class="col-md-4">
+                        <t t-call="ez_payroll_ess.portal_my_tkrequest_card"/>
+                    </div>
+                </t> -->
+            </div>
+            <div t-if="pager" class="o_portal_pager d-flex justify-content-center my-3">
+                <t t-call="portal.pager"/>
+            </div>
+        </t>
+      </t>
+    </template>
+
+    <!-- MODAL -->
+    <!-- <template id="portal_my_tkrequest_modal" name="My Request Modal">
+        <div id="tkrequest_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="modal_title">
+                            Timekeeping Request
+                        </h4>
+                        <div class="close" data-bs-dismiss="modal" aria-hidden="true"><i class="fa fa-times"/></div>
+                    </div>
+                    <div class="modal-body" id="modal_body"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Close
+                        </button>
+                        <button id="btn_for_approval" type="button" class="btn btn-secondary" t-attf-onclick="record_state({{ approve }}, 'sent');">
+                            For Approval
+                        </button>
+                        <button id="btn_draft" type="button" class="btn btn-secondary" t-attf-onclick="record_state({{ approve }}, 'draft');">
+                            Mark as Draft
+                        </button>
+                        <button id="btn_save" type="button" class="btn btn-primary" t-attf-onclick="record_save({{ approve }});">
+                            Save
+                        </button>
+                        <button id="btn_deny" type="button" class="btn btn-danger" t-attf-onclick="record_state({{ approve }}, 'denied');">
+                            Deny
+                        </button>
+                        <button id="btn_approve" type="button" class="btn btn-success" t-attf-onclick="record_state({{ approve }}, 'approved');">
+                            Approve
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>set_close_event();</script>        
+    </template> -->
+
+</odoo>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+  <record model="res.groups.privilege" id="res_groups_privilege_coe">
+    <field name="name">Certificate of Employment</field>
+    <field name="description">Helps you manage creation of certificate of employment for employees.</field>
+    <field name="sequence">5</field>
+  </record>
+
+  <record id="group_coe_approver" model="res.groups">
+    <field name="name">Approve</field>
+    <field name="privilege_id" ref="res_groups_privilege_coe"/>
+    <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    <field name="user_ids" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+    <field name="comment">the user can approve certificate of employment.</field>
+  </record>
+
+  <record id="group_coe_notify" model="res.groups">
+    <field name="name">Notify and Approve</field>
+    <field name="privilege_id" ref="res_groups_privilege_coe"/>
+    <field name="implied_ids" eval="[(4, ref('group_coe_approver'))]"/>
+    <field name="comment">the user will be notified if certificate of employment needs approval.</field>
+  </record>
+
+  <!-- ####################################################### -->
+
+  <record id="coe_emp_rule_employee1" model="ir.rule">
+    <field name="name">Certificate of Employment Employee Rule 1</field>
+    <field name="model_id" ref="model_hr_ph_coe"/>
+    <!-- <field name="domain_force">[('employee_id.user_id','=',user.id)]</field> -->
+    <field name="domain_force">[('employee_id.user_id','=',user.id),('state','=','draft')]</field>
+    <field name="groups" eval="[(4,ref('base.group_user'))]"/>
+    <field name="global" eval="False"/>
+    <field name="perm_read" eval="True"/>
+    <field name="perm_create" eval="True"/>
+    <field name="perm_write" eval="True"/>
+    <field name="perm_unlink" eval="False"/>
+  </record>
+
+  <record id="coe_emp_rule_employee2" model="ir.rule">
+    <field name="name">Certificate of Employment Employee Rule 2</field>
+    <field name="model_id" ref="model_hr_ph_coe"/>
+    <field name="domain_force">[('employee_id.user_id','=',user.id),('state','!=','draft')]</field>
+    <field name="groups" eval="[(4,ref('base.group_user'))]"/>
+    <field name="global" eval="False"/>
+    <field name="perm_read" eval="True"/>
+    <field name="perm_create" eval="False"/>
+    <field name="perm_write" eval="False"/>
+    <field name="perm_unlink" eval="False"/>
+  </record>
+
+  <record id="coe_emp_rule_hr" model="ir.rule">
+    <field name="name">Certificate of Employment HR Rule</field>
+    <field name="model_id" ref="model_hr_ph_coe"/>
+    <field name="domain_force">[(1,'=',1)]</field>
+    <field name="groups" eval="[(4,ref('ez_payroll_coe.group_coe_approver'))]"/>
+    <field name="global" eval="False"/>
+    <field name="perm_read" eval="True"/>
+    <field name="perm_create" eval="True"/>
+    <field name="perm_write" eval="True"/>
+    <field name="perm_unlink" eval="True"/>
+  </record>
+
+  <record id="coe_comp_rule" model="ir.rule">
+    <field name="name">COE Company Rule</field>
+    <field name="model_id" ref="model_hr_ph_coe"/>
+    <field name="domain_force">['|',('company_id','=',False),('company_id','in',company_ids)]</field>
+    <field name="global" eval="True"/>
+  </record>
+
+</odoo>
+
+<!-- access_coe_line_user,access_coe_line_user,model_hr_ph_coe_line,base.group_user,1,0,0,0
+access_coe_line_mgr,access_coe_line_mgr,model_hr_ph_coe_line,hr.group_hr_user,1,1,1,1 -->
+

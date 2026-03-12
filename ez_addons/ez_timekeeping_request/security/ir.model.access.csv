@@ -1,0 +1,4 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+access_ez_time_request,access_ez_time_request,model_ez_time_request,base.group_user,1,1,1,1
+access_ez_time_request_bulk,access_ez_time_request_bulk,model_ez_time_request_bulk,ez_timekeeping.group_timekeeping_manager,1,1,1,1
+

@@ -1,0 +1,13 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+access_ez_shift,access_ez_shift,model_ez_shift,base.group_user,1,0,0,0
+access_ez_shift_details,access_ez_shift_details,model_ez_shift_details,base.group_user,1,0,0,0
+access_ez_holiday,access_ez_holiday,model_ez_holiday,base.group_user,1,0,0,0
+access_ez_time_card_user,access_ez_time_card_user,model_ez_time_card,base.group_user,1,1,1,1
+access_ez_time_record_user,access_ez_time_record_user,model_ez_time_record,base.group_user,1,1,1,1
+access_ez_time_card_summary_user,access_ez_time_card_summary_user,model_ez_time_card_summary,base.group_user,1,1,1,1
+access_ez_shift_timekeeper_mgr,access_ez_shift_timekeeper_mgr,model_ez_shift,group_timekeeping_manager,1,1,1,1
+access_ez_shift_details_timekeeper_mgr,access_ez_shift_details_timekeeper_mgr,model_ez_shift_details,group_timekeeping_manager,1,1,1,1
+access_ez_holiday_timekeeper_mgr,access_ez_holiday_timekeeper_mgr,model_ez_holiday,group_timekeeping_manager,1,1,1,1
+access_ez_holiday_wiz_mgr,access_ez_holiday_wiz_mgr,model_ez_create_holiday_wizard,base.group_user,1,1,1,1
+access_wz_batch,access_wz_batch,model_wz_timecard_batch,group_timekeeping_user,1,1,1,1
+

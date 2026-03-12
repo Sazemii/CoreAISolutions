@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+      <menuitem id="menu_hr_payroll_main"
+        web_icon="ez_payroll,static/description/icon.png"
+        name="Payroll" sequence="186"/>
+        <!-- web_icon="hr_work_entry_contract,static/description/icon.png" -->
+        <!-- web_icon="ez_payroll,static/description/payroll_icon.png" -->
+
+      <!-- remove apps menu from normal user -->
+      <menuitem id="base.menu_apps" name="Apps" parent="base.menu_management" sequence="5" groups="base.group_erp_manager"/>
+
+      <menuitem
+        id="menu_reporting_payroll"
+        parent="menu_hr_payroll_main"
+        groups=""
+        name="Reporting" sequence="2000"/>
+
+      <menuitem
+        id="menu_config_payroll"
+        parent="menu_hr_payroll_main"
+        name="Configuration"
+        groups="ez_payroll.group_hr_payroll_manager"
+        sequence="3000"/>
+
+        <record id="kanban_payroll" model="ir.ui.view">
+            <field name="name">kanban_payroll</field>
+            <field name="model">hr.ph.payroll</field>
+            <field name="arch" type="xml">
+                <kanban 
+                  class="o_kanban_small_column"
+                  highlight_color="color"
+                >
+                    <field name="id"/>
+                    <field name="color"/>
+                    <field name="name"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="display_name"/>
+                    <field name="state"/>
+                    <field name="is_favorite"/>
+                    <field name="emp_tag_ids"/>
+                    <field name="employees"/>
+                    <field name="write_uid"/>
+                    <field name="create_uid"/>
+                    <field name="department_id"/>
+
+                    <field name="total_deductions"/>
+                    
+                    <templates>
+
+                      <t t-name="kanban-menu" groups="ez_payroll.group_hr_payroll_user">
+                        <div class="container">
+
+                          <div class="row">
+                            <div class="col-6 o_kanban_card_manage_section o_kanban_manage_view">
+                              <h5 role="menuitem" class="o_kanban_card_manage_title">
+                                <span>Menu</span>
+                              </h5>
+                              <div role="menuitem">
+                                  <a name="set_as_done" type="object">Set as Done</a>
+                              </div>
+                              <div role="menuitem" invisible="state == 'draft'">
+                                <a type="edit">View</a>
+                              </div>
+                              <div role="menuitem" invisible="state != 'draft'">
+                                <a type="edit">Edit</a>
+                              </div>
+                              <div role="menuitem" invisible="state != 'draft'">
+                                <a type="delete">Delete</a>
+                              </div>
+                            </div>
+                            <div class="col-6 o_kanban_card_manage_section o_kanban_manage_view">
+                              <h5 role="menuitem" class="o_kanban_card_manage_title">
+                                <span>Reports</span>
+                              </h5>
+                              <div role="menuitem">
+                                <a name="%(ez_payroll.action_print_payroll)d" type="action">Payroll</a>
+                              </div>
+                              <div role="menuitem">
+                                <a name="%(ez_payroll.action_print_payslip)d" type="action">Payslips</a>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- 
+                          <div class="o_kanban_card_manage_settings row">
+                            <div role="menuitem" aria-haspopup="true" class="col-12" groups="project.group_project_manager">
+                              <ul class="oe_kanban_colorpicker" data-field="color" role="popup"/>
+                            </div>
+                          </div>
+                           -->
+                        </div>
+                      </t>
+
+                      <t t-name="card">
+                        <div class="o_kanban_main oe_kanban_global_click d-flex align-items-baseline gap-1 ms-1">
+                          <field name="is_favorite" widget="boolean_favorite" nolabel="1" force_save="1"/>
+                          <div class="o_kanban_card_content mw-100">
+                            <div>  
+                            <!-- class="o_kanban_primary_left" -->
+                              <h5 class="o_text_overflow" t-att-title="record.display_name.value">
+                                <t t-esc="record.display_name.value"/>
+                                <span invisible="state!='draft'" style="color: red;">
+                                  (DRAFT)
+                                </span>
+                              </h5>
+                              <div class="text-muted o_row">
+                                <span class="fa fa-calendar-o me-2" title="Year-Month"></span>
+                                <field name="year_month"/>
+                              </div>
+                              <div t-if="record.date_from.raw_value or record.date_to.raw_value" class="text-muted o_row">
+                                <span class="fa fa-clock-o me-2" title="Dates"></span><field name="date_from"/>
+                                <i t-if="record.date_from.raw_value and record.date_to.raw_value" class="fa fa-long-arrow-right mx-2 oe_read_only" aria-label="Arrow icon" title="Arrow"/>
+                                <field name="date_to"/>
+                              </div>
+
+                              <field name="department_id" t-if="department_id"/>
+                              <field name="emp_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+
+                              <div class="row mt-2 me-1" style="font-size: 12px;">
+                                <div class="col-6 d-flex" style="justify-content:space-between;">
+                                  <strong class="text-start">Basic</strong>  
+                                  <span class="text-end"><field name="basic_pay"/></span>
+                                </div>
+                                <div class="col-6 d-flex" style="justify-content:space-between;">
+                                  <strong class="text-start">Gross</strong>  
+                                  <span class="text-end"><field name="gross_pay"/></span>
+                                </div>
+                                <div class="col-6 d-flex" style="justify-content:space-between;">
+                                  <strong class="text-start">Dedn</strong>  
+                                  <span class="text-end"><field name="total_deductions"/></span>
+                                </div>
+                                <div class="col-6 d-flex" style="justify-content:space-between;">
+                                  <strong class="text-start">Loan</strong>  
+                                  <span class="text-end"><field name="total_loan_payments"/></span>
+                                </div>
+                                <div class="col-6 d-flex" style="justify-content:space-between;">
+                                  <strong class="text-start">Net</strong>  
+                                  <span class="text-end"><field name="net_pay"/></span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <footer class="mt-auto pt-0 ms-1">
+                          <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-baseline">
+                              <span class="o_value ms-4"><t t-esc="record.employees.value"/></span>
+                              <span class="o_label ms-1">Employees</span>
+                            </div>
+                          </div>
+                          <div class="d-flex ms-auto align-items-center">
+                            <field name="create_uid" widget="many2one_avatar_user" domain="[('share', '=', False)]" class="me-1"/>
+                          </div>
+                        </footer>
+
+                      </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+
+        <record id="view_payroll_form" model="ir.ui.view">
+            <field name="name">hr.ph.payroll.form</field>
+            <field name="model">hr.ph.payroll</field>
+            <field name="arch" type="xml">
+              <form string="Payroll">
+                <header>
+                  <button name="set_as_done" type="object"
+                    invisible="state not in ('draft')"
+                    string="Done" class="oe_highlight"/>
+
+                  <button name="cancel_done" type="object"
+                    invisible="state not in ('done')"
+                    string="Cancel/Back to Draft"
+                    groups="ez_payroll.group_hr_payroll_manager"/>
+                    
+                  <button name="auto_gen" type="object"
+                    invisible="state not in ('draft')"
+                    string="Gen Payslips"/>
+                    
+                  <button name="recompute_payroll" string="Recompute"
+                    invisible="state not in ('draft')"
+                    confirm="Recomputation all may take a long time than individual payslip.  Are you sure to continue?"
+                    type="object" groups="ez_payroll.group_hr_payroll_user"/>
+                    
+                  <button name="del_blank" type="object"
+                    invisible="state not in ('draft')"
+                    string="Del Blanks"/>
+
+                  <button name="generate_fin_reports" type="object"
+                    invisible="state not in ('draft')"
+                    string="Gen Fin Reports"
+                    groups="ez_payroll.group_hr_payroll_user"/>
+
+<!--                     
+                  <button name="recompute_compensation" string="Recompute Compensation"
+                    type="object" invisible="state not in ('draft')" groups="ez_payroll.group_hr_payroll_user"/>
+                  <button name="recompute_deduction" invisible="state not in ('draft')" type="object"
+                    string="Recompute Deductions"/>
+                  <button name="recompute_loan" invisible="state not in ('draft')" type="object"
+                    string="Recompute Loan Payments"/>
+ -->
+
+                  <field name="state" widget="statusbar" readonly="1"/>
+                </header>
+
+                <sheet>
+
+                  <widget name="web_ribbon" title="Done" bg_color="text-bg-success" invisible="state != 'done'"/>
+
+                    <div class="oe_button_box" name="button_box">
+                      <button type="object" class="oe_stat_button" icon="fa-bars" name="action_view_payslips">
+                        <div class="o_form_field o_stat_info">
+                          <span class="o_stat_value">
+                            <field name="employees"/> records
+                          </span>
+                          <span class="o_stat_text">Payslips</span>
+                        </div>
+                      </button>
+                    </div>
+
+                    <div class="oe_title">
+                      <label for="name" class="oe_edit_only"/>
+                      <h1>
+                        <field name="name" required="1" readonly="state not in ['draft']" 
+                          placeholder="eg. June 2021 A"/>
+                      </h1>
+                    </div> 
+
+                    <group>
+                      <group>
+                        <!-- <field name="date_from" readonly="state not in ['draft']"/>
+                        <field name="date_to" readonly="state not in ['draft']"/> -->
+                        <field
+                            name="date_from"
+                            widget="daterange"
+                            readonly="state not in ['draft']"
+                            options="{'end_date_field': 'date_to'}"
+                            string="Date Range"/>
+                        <field name="date_to" invisible="1" />
+                        <field name="department_id" readonly="state not in ['draft']"/>
+                        <field name="emp_tag_ids" 
+                          readonly="state not in ['draft']"
+                          options="{'no_quick_create':True,'no_create_edit':True,'no_open': True, 'color_field': 'color'}"
+                          widget="many2many_tags"/>
+                      </group>
+                      <group>
+                        <field name="year_month" readonly="1"/>
+                        <!-- <field name="is_13th_month"/> -->
+                        <field name="payroll_type" readonly="state not in ['draft']"/>
+                        <!-- <field name="initial_import"/> -->
+                        <!-- <field name="company_id" groups="base.group_multi_company" readonly="1"/> -->
+                      </group>
+                    </group>
+
+                    <notebook>
+                      <page string="Payslips" name="page_payslips">
+                        <field name="payslip" readonly="state not in ['draft']">
+                          <list create="0" 
+                            decoration-danger="net_pay &lt;= 0.0" 
+                          >
+                            <field name="emp_number" column_invisible="1"/>
+                            <field name="name" column_invisible="1"/>
+                            <field name="employee_id" widget="many2one_avatar_employee"/>
+                            <field name="basic_pay" sum="Total Basic Pay"/>
+                            <field name="gross_pay" sum="Total Gross Pay"/>
+                            <field name="taxable" sum="Total Taxable"/>
+                            <field name="total_deductions" sum="Total Deductions"/>
+                            <field name="total_loan_payments" sum="Total Loan Payments"/>
+                            <field name="net_pay" sum="Total Net Pay"/>
+                            <field name="note" optional="hide"/>
+                            <field name="state" column_invisible="1"/>
+                          </list>
+                        </field>
+
+                        <div invisible="state not in ('draft')">
+                          <field name="add_employee_id" 
+                            options="{'no_quick_create':True,'no_create_edit':True,'no_open': True}"
+                            groups="ez_payroll.group_hr_payroll_user"
+                            domain="[
+                              ('exclude_from_payroll','=',False),
+                              ('active', 'in', [True, False]),
+                            ]"
+                            invisible="state not in ('draft')"
+                            placeholder="Add new employee"/>
+                            <!-- domain="[('exclude_from_payroll','=', False),('employee_id','not in',payslip.employee_id.ids)]" -->
+                          <button name="add_new_employee" invisible="state not in ('draft')" type="object"
+                            string="Add"
+                            groups="ez_payroll.group_hr_payroll_user"/>
+                        </div>
+
+                      </page>
+
+                      <page string="Info" name="info">
+                        <group>
+                          <group string='Financial Files' name='financial_files'>
+                            <field name="fr_filename" invisible="1"/>
+                            <field name="fr_data" readonly="1" filename="fr_filename"/>
+                            <field name="bank_filename" invisible="1"/>
+                            <field name="bank_data" readonly="1" filename="bank_filename"/>
+                          </group>
+                          <group string="Totals" name='totals'>
+                            <field name="total_days"/>
+                            <field name="days_in_month" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                          </group>
+                        </group>
+                      </page>
+
+                      <page string="Notes" name="page_notes">
+                        <field name="note"/>
+                      </page>
+                    </notebook>
+
+                </sheet>
+
+                <chatter/>
+
+              </form>
+            </field>
+        </record>
+
+        <record id="view_payroll_tree" model="ir.ui.view">
+            <field name="name">hr.ph.payroll.tree</field>
+            <field name="model">hr.ph.payroll</field>
+            <field name="arch" type="xml">
+                <list string="Payroll" decoration-danger="state=='draft'">
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="name"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="year_month"/>
+                    <field name="emp_tag_ids" widget="many2many_tags" options="{'color_field':'color'}"/>
+                    <field name="state" widget="badge" 
+                        decoration-danger="state=='draft'"
+                        decoration-success="state=='done'"
+                    />
+                    <field name="note"/>
+                </list>
+            </field>
+        </record>
+
+
+        <record id="search_payroll" model="ir.ui.view">
+            <field name="name">hr.ph.payroll.search</field>
+            <field name="model">hr.ph.payroll</field>
+            <field name="arch" type="xml">
+                <search string="Payroll">
+                  <field name="name"/>
+                  <field name="year_month"/>
+                  <field name="company_id" groups="base.group_multi_company"/>
+                  <filter string="Date" name="gdate" context="{'group_by':'date_from'}"/>
+                  <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>
+                  <filter name="done" string="Done" domain="[('state','=','done')]"/>
+                  <filter name="posted" string="Posted" domain="[('state','=','posted')]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="open_payroll" model="ir.actions.act_window">
+            <field name="name">Payroll Register</field>
+            <field name="res_model">hr.ph.payroll</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="domain"></field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="search_payroll"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a payroll.
+              </p>
+            </field>
+        </record>
+
+        <menuitem
+            id="menu_payroll"
+            groups="group_hr_payroll_user"
+            action="open_payroll"
+            parent="menu_hr_payroll_main"
+            sequence="10" />
+
+
+  <record id="tree_ym" model="ir.ui.view">
+      <field name="name">tree_ym</field>
+      <field name="model">hr.ph.pay.year.month</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="name"/>
+          <field name="color"/>
+        </list>
+      </field>
+  </record>
+
+  <record id="open_ym" model="ir.actions.act_window">
+    <field name="name">Year-Month</field>
+    <field name="res_model">hr.ph.pay.year.month</field>
+    <field name="view_mode">list</field>
+  </record>
+
+  <menuitem
+      id="menu_ym"
+      groups="group_hr_payroll_user"
+      action="open_ym"
+      parent="menu_config_payroll"
+      sequence="1000000" />
+
+
+  <record id="tree_year" model="ir.ui.view">
+      <field name="name">tree_year</field>
+      <field name="model">hr.ph.pay.year</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="name"/>
+          <field name="color"/>
+        </list>
+      </field>
+  </record>
+
+  <record id="open_year" model="ir.actions.act_window">
+    <field name="name">Year</field>
+    <field name="res_model">hr.ph.pay.year</field>
+    <field name="view_mode">list</field>
+  </record>
+
+  <menuitem
+      id="menu_year"
+      groups="group_hr_payroll_user"
+      action="open_year"
+      parent="menu_config_payroll"
+      sequence="1000010" />
+
+
+</odoo>

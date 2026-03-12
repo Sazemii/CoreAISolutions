@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+(c) 2024 Regulus Berdin
+======================================== -->
+<odoo>
+
+  <record id="variance_comp_rule" model="ir.rule">
+    <field name="name">Payroll Variance Report Company Rule</field>
+    <field name="model_id" ref="model_hr_ph_pay_variance_report"/>
+    <field name="global" eval="True"/>
+    <field name="domain_force">['|',('company_id','=',False),('company_id','in',company_ids)]</field>
+  </record>
+
+</odoo>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2021
+======================================== -->
+<odoo>
+  <record id="form_timecard_inherit" model="ir.ui.view">
+    <field name="name">form_timecard_inherit</field>
+    <field name="model">ez.time.card</field>
+    <field name="inherit_id" ref="ez_timekeeping.form_timecard"/>
+    <field name="arch" type="xml">
+
+      <xpath expr="//field[@name='details']/list/field[@name='note']" position="before">
+          <field name="payroll_id" optional="hide"/>
+      </xpath>
+
+    </field>
+  </record>
+
+  <!-- ################################# -->
+
+  <record id="form_wizard_timecard_report" model="ir.ui.view">
+    <field name="name">form_wizard_timecard_report</field>
+    <field name="model">wz.timecard.report</field>
+    <field name="arch" type="xml">
+      <form>
+        <group>
+          <group>
+            <field name="date1"/>
+            <field name="date2"/>
+            <field name="pdf_filename" invisible="1"/>
+            <field name="pdf_data" readonly="1" filename="fr2_filename"/>
+          </group>
+          <group>
+            <field name="group_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="show"/>
+            <field name="category_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="show"/>
+          </group>
+        </group>
+
+        <footer>
+          <button string="Generate Report" name="generate_report"
+            type="object" class="btn-primary"/>
+          <button string="Cancel" class="btn-default" special="cancel"/>
+        </footer>
+
+      </form>
+    </field>
+  </record>
+
+  <record id="open_wizard_timecard_report" model="ir.actions.act_window">
+    <field name="name">Time Card Report</field>
+    <field name="res_model">wz.timecard.report</field>
+    <field name="view_mode">form</field>
+    <!-- <field name="view_id" ref="view_wizard_holiday"/> -->
+    <field name="target">new</field>
+  </record>
+
+  <menuitem
+    id="menu_wizard_timecard_report"
+    action="open_wizard_timecard_report"
+    sequence="10000"
+    parent="ez_timekeeping.menu_timecard"
+  />
+
+  <!-- ############################################ -->
+
+  <record id="timecard_wz_report" model="ir.actions.report">
+    <field name="name">Time Card Report</field>
+    <field name="model">hr.employee</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">ez_timekeeping_payroll.print_wz_timecard</field>
+    <field name="report_file">ez_timekeeping_payroll.print_wz_timecard</field>
+    <field name="binding_model_id" ref="ez_timekeeping.model_hr_employee"/>
+    <!-- <field name="binding_type">report</field> -->
+    <field name="binding_type">action</field>
+    <field name="print_report_name">'dtr-summary'</field>
+  </record>
+
+  <template id="print_wz_timecard">
+    <t t-call="web.html_container">
+      <t t-set="data_report_margin_top" t-value="12"/>
+      <t t-set="data_report_header_spacing" t-value="9"/>
+      <t t-set="data_report_dpi" t-value="110"/>
+      <!-- <t t-call="web.internal_layout"> -->
+      <t t-call="web.basic_layout">
+        <t t-foreach="docs" t-as="o">
+          <div class="page">
+            <t t-set="o" t-value="o.with_context({'lang': lang})"/>
+            <h3>
+              <center>
+                <strong>
+                  Time Card / Daily Time Record<br/>
+                </strong>
+                <span style="font-size:16pt" t-field="o.name"/>
+                <span style="font-size:16pt" t-esc="date_range"/>
+              </center>
+            </h3>
+
+            <t t-set="lines" t-value="o.get_dtr_lines(o.id, date1, date2)"/>
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th>Time Log</th>
+                  <th class="text-right">Auth</th>
+                  <th>Normal</th>
+                  <th>Overtime</th>
+                  <th>Remarks</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr t-foreach="lines[0]" t-as="line">
+                  <td><span t-field="line.name"/></td>
+                  <td><span t-field="line.day_type"/></td>
+                  <td><span t-field="line.timelog"/></td>
+                  <td class="text-right">
+                    <span t-esc="line.auth_hrs and '{0:,.4f}'.format(line.auth_hrs) or ''"/>
+                  </td>
+                  <td><span t-field="line.vnorm_time"/></td>
+                  <td><span t-field="line.vot_time"/></td>
+                  <td><span t-field="line.vremarks"/></td>
+                  <td><span t-field="line.note"/></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <hr/>
+            <hr/>
+            <strong class="summary">SUMMARY (hours):</strong>
+            <table class="table table-sm">
+              <tbody>
+                <tr>
+                  <th>Day Type</th>
+                  <th>Normal Time</th>
+                  <th>Night</th>
+                  <th>Overtime</th>
+                  <th>Overtime Night</th>
+                  <th>Absent</th>
+                  <th>Late</th>
+                  <th>Undertime</th>
+                </tr>
+
+                <t t-foreach="day_types" t-as="dt">
+                  <t t-set="r" t-value="lines[1].get(dt[0])"/>
+                  <t t-if="r">
+                    <t t-set='name' t-value="day_type_names.get(dt[0],'Undefined')"/>
+                    <tr>
+                      <td t-esc="name"/>
+                      <td t-esc="round(r.get('norm', 0.0)/60.0,4) or ''"/>
+                      <td t-esc="round(r.get('norm_night', 0.0)/60.0,4) or ''"/>
+                      <td t-esc="round(r.get('ot', 0.0)/60.0,4) or ''"/>
+                      <td t-esc="round(r.get('ot_night', 0.0)/60.0,4) or ''"/>
+                      <td t-esc="round(r.get('absent', 0.0)/60.0,4) or ''"/>
+                      <td t-esc="round(r.get('late', 0.0)/60.0,4) or ''"/>
+                      <td t-esc="round(r.get('undertime', 0.0)/60.0,4) or ''"/>
+                    </tr>
+                  </t>
+                </t>
+
+              </tbody>
+            </table>
+            <div style="page-break-after: always;"> </div>
+          </div>
+        </t>
+      </t>
+    </t>
+  </template>
+
+</odoo>

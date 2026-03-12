@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2021
+======================================== -->
+<odoo>
+
+  <menuitem id="menu_timecard"
+    parent="menu_timekeeping_main"
+    name="Time Cards"
+    sequence="10"
+  />
+
+    <record id="form_timecard" model="ir.ui.view">
+      <field name="name">form_timecard</field>
+      <field name="model">ez.time.card</field>
+      <field name="arch" type="xml">
+        <form string="Time Card">
+          <header>
+            <button name="gen_default_lines_nodemo" string="Generate Lines"
+              confirm="This can erase log time changes. Are you sure you want to do this?"
+              invisible="state not in ('draft')" type="object"/>
+            <button name="del_time_lines" string="Delete Lines"
+              confirm="Are you sure you want to do this?"
+              invisible="state not in ('draft')" type="object"/>
+            <button name="to_sent" string="For Approval"
+              confirm="Send time card for approval?"
+              invisible="state not in ('draft')" type="object" class="oe_highlight" />
+            <button name="approve_record" string="Approve" type="object" class="oe_highlight"
+              confirm="Are you sure to approve this time card?" groups="base.group_user"
+              invisible="(not can_approve) or state in ('denied','approved')"/>
+            <button name="to_denied" string="Deny" type="object" groups="base.group_user" 
+              invisible="(not can_approve) or state in ('draft','denied','approved')"/>
+            <button name="to_draft" string="Back to Draft"
+              invisible="state not in ('denied')" type="object"/>
+            <button name="to_draft" string="Back to Draft"
+              invisible="state not in ('approved','sent')" type="object"
+              groups="ez_timekeeping.group_timekeeping_manager"/>
+            <field name="state" readonly="1" widget="statusbar"
+              statusbar_colors="{'sent':'blue','draft':'darkgreen','denied':'red'}"/>
+
+            <field name="can_approve" invisible="1"/>
+            <field name="is_timekeeping_user" invisible="1"/>
+
+          </header>
+
+          <sheet>
+
+            <widget name="web_ribbon" title="Approved" bg_color="text-bg-success" invisible="state!='approved'"/>
+            <widget name="web_ribbon" title="For Approval" bg_color="text-bg-warning" invisible="state!='sent'"/>
+            <widget name="web_ribbon" title="Denied" bg_color="text-bg-danger" invisible="state!='denied'"/>
+
+            <div name="button_box" class="oe_button_box"></div>
+            <!-- <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/> -->
+            <field name="avatar_128" invisible="1"/>
+
+            <div class="row justify-content-between position-relative w-100 m-0 mb-2">
+              <div class="col oe_title mw-75 ps-0 pe-2">
+                <!-- <label for="name" class="oe_edit_only"/> -->
+                <h1 class="d-flex flex-row align-items-center">
+                  <field name="name" readonly="1"/>
+                </h1>
+                <field name="employee_id" 
+                  invisible="not is_timekeeping_user" 
+                  readonly="state not in ('draft')"
+                  widget="many2one_avatar_employee"
+                  required="1" placeholder="eg. Employee..."/>
+                <field name="employee_id" 
+                  invisible="is_timekeeping_user" 
+                  readonly="state not in ('draft')"
+                  widget="many2one_avatar_employee"
+                  domain="[
+                    '|',
+                      ('timekeeping_manager_id','=',uid),
+                      ('user_id','=',uid),
+                  ]" required="1" placeholder="eg. Employee..."/>
+              </div> 
+            </div>
+
+            <group>
+              <group>
+                <field
+                    name="date1"
+                    widget="daterange"
+                    readonly="state not in ('draft')"
+                    options="{'end_date_field': 'date2'}"
+                    string="Date Range"/>
+                <field name="date2" invisible="1" />
+                <field name="edit_schedule" readonly="state not in ('draft')"
+                  invisible="state not in ('draft')"/>
+              </group>
+              <group>
+                <field name="shift_id" readonly="(not is_timekeeping_user) or state not in ('draft')"/>
+                <!-- <field name="company_id" readonly="1"/> -->
+              </group>
+            </group>
+
+            <notebook>
+
+              <page string="Transactions">
+                <field name="details" readonly="state not in ('draft')">
+                  <list string="Time Lines" 
+                    create="0" 
+                    editable="bottom"
+                    decoration-danger="day_type!='reg'"
+                  >
+                    <field name="date" column_invisible="1"/>
+                    <field name="name"/>
+                    <field name="schedule" readonly="done or not edit_schedule" optional="show"/>
+                    <field name="day_type" readonly="done or not edit_schedule"/>
+                    <field name="timelog" readonly="done" optional="show"/>
+                    <field name="auth_hrs" readonly="done"/>
+                    <field name="vnorm_time" string="Norm" optional="show"/>
+                    <field name="vot_time" string="OT" optional="show"/>
+                    <field name="done" optional="hide"/>
+                    <field name="vremarks" optional="show"/>
+                    <field name="note" optional="show"/>
+                    <field name="edit_schedule" column_invisible="1"/>
+                    <field name="is_timekeeping_user" column_invisible="1"/>
+                  </list>
+                  <form>
+                    <group>
+                      <group>
+                        <field name="name"/>
+                        <field name="schedule"
+                          readonly="done or not edit_schedule"/>
+                        <field name="day_type" readonly="done"/>
+                        <field name="timelog" readonly="done"/>
+                        <field name="auth_hrs" readonly="done"/>
+                        <field name="done"/>
+                      </group>
+                      <group>
+                        <field name="vremarks"/>
+                        <field name="note"/>
+                        <field name="edit_schedule" invisible="1"/>
+                      </group>
+                    </group>
+                  </form>
+                </field>
+              </page>
+
+              <page string="Summary">
+                <button name="summarize" string="Re-compute Summary" type="object" 
+                  invisible="state not in ('draft')"/>
+                <field name="summary">
+                  <form>
+                    <group>
+                      <group>
+                        <field name="name"/>
+                        <field name="absent"/>
+                        <field name="late"/>
+                        <field name="undertime"/>
+                      </group>
+                      <group>
+                        <field name="norm"/>
+                        <field name="norm_night"/>
+                        <field name="ot"/>
+                        <field name="ot_night"/>
+                      </group>
+                    </group>
+                  </form>
+                  <list string="Summary" create="0" edit="0" delete="0">
+                    <field name="seq" column_invisible="1"/>
+                    <field name="name"/>
+                    <field name="norm"/>
+                    <field name="norm_night"/>
+                    <field name="ot"/>
+                    <field name="ot_night"/>
+                    <field name="absent"/>
+                    <field name="late"/>
+                    <field name="undertime"/>
+                  </list>
+                </field>
+              </page>
+
+              <page string="Shift Details">
+                <group>
+                  <group>
+                    <field name="flex_time" readonly="(not is_timekeeping_user) or state not in ('draft')"/>
+                    <field name="auto_auth" readonly="(not is_timekeeping_user) or state not in ('draft')"/>
+                    <field name="early_overtime" readonly="(not is_timekeeping_user) or state not in ('draft')"/>
+                  </group>
+                  <group>
+                    <field name="rounding_regular_work_minutes" 
+                      invisible="flex_time"
+                      readonly="(not is_timekeeping_user) or state not in ('draft')"/>
+                    <field name="minimum_ot_minutes" readonly="(not is_timekeeping_user) or state not in ('draft')"/>
+                    <field name="rounding_ot_minutes" readonly="(not is_timekeeping_user) or state not in ('draft')"/>
+                    <field name="late_allowance_minutes" readonly="(not is_timekeeping_user) or state not in ('draft')" 
+                      invisible="flex_time"/>
+                  </group>
+                </group>
+              </page>
+
+              <page string="Notes" name="notes">
+                <field name="note"/>
+              </page>
+
+            </notebook>
+          </sheet>
+
+          <chatter/>
+
+        </form>
+      </field>
+    </record>
+
+    <record id="tree_timecard" model="ir.ui.view">
+      <field name="name">tree_timecard</field>
+      <field name="model">ez.time.card</field>
+      <field name="arch" type="xml">
+        <list decoration-danger="state=='denied'">
+          <field name="name" column_invisible="1"/>
+          <field name="employee_id" widget="many2one_avatar_employee"/>
+          <field name="date1"/>
+          <field name="date2"/>
+          <field name="shift_id"/>
+          <field name="company_id" groups="base.group_multi_company" readonly="1" optional="hide"/>
+          <field name="category_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="hide"/>
+          <field name="state" widget="badge"
+            decoration-danger="state=='denied'"
+            decoration-warning="state=='sent'" 
+            decoration-success="state=='approved'"/>
+          <field name="note"/>
+        </list>
+      </field>
+    </record>
+
+    <record id="search_timecard" model="ir.ui.view">
+      <field name="name">search_timecard</field>
+      <field name="model">ez.time.card</field>
+      <field name="arch" type="xml">
+        <search string="Search">
+          <field name="employee_id"/>
+          <field name="category_ids"/>
+          <field name="date1"/>
+          <field name="date2"/>
+          <field name="name"/>
+          <filter name="gmonth1" string="Date From" context="{'group_by':'date1'}"/>
+          <filter name="gmonth2" string="Date To" context="{'group_by':'date2'}"/>
+          <separator/>
+          <filter name="filter_date2" date="date2" default_period="year" string="Period"/>
+          <separator/>
+          <filter string="Draft" name="gdraft" domain="[('state','=','draft')]" help="Draft Timecards"/>
+          <filter string="For Approval" name="gsent" domain="[('state','=','sent')]" help="For Approval Timecards"/>
+          <filter string="Approved" name="gapproved" domain="[('state','=','approved')]" help="Approved Timecards"/>
+          <filter string="Denied" name="gdenied" domain="[('state','=','denied')]" help="Denied Timecards"/>
+          <separator/>
+          <filter string="My Time Cards" name="my_timecards" domain="[('employee_id.user_id','=',uid)]"/>
+          <filter string="Other Time Cards" name="other_timecards" domain="[('employee_id.user_id','!=',uid)]"/>
+        </search>
+      </field>
+    </record>
+
+    <!-- ##################################### -->
+
+    <record id="open_all_timecards" model="ir.actions.act_window">
+      <field name="name">All Time Cards</field>
+      <field name="res_model">ez.time.card</field>
+      <field name="view_mode">list,form</field>
+      <field name="search_view_id" ref="search_timecard"/>
+    </record>
+
+    <menuitem id="menu_all_timecards"
+      action="open_all_timecards"
+      parent="menu_timecard"
+      groups="group_timekeeping_manager"
+      sequence="5"
+    />
+
+    <!-- ##################################### -->
+
+    <record id="open_my_timecard" model="ir.actions.act_window">
+      <field name="name">My Time Cards</field>
+      <field name="res_model">ez.time.card</field>
+      <field name="view_mode">list,form</field>
+      <field name="search_view_id" ref="search_timecard"/>
+      <field name="context">{"search_default_my_timecards":1}</field>
+    </record>
+
+    <menuitem id="menu_my_timecard"
+      action="open_my_timecard"
+      parent="menu_timecard"
+      sequence="10"
+    />
+
+    <!-- ##################################### -->
+
+    <record id="open_for_approval_timecard" model="ir.actions.act_window">
+      <field name="name">Time Cards For Approval</field>
+      <field name="res_model">ez.time.card</field>
+      <field name="view_mode">list,form</field>
+      <field name="search_view_id" ref="search_timecard"/>
+      <field name="context">{"search_default_gsent":1}</field>
+    </record>
+
+    <menuitem id="menu_for_approval_timecard"
+      action="open_for_approval_timecard"
+      parent="menu_timecard"
+      groups="base.group_user"
+      sequence="20"
+    />
+
+    <!-- ##################################### -->
+    <record id="multi_approve_timecard" model="ir.actions.server">
+        <field name="name">Approve Timecard</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_ez_time_card"/>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+              action = records.approve_record()
+        </field>
+        <field name="binding_model_id" ref="model_ez_time_card"/>
+    </record>
+
+    <record id="multi_draft_timecard" model="ir.actions.server">
+        <field name="name">Set to Draft</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_ez_time_card"/>
+        <field name="state">code</field>
+        <field name="code">
+allowed_group = env.ref('ez_timekeeping.group_timekeeping_manager').id
+user_group = env.user.group_ids.ids
+if allowed_group in user_group:
+  if records:
+    action = records.to_draft()
+        </field>
+        <field name="binding_model_id" ref="model_ez_time_card"/>
+    </record>
+
+</odoo>

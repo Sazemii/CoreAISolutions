@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+
+        <!--
+        ======================
+        SSS table
+        ======================
+        -->
+        <record id="view_hr_ph_sss_form" model="ir.ui.view">
+            <field name="name">hr.ph.sss.form</field>
+            <field name="model">hr.ph.sss</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="SSS Contribution Table">
+                    <field name="range_from"/>
+                    <field name="range_to"/>
+                    <field name="salary_credit"/>
+                    <field name="er_premium"/>
+                    <field name="ee_premium"/>
+                    <field name="ec_premium"/>
+                    <field name="total"/>
+                    <newline/>
+                    <field name="note" colspan="4"/>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_hr_ph_sss_tree" model="ir.ui.view">
+            <field name="name">hr.ph.sss.tree</field>
+            <field name="model">hr.ph.sss</field>
+            <field name="arch" type="xml">
+                <list string="SSS Contribution Table" editable="bottom">
+                    <field name="govded_id"/>
+                    <field name="range_from"/>
+                    <field name="range_to"/>
+                    <field name="salary_credit"/>
+                    <field name="er_premium"/>
+                    <field name="ee_premium"/>
+                    <field name="ec_premium"/>
+                    <field name="total"/>
+                    <field name="note"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="open_view_hr_ph_sss_tree" model="ir.actions.act_window">
+            <field name="name">SSS Table</field>
+            <field name="res_model">hr.ph.sss</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="view_hr_ph_sss_tree"/>
+        </record>
+
+        <!--
+        <menuitem action="open_view_hr_ph_sss_tree" id="menu_hr_ph_sss" parent="menu_config_payroll" sequence="20" />
+        -->
+
+</odoo>

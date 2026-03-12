@@ -1,0 +1,10 @@
+from PIL import Image,ImageDraw,ImageFont
+import io,os,inspect,random,logging
+_logger=logging.getLogger(__name__)
+DEFAULT_FONT_NAME='GreatVibes-Regular.ttf'
+def generate_signature_image_bytes(text,font_name=DEFAULT_FONT_NAME,font_size=100,text_color=(0,0,0),background_color=(255,255,255,0),padding=20,rotation_angle=0,module_name='ez_hr_esignature',file_out=False):
+	'\n    Generates a signature image as PNG bytes.\n\n    Args:\n        text (str): The text for the signature.\n        font_name (str): Name of the font file (e.g., "GreatVibes-Regular.ttf").\n        font_size (int): Size of the font.\n        text_color (tuple): RGB tuple for the text color.\n        background_color (tuple): RGBA tuple for the background. (255,255,255,0) is transparent.\n        padding (int): Padding around the text.\n        rotation_angle (float): Angle to rotate the signature.\n        module_name (str): The name of the Odoo module where the font resides.\n\n    Returns:\n        bytes: Image data as PNG bytes, or None if an error occurs.\n    ';G=rotation_angle;F=background_color;E=file_out;D=padding;C=text;C=C.title();K=os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())));H=os.path.join(K,'..','static','src','fonts',font_name);print(H);I=ImageFont.truetype(H,font_size);L=Image.new('RGBA',(1,1));M=ImageDraw.Draw(L);A=M.textbbox((0,0),C,font=I,anchor='lt');N=A[2]-A[0];O=A[3]-A[1];P=A[0];Q=A[1];R=int(N+2*D);S=int(O+2*D);B=Image.new('RGBA',(R,S),F);T=ImageDraw.Draw(B);T.text((D-P,D-Q),C,font=I,fill=text_color)
+	if G!=0:B=B.rotate(G,expand=True,fillcolor=F)
+	if E:B.save(E,format='PNG');_logger.info(f"Signature image saved to {E}")
+	J=io.BytesIO();B.save(J,format='PNG');return J.getvalue()
+if __name__=='__main__':file_path='signature.png';rotation=random.uniform(-3,3);signature_bytes=generate_signature_image_bytes('Test Signature',font_name=DEFAULT_FONT_NAME,rotation_angle=rotation,file_out=file_path)

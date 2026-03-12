@@ -1,0 +1,63 @@
+-
+ !python { model: hr.employee } : |
+   self.create_demo_data()
+
+-
+ !python { model: hr.ph.pay.deduction.entry } : |
+   import datetime
+   today = datetime.date.today()
+
+   for i in range(2):
+     d1 = datetime.date(today.year, i+1, 2)
+     d2 = datetime.date(today.year, i+1, 18)
+     m = d1.strftime("%b %Y")
+     if not self.create_demo_data(d1, name='Canteen %s A' % m):
+       break
+     self.create_demo_data(d1, name='Union Dues %s A' % m)
+     self.create_demo_data(d2, name='Canteen %s B' % m)
+     self.create_demo_data(d2, name='Union Dues %s B' % m)
+-
+ !python { model: hr.ph.loan } : |
+   import datetime
+   today = datetime.date.today()
+
+   for i in range(2):
+     d1 = datetime.date(today.year, i+1, 1)
+     if not self.create_demo_data(d1, "Loan %i " % (i+1)):
+       break
+
+-
+ !python { model: ez.work.summary.sheet } : |
+   import datetime
+   today = datetime.date.today()
+
+   for i in range(2):
+     d1 = datetime.date(today.year, i+1, 2)
+     #if not self.create_demo_data(name='Regular Work %s A' % d1.strftime("%b %Y"), date=d1):
+     #break
+     if not self.create_demo_data(name='Work Summary %s A' % d1.strftime("%b %Y"), date=d1, regular=False):
+       break
+
+     d1 = datetime.date(today.year, i+1, 18)
+     #self.create_demo_data(name='Regular Work %s B' % d1.strftime("%b %Y"), date=d1)
+     self.create_demo_data(name='Work Summary %s B' % d1.strftime("%b %Y"), date=d1, regular=False)
+
+-
+ !python { model: hr.ph.payroll } : |
+   import datetime
+   today = datetime.date.today()
+
+   for i in range(2):
+     d1 = datetime.date(today.year, i+1, 1)
+     d2 = datetime.date(today.year, i+1, 15)
+     m = d1.strftime("%Y-%m")
+     if not self.create_demo_data('Payroll %s A' % m, d1, d2):
+       break
+
+     d1 = datetime.date(today.year, i+1, 16)
+     if i==11:
+       d2 = datetime.date(today.year, 12, 31)
+     else:
+       d2 = datetime.date(today.year, i+2, 1) - datetime.timedelta(days=1)
+
+     self.create_demo_data('Payroll %s B' % m, d1, d2)

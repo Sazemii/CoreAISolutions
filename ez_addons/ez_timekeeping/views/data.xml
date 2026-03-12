@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2024
+======================================== -->
+<odoo>
+
+    <record id="timecard_for_approval_email_template" model="mail.template">
+        <field name="name">Time Card for Approval</field>
+        <field name="model_id" ref="model_ez_time_card" />
+        <field name="lang">{{object.company_id.partner_id.lang}}</field>
+        <field name="email_from">{{object.company_id.partner_id.email}}</field>
+        <field name="partner_to">{{object.employee_id.timekeeping_manager_id.partner_id.id}}</field>
+        <field
+            name="subject"
+        >Time Card for Approval for {{object.employee_id.name or 'n/a' }} {{object.date1.strftime('%m/%d/%Y')}}-{{object.date2.strftime('%m/%d/%Y')}}</field>
+        <field name="description">Send email to approver when time card is to be approved. </field>
+        <field name="auto_delete" eval="False" />
+        <field name="body_html" type="html">
+            <p>Hello <t t-out="object.employee_id.timekeeping_manager_id.name">Michel Admin</t>,</p>
+            <p>Please approve the time card of <b t-out="object.employee_id.name">Juan dela Cruz</b> from dates
+              <b t-field="object.date1" t-options='{"widget": "date","format": "MMMM d, yyyy"}'>date1</b>
+              to <b t-field="object.date2" t-options='{"widget": "date","format": "MMMM d, yyyy"}'>date2</b>.
+            </p>
+        </field>
+    </record>
+
+    <record id="timecard_approved_email_template" model="mail.template">
+        <field name="name">Time Card Approved</field>
+        <field name="model_id" ref="model_ez_time_card" />
+        <field name="lang">{{object.company_id.partner_id.lang}}</field>
+        <field name="email_from">{{object.company_id.partner_id.email}}</field>
+        <field name="partner_to">{{object.employee_id.user_id.partner_id.id}}</field>
+        <field
+            name="subject"
+        >Time Card Approved {{object.employee_id.name or 'n/a' }} {{object.date1.strftime('%m/%d/%Y')}}-{{object.date2.strftime('%m/%d/%Y')}}</field>
+        <field name="description">Send email to employee when time card is approved. </field>
+        <field name="auto_delete" eval="False" />
+        <field name="body_html" type="html">
+            <p>Hello <t t-out="object.employee_id.first_name">Employee</t>,</p>
+            <p>Your time card dated
+              <b t-field="object.date1" t-options='{"widget": "date","format": "MMMM d, yyyy"}'>date1</b>
+              to <b t-field="object.date2" t-options='{"widget": "date","format": "MMMM d, yyyy"}'>date2</b> 
+              has been approved.
+            </p>
+        </field>
+    </record>
+
+    <record id="timecard_denied_email_template" model="mail.template">
+        <field name="name">Time Card Denied</field>
+        <field name="model_id" ref="model_ez_time_card" />
+        <field name="lang">{{object.company_id.partner_id.lang}}</field>
+        <field name="email_from">{{object.company_id.partner_id.email}}</field>
+        <field name="partner_to">{{object.employee_id.user_id.partner_id.id}}</field>
+        <field
+            name="subject"
+        >Time Card Denied {{object.employee_id.name or 'n/a' }} {{object.date1.strftime('%m/%d/%Y')}}-{{object.date2.strftime('%m/%d/%Y')}}</field>
+        <field name="description">Send email to employee when time card is denied. </field>
+        <field name="auto_delete" eval="False" />
+        <field name="body_html" type="html">
+            <p>Hello <t t-out="object.employee_id.first_name">Employee</t>,</p>
+            <p>Your time card dated
+              <b t-field="object.date1" t-options='{"widget": "date","format": "MMMM d, yyyy"}'>date1</b>
+              to <b t-field="object.date2" t-options='{"widget": "date","format": "MMMM d, yyyy"}'>date2</b> 
+              has been denied.  Please set back to draft and re-send again for approval.
+            </p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2021
+======================================== -->
+<odoo>
+
+    <menuitem id="menu_timekeeping_main" name="Timekeeping"
+      web_icon="base,static/img/icons/timesheet_grid.png"
+      sequence="187"/>
+
+    <menuitem id="menu_timekeeping_config"
+      parent="menu_timekeeping_main"
+      groups="group_timekeeping_user"
+      name="Configuration" sequence="1000"/>
+
+
+</odoo>

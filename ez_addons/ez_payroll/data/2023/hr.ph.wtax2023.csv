@@ -1,0 +1,25 @@
+id,govded_id/id,period,seq,govded_id/id,period,name,amount_from,amount_to,tax,rate_excess
+wtax2023_d1,govded_2023,Daily,10,govded_2023,Daily,Daily 1,0,685,0,0
+wtax2023_d2,govded_2023,Daily,20,govded_2023,Daily,Daily 2,685,1095.99,0,0.15
+wtax2023_d3,govded_2023,Daily,30,govded_2023,Daily,Daily 3,1096,2191.99,61.65,0.2
+wtax2023_d4,govded_2023,Daily,40,govded_2023,Daily,Daily 4,2192,5478.99,280.85,0.25
+wtax2023_d5,govded_2023,Daily,50,govded_2023,Daily,Daily 5,5479,21917.99,1102.6,0.3
+wtax2023_d6,govded_2023,Daily,60,govded_2023,Daily,Daily 6,21918,999999999,6034.3,0.35
+wtax2023_w1,govded_2023,Weekly,70,govded_2023,Weekly,Weekly 1,0,4808,0,0
+wtax2023_w2,govded_2023,Weekly,80,govded_2023,Weekly,Weekly 2,4808,7691.99,0,0.15
+wtax2023_w3,govded_2023,Weekly,90,govded_2023,Weekly,Weekly 3,7692,15384.99,432.6,0.2
+wtax2023_w4,govded_2023,Weekly,100,govded_2023,Weekly,Weekly 4,15385,38461.99,1971.2,0.25
+wtax2023_w5,govded_2023,Weekly,110,govded_2023,Weekly,Weekly 5,38462,153845.99,7740.45,0.3
+wtax2023_w6,govded_2023,Weekly,120,govded_2023,Weekly,Weekly 6,153846,999999999,42355.65,0.35
+wtax2023_s1,govded_2023,Semi-monthly,130,govded_2023,Semi-monthly,Semi-monthly 1,0,10417,0,0
+wtax2023_s2,govded_2023,Semi-monthly,140,govded_2023,Semi-monthly,Semi-monthly 2,10417,16666.99,0,0.15
+wtax2023_s3,govded_2023,Semi-monthly,150,govded_2023,Semi-monthly,Semi-monthly 3,16667,33332.99,937.5,0.2
+wtax2023_s4,govded_2023,Semi-monthly,160,govded_2023,Semi-monthly,Semi-monthly 4,33333,83332.99,4270.7,0.25
+wtax2023_s5,govded_2023,Semi-monthly,170,govded_2023,Semi-monthly,Semi-monthly 5,83333,333332.99,16770.7,0.3
+wtax2023_s6,govded_2023,Semi-monthly,180,govded_2023,Semi-monthly,Semi-monthly 6,333333,999999999,91770.7,0.35
+wtax2023_m1,govded_2023,Monthly,190,govded_2023,Monthly,Monthly 1,0,20833,0,0
+wtax2023_m2,govded_2023,Monthly,200,govded_2023,Monthly,Monthly 2,20833,33332.99,0,0.15
+wtax2023_m3,govded_2023,Monthly,210,govded_2023,Monthly,Monthly 3,33333,66666.99,1875,0.2
+wtax2023_m4,govded_2023,Monthly,220,govded_2023,Monthly,Monthly 4,66667,166666.99,8541.8,0.25
+wtax2023_m5,govded_2023,Monthly,230,govded_2023,Monthly,Monthly 5,166667,666666.99,33541.8,0.3
+wtax2023_m6,govded_2023,Monthly,240,govded_2023,Monthly,Monthly 6,666667,999999999,183541.8,0.35

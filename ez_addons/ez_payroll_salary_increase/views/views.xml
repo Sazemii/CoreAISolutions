@@ -1,0 +1,71 @@
+<odoo>
+
+  <!-- Migration for new install -->
+  <!-- <data noupdate="1">
+    <function model="hr.employee" name="compute_salary_rates_model"/>
+  </data> -->
+
+  <data>
+    <record id="hr_employee_form_inherit2" model="ir.ui.view">
+      <field name="name">hr.employee.form.inherit</field>
+      <field name="model">hr.employee</field>
+      <field name="inherit_id" ref="ez_payroll.hr_employee_form_inherit"/>
+      <field name="arch" type="xml">
+
+          <field name="wtax_percent" position="before">
+            <label for="salary_rate_now" string="Salary"/>
+            <div>
+              <field name="salary_rate_now" class="oe_inline"/>&#x2063;
+              <field name="salary_rate_period_now" nolabel="1" class="oe_inline"/>
+            </div>
+          </field>
+
+          <xpath expr="//div[@name='salary_group']" position="attributes">
+            <attribute name="invisible">1</attribute>
+          </xpath>
+          
+          <xpath expr="//label[@for='salary_rate']" position="attributes">
+            <attribute name="invisible">1</attribute>
+          </xpath>
+
+          <field name="emr_days" position="attributes">
+            <attribute name="invisible">1</attribute>
+          </field>
+
+          <field name="emr_days" position="after">
+            <field name="emr_days_now"/>
+          </field>
+
+          <field name="deminimis_line" position="after">
+            <separator string="Salary Rate History"/>
+            <button name="compute_salary_rates" string="Recompute Salary Rates" type="object"/>
+            <field name="salary_rate_ids" nolabel="1">
+              <list editable="bottom">
+                <field name="employee_id" column_invisible="1"/>
+                <field name="date"/>
+                <field name="emr_days" string="EMR Days"/>
+                <field name="salary_rate"/>
+                <field name="salary_rate_period"/>
+                <field name="daily_rate" optional="hide"/>
+                <field name="is_recomputed" optional="hide"/>
+              </list>            
+            </field>            
+          </field>
+
+      </field>
+    </record>
+
+    <record id="form_ez_work_summary_sheet" model="ir.ui.view">
+      <field name="name">form_ez_work_summary_sheet</field>
+      <field name="model">ez.work.summary.sheet</field>
+      <field name="inherit_id" ref="ez_payroll.form_ez_work_summary_sheet"/>
+      <field name="arch" type="xml">
+        <!-- Remove amount field from work summary sheet due to salary rate changes will affect the amount -->
+        <xpath expr="//list/field[@name='amount']" position="attributes">
+          <attribute name="column_invisible">1</attribute>
+        </xpath>
+      </field>
+    </record>
+
+  </data>
+</odoo>

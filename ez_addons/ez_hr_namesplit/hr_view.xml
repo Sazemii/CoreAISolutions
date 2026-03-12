@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- =======================================
+Regulus Berdin / rberdin@gmail.com (c) 2025
+======================================== -->
+<odoo>
+    <record id="ez_hr_namesplit_inherit" model="ir.ui.view">
+      <field name="name">hr.employee.form.inherit</field>
+      <field name="model">hr.employee</field>
+      <field name="inherit_id" ref="hr.view_employee_form"/>
+      <field name="arch" type="xml">
+
+        <field name="name" position="attributes">
+          <attribute name='readonly'>1</attribute>
+        </field>
+
+        <xpath expr="//div[@id='o_work_information']/group[1]" position="before">
+          <group string="Whole Name">
+            <field name="last_name" placeholder="Last Name" />
+            <field name="first_name" placeholder="First Name"/>
+            <field name="middle_name" placeholder="Middle Name"/>
+          </group>
+        </xpath>
+
+      </field>
+    </record>
+</odoo>
