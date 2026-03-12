@@ -149,8 +149,8 @@ Regulus Berdin / rberdin@gmail.com (c) 2026
     <!-- 3-20-2025 fix, rights accessibility -->
     <!-- Deminimis access rules -->
     <record id="hr_deminimis_officer_access" model="ir.rule">
-      <field name="name">Deduction Pay Officer Access</field>
-      <field name="model_id" ref="group_hr_payroll_user"/>
+      <field name="name">Deminimis Pay Officer Access</field>
+      <field name="model_id" ref="model_ez_deminimis"/>
       <field name="domain_force">[(1,'=',1)]</field>
       <field name="groups" eval="[(4,ref('ez_payroll.group_hr_payroll_user'))]"/>
       <field name="global" eval="False"/>
