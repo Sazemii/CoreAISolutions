@@ -3,9 +3,9 @@ from markupsafe import Markup
 from odoo import api, fields, models
 
 SUPPORT_RECIPIENTS = (
-    'zuzazibubabi@gmail.com,'
-    'jacoblandicho40@gmail.com,'
-    'jacoblandicho56@gmail.com'
+   'oshan@coreaisolutionsopc.com,'
+   'sales@coreaisolutionsopc.com,'
+   'functional@coreaisolutionsopc.com'
 )
 
 
