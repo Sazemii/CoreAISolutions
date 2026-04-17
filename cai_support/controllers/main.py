@@ -1,4 +1,4 @@
-import json
+import base64
 import logging
 
 from odoo import http
@@ -35,7 +35,25 @@ class SupportController(http.Controller):
                 'description': kwargs['description'],
                 'category': kwargs.get('category', 'general'),
                 'priority': kwargs.get('priority', 'medium'),
+                'database_link': kwargs.get('database_link', ''),
+                'module_link': kwargs.get('module_link', ''),
             }
+
+            files = request.httprequest.files.getlist('attachments')
+            attachment_ids = []
+            for f in files:
+                if f and f.filename:
+                    data = base64.b64encode(f.read())
+                    att = request.env['ir.attachment'].sudo().create({
+                        'name': f.filename,
+                        'datas': data,
+                        'res_model': 'support.ticket',
+                        'type': 'binary',
+                    })
+                    attachment_ids.append(att.id)
+            if attachment_ids:
+                ticket_vals['attachment_ids'] = [(6, 0, attachment_ids)]
+
             ticket = request.env['support.ticket'].sudo().create(ticket_vals)
             return request.make_json_response({
                 'success': True,

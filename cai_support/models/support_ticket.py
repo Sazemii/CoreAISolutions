@@ -27,6 +27,12 @@ class SupportTicket(models.Model):
     customer_name = fields.Char(string='Customer Name', required=True)
     customer_email = fields.Char(string='Customer Email', required=True)
     customer_phone = fields.Char(string='Contact Number')
+    database_link = fields.Char(string='Database Link')
+    module_link = fields.Char(string='Exact Module Link')
+    attachment_ids = fields.Many2many(
+        'ir.attachment',
+        string='Attachments',
+    )
     category = fields.Selection(
         [
             ('general', 'General Inquiry'),
@@ -127,6 +133,16 @@ class SupportTicket(models.Model):
                                    font-weight: 600;">Phone</td>
                         <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">{phone}</td>
                     </tr>
+                    <tr>
+                        <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;
+                                   font-weight: 600;">Database Link</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">{database_link}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;
+                                   font-weight: 600;">Module Link</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">{module_link}</td>
+                    </tr>
                 </table>
                 <h3 style="color: #191a23; margin-top: 16px;">Description</h3>
                 <div style="background: #f9f9f9; padding: 16px; border-radius: 8px;
@@ -140,6 +156,8 @@ class SupportTicket(models.Model):
             customer_name=self.customer_name,
             customer_email=self.customer_email,
             phone=self.customer_phone or 'N/A',
+            database_link=self.database_link or 'N/A',
+            module_link=self.module_link or 'N/A',
             description=self.description,
         )
 

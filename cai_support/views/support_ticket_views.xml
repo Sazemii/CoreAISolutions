@@ -55,9 +55,20 @@
                             <field name="customer_phone"/>
                         </group>
                     </group>
+                    <group string="Links">
+                        <group>
+                            <field name="database_link" widget="url"/>
+                        </group>
+                        <group>
+                            <field name="module_link" widget="url"/>
+                        </group>
+                    </group>
                     <notebook>
                         <page string="Description">
                             <field name="description"/>
+                        </page>
+                        <page string="Attachments">
+                            <field name="attachment_ids" widget="many2many_binary"/>
                         </page>
                     </notebook>
                 </sheet>
