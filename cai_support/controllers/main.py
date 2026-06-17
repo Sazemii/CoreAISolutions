@@ -66,3 +66,45 @@ class SupportController(http.Controller):
                 {'success': False, 'error': 'An error occurred. Please try again.'},
                 status=500,
             )
+
+    @http.route(
+        '/demo/submit',
+        type='http',
+        auth='public',
+        methods=['POST'],
+        csrf=False,
+        cors='*',
+    )
+    def demo_submit(self, **kwargs):
+        required_fields = ['name', 'email']
+        missing = [f for f in required_fields if not kwargs.get(f)]
+        if missing:
+            return request.make_json_response(
+                {'success': False, 'error': f'Missing required fields: {", ".join(missing)}'},
+                status=400,
+            )
+
+        # The landing page sends the modal label ("Request a Demo" /
+        # "Book a Consultation"); use it to title the lead.
+        request_label = (kwargs.get('request_type') or 'Website Inquiry').strip()
+
+        try:
+            lead = request.env['crm.lead'].sudo().create({
+                'name': f'{request_label} - {kwargs["name"]}',
+                'type': 'lead',
+                'contact_name': kwargs['name'],
+                'email_from': kwargs['email'],
+                'phone': kwargs.get('phone', ''),
+                'description': kwargs.get('message', ''),
+            })
+            return request.make_json_response({
+                'success': True,
+                'lead_id': lead.id,
+                'message': 'Your request has been submitted successfully.',
+            })
+        except Exception:
+            _logger.exception('Failed to create CRM lead')
+            return request.make_json_response(
+                {'success': False, 'error': 'An error occurred. Please try again.'},
+                status=500,
+            )

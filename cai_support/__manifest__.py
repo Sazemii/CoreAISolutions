@@ -16,6 +16,7 @@
     'website': 'https://coreaisolutionsopc.com',
     'depends': [
         'mail',
+        'crm',
     ],
     'data': [
         'security/ir.model.access.csv',
