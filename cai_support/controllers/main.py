@@ -91,7 +91,7 @@ class SupportController(http.Controller):
         try:
             lead = request.env['crm.lead'].sudo().create({
                 'name': f'{request_label} - {kwargs["name"]}',
-                'type': 'lead',
+                'type': 'opportunity',
                 'contact_name': kwargs['name'],
                 'email_from': kwargs['email'],
                 'phone': kwargs.get('phone', ''),
