@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- List View -->
+        <record id="view_datums_script_tree" model="ir.ui.view">
+            <field name="name">datums.script.tree</field>
+            <field name="model">datums.script</field>
+            <field name="arch" type="xml">
+                <list string="Chatbot Scripts">
+                    <field name="name"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_datums_script_form" model="ir.ui.view">
+            <field name="name">datums.script.form</field>
+            <field name="model">datums.script</field>
+            <field name="arch" type="xml">
+                <form string="Chatbot Script">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="active"/>
+                            </group>
+                        </group>
+                        <group string="Embed Code">
+                            <field name="embed_code" placeholder="&lt;script src='...'&gt;&lt;/script&gt;" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_datums_script" model="ir.actions.act_window">
+            <field name="name">Chatbot Scripts</field>
+            <field name="res_model">datums.script</field>
+            <field name="view_mode">list,form</field>
+            <field name="target">current</field>
+        </record>
+
+        <!-- Client Action for Root Dashboard Viewer -->
+        <record id="action_datums_root" model="ir.actions.client">
+            <field name="name">datums</field>
+            <field name="tag">dashboard_viewer_action</field>
+            <field name="params" eval="{}"/>
+        </record>
+
+        <!-- Root Menu Item for App Switcher -->
+
+        <menuitem id="menu_datums_script_root"
+                  name="datums"
+                  web_icon="datums,static/description/icon.png"
+                  action="action_datums_root"
+                  sequence="10"/>
+
+<!--
+        <menuitem id="menu_datums_script_settings" name="Settings" parent="menu_datums_script_root" sequence="10"/>
+        <menuitem id="menu_datums_script" name="Scripts" parent="menu_datums_script_settings" action="action_datums_script" sequence="10"/>
+-->
+
+    </data>
+</odoo>

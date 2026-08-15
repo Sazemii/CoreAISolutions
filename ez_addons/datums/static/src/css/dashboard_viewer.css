@@ -1,0 +1,781 @@
+.o_datums_maintenance_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    background-color: #fcfaff;
+    font-family: 'Inter', sans-serif;
+    text-align: center;
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.o_datums_maintenance_illustration {
+    max-width: 450px;
+    margin-bottom: 2rem;
+}
+
+.o_datums_maintenance_title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 1rem;
+}
+
+.o_datums_maintenance_subtitle {
+    font-size: 1.1rem;
+    color: #666;
+    max-width: 600px;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.o_datums_status_grid {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    max-width: 700px;
+    width: 100%;
+    margin-bottom: 2rem;
+    border: 1px solid #eee;
+}
+
+.o_datums_status_header {
+    grid-column: span 2;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.o_datums_status_header i {
+    color: #6b46c1;
+    margin-right: 10px;
+}
+
+.o_datums_status_item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+}
+
+.o_datums_status_label {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+}
+
+.o_datums_status_label i {
+    margin-right: 10px;
+}
+
+.o_datums_status_label.operational i {
+    color: #38a169;
+}
+
+.o_datums_status_label.maintenance i {
+    color: #ed8936;
+}
+
+.o_datums_status_value {
+    font-size: 0.9rem;
+}
+
+.o_datums_status_value.operational {
+    color: #38a169;
+}
+
+.o_datums_status_value.maintenance {
+    color: #ed8936;
+}
+
+.o_datums_estimated_time {
+    display: flex;
+    align-items: center;
+    color: #6b46c1;
+    font-weight: 500;
+    margin-bottom: 2rem;
+}
+
+.o_datums_estimated_time i {
+    margin-right: 8px;
+}
+
+.o_datums_retry_btn {
+    background-color: #6b46c1;
+    color: white;
+    padding: 0.75rem 2.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    border: none;
+    display: flex;
+    align-items: center;
+    transition: background 0.2s;
+    cursor: pointer;
+    margin-bottom: 1rem;
+}
+
+.o_datums_retry_btn:hover {
+    background-color: #44337a;
+}
+
+.o_datums_retry_btn i {
+    margin-right: 8px;
+}
+
+.o_datums_support_link {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.o_datums_support_link a {
+    color: #6b46c1;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.o_datums_support_link a:hover {
+    text-decoration: underline;
+}
+
+.o_datums_support_link i {
+    margin-right: 8px;
+}
+
+/* Onboarding Flow Popup */
+.o_datums_instruction_card_new {
+    display: flex;
+    flex-direction: row;
+    width: min(840px, 95vw);
+    min-height: 520px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    position: relative;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Left branding column */
+.o_datums_onboarding_left {
+    flex: 1;
+    background: linear-gradient(135deg, #fdfbfe 0%, #f6effc 50%, #eee2fa 100%);
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    border-right: 1px solid rgba(113, 75, 103, 0.08);
+}
+
+/* Right content/wizard column */
+.o_datums_onboarding_right {
+    flex: 1.1;
+    background: #fff;
+    padding: 40px 35px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    position: relative;
+}
+
+/* Logo styling */
+.o_datums_logo_container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.o_datums_logo_img {
+    height: 48px;
+    width: auto;
+    object-fit: contain;
+}
+
+.o_datums_logo_text_container {
+    display: flex;
+    flex-direction: column;
+}
+
+.o_datums_logo_main {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.o_datums_logo_accent {
+    color: #714B67;
+}
+
+.o_datums_logo_sub {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #8a7b93;
+    letter-spacing: 0.02em;
+}
+
+/* Typography styles */
+.o_datums_welcome_title,
+.o_datums_right_title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-top: 10px;
+    margin-bottom: 12px;
+    line-height: 1.25;
+}
+
+.o_datums_welcome_text,
+.o_datums_right_text {
+    font-size: 0.92rem;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+/* Checklist items */
+.o_datums_checklist {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 25px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.o_datums_checklist li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.o_datums_check_icon {
+    color: #10B981;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.o_datums_check_text {
+    font-size: 0.9rem;
+    font-weight: 555;
+    color: #333;
+    line-height: 1.4;
+}
+
+/* Footer / privacy disclaimer */
+.o_datums_privacy_notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
+    background: rgba(113, 75, 103, 0.04);
+    border-radius: 8px;
+    border: 1px solid rgba(113, 75, 103, 0.06);
+    margin-top: auto;
+}
+
+.o_datums_shield_icon {
+    color: #714B67;
+    font-size: 1.25rem;
+    margin-top: 2px;
+}
+
+.o_datums_privacy_text {
+    font-size: 0.8rem;
+    color: #666;
+    line-height: 1.45;
+}
+
+.o_datums_privacy_link {
+    color: #3B82F6;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.o_datums_privacy_link:hover {
+    text-decoration: underline;
+}
+
+/* Buttons */
+.o_datums_skip_btn {
+    align-self: flex-start;
+    background: none;
+    border: 1.5px solid #dcd1e0;
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.o_datums_skip_btn:hover {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: #bbb;
+    color: #333;
+}
+
+.o_datums_continue_btn {
+    align-self: flex-end;
+    background: #714B67;
+    color: #fff;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 11px 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(113, 75, 103, 0.2);
+}
+
+.o_datums_continue_btn:hover {
+    background: #5c3b53;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(113, 75, 103, 0.3);
+}
+
+.o_datums_top_actions {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 10;
+}
+
+.o_datums_help_link {
+    font-size: 1.25rem;
+    color: #714B67;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    transition: opacity 0.2s, transform 0.2s;
+    opacity: 1;
+}
+
+.o_datums_help_link:hover {
+    opacity: 0.8;
+    transform: scale(1.1);
+}
+
+.o_datums_guide_icon {
+    width: 20px;
+    height: 20px;
+    color: #714B67;
+    object-fit: contain;
+    filter: brightness(0) saturate(100%) invert(34%) sepia(16%) saturate(1142%) hue-rotate(272deg) brightness(96%) contrast(87%);
+}
+
+.o_datums_close_btn_new {
+    position: relative;
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: #714B67;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s, transform 0.2s;
+    opacity: 1;
+}
+
+.o_datums_close_btn_new:hover {
+    opacity: 0.8;
+    transform: scale(1.1);
+}
+
+/* Progress bar indicator */
+.o_datums_progress_container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 25px;
+    width: 65%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.o_datums_progress_step {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid #714B67;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.o_datums_progress_step.active {
+    border-color: #714B67;
+    background: #714B67;
+}
+
+.o_datums_progress_dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.o_datums_progress_step.active .o_datums_progress_dot {
+    background: #fff;
+}
+
+.o_datums_progress_line {
+    flex: 1;
+    height: 2px;
+    background: #e9e5ee;
+    margin: 0 4px;
+}
+
+.o_datums_progress_line.active {
+    background: #714B67;
+}
+
+/* Connection Illustration New styles */
+.o_datums_illustration_container {
+    position: relative;
+    width: 100%;
+    height: 120px;
+    margin: 15px auto 20px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.o_datums_illustration_bg_circle {
+    position: absolute;
+    width: 130px;
+    height: 130px;
+    background: #f4effa;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.o_datums_illustration_content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+}
+
+/* Profile browser card representation */
+.o_datums_profile_card {
+    width: 65px;
+    height: 52px;
+    border: 1.5px solid #d3c5df;
+    border-radius: 8px;
+    background: #fff;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(113, 75, 103, 0.08);
+    display: flex;
+    flex-direction: column;
+}
+
+.o_datums_card_header {
+    height: 10px;
+    background: #8b73a5;
+    /* Purple header */
+    border-bottom: 1.5px solid #d3c5df;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.o_datums_card_body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    gap: 5px;
+}
+
+.o_datums_card_avatar {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #714B67;
+}
+
+.o_datums_card_lines {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+}
+
+.o_datums_card_line {
+    height: 3px;
+    background: #ebdff2;
+    border-radius: 1.5px;
+    width: 100%;
+}
+
+.o_datums_card_line.short {
+    width: 60%;
+}
+
+.o_datums_card_badge {
+    position: absolute;
+    bottom: -6px;
+    right: -6px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #10b981;
+    color: #fff;
+    font-size: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.o_datums_card_badge i {
+    font-size: 9px;
+}
+
+/* Curved arrows in the middle */
+.o_datums_arrows_curved {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+}
+
+.o_datums_curved_arrow_svg {
+    overflow: visible;
+}
+
+/* Odoo database illustration */
+.o_datums_odoo_db {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.o_datums_db_cylinders {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 20px;
+}
+
+.o_datums_cylinder {
+    height: 7px;
+    border: 1.5px solid #714B67;
+    background: #fff;
+    border-radius: 50% / 2.5px;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(113, 75, 103, 0.05);
+}
+
+.o_datums_cylinder::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50% / 2.5px;
+}
+
+.o_datums_odoo_label {
+    font-family: "Montserrat", "Outfit", "Inter", sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #714B67;
+    letter-spacing: -0.03em;
+}
+
+/* Heading and text styles */
+.o_datums_right_title_new {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    margin-top: 5px;
+    margin-bottom: 8px;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+}
+
+.o_datums_right_text_new {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+.o_datums_steps_title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 10px;
+}
+
+/* Custom steps list */
+.o_datums_steps_list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.o_datums_step_num {
+    font-size: 1.15rem;
+    color: #714B67;
+    font-weight: bold;
+    width: 24px;
+    display: inline-block;
+    text-align: center;
+}
+
+.o_datums_steps_list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.o_datums_step_icon_container {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #f7f3fb;
+    border: 1.2px solid rgba(113, 75, 103, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #714B67;
+    font-size: 0.85rem;
+}
+
+.o_datums_step_item_text {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Callout Banner */
+.o_datums_callout_banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    background: #f5f0f9;
+    border-radius: 10px;
+    border: 1px solid rgba(113, 75, 103, 0.08);
+    margin-bottom: 20px;
+}
+
+.o_datums_callout_icon {
+    color: #714B67;
+    font-size: 1.05rem;
+    margin-top: 2px;
+}
+
+.o_datums_callout_text {
+    font-size: 0.78rem;
+    font-weight: 550;
+    color: #5c3b53;
+    line-height: 1.45;
+}
+
+.o_datums_right_text_normal {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+/* Actions and redirection notice */
+.o_datums_actions_new {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.o_datums_continue_btn_new {
+    width: 100%;
+    background: #2e083c;
+    color: #fff;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(46, 8, 60, 0.2);
+}
+
+.o_datums_continue_btn_new:hover {
+    background: #470f5c;
+    box-shadow: 0 6px 16px rgba(46, 8, 60, 0.35);
+}
+
+.o_datums_redirect_notice {
+    font-size: 0.75rem;
+    color: #888;
+    text-align: center;
+}
+
+/* Purple highlight */
+.o_datums_purple_highlight {
+    color: #714B67;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .o_datums_instruction_card_new {
+        flex-direction: column;
+        min-height: auto;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .o_datums_onboarding_left {
+        border-right: none;
+        border-bottom: 1px solid rgba(113, 75, 103, 0.08);
+        padding: 30px 24px;
+    }
+
+    .o_datums_onboarding_right {
+        padding: 30px 24px;
+    }
+
+    .o_datums_skip_btn,
+    .o_datums_continue_btn_new {
+        width: 100%;
+        text-align: center;
+    }
+}

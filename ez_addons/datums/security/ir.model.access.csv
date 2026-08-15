@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_datums_script_user,datums.script user,model_datums_script,base.group_user,1,0,0,0
+access_datums_script_admin,datums.script admin,model_datums_script,base.group_system,1,1,1,1
+
+access_dashboard_link_user,dashboard.link user,model_dashboard_link,base.group_user,1,0,0,0
+access_dashboard_link_admin,dashboard.link admin,model_dashboard_link,base.group_system,1,1,1,1
+access_datums_config_admin,datums.config admin,model_datums_config,base.group_system,1,1,1,1

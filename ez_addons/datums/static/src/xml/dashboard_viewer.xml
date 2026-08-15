@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="datumsAI.DashboardViewer" owl="1">
+        <div class="o_datums_container" style="height: 100vh !important; width: 100%;">
+            <!-- Loading Indicator -->
+            <t t-if="state.loading">
+                <div class="o_datums_loading">
+                    <i class="fa fa-spinner fa-spin fa-3x text-muted"/>
+                    <span class="ms-3">Loading Dashboards...</span>
+                </div>
+            </t>
+
+            <!-- Maintenance Page -->
+            <t t-if="state.isMaintenance">
+                <div class="o_datums_maintenance_container">
+                    <img src="/datums/static/src/img/maintenance.png" class="o_datums_maintenance_illustration" alt="Under Maintenance"/>
+                    
+                    <h1 class="o_datums_maintenance_title">datumsAI Service is Temporarily Unavailable</h1>
+                    <p class="o_datums_maintenance_subtitle">
+                        We’re currently unable to connect to datumsAI services. 
+                        Please try again shortly. If the issue continues, contact our support team.
+                    </p>
+
+                    <button class="o_datums_retry_btn" onclick="location.reload()">
+                        <i class="fa fa-refresh"/> Retry Connection
+                    </button>
+
+                    <div class="o_datums_support_link">
+                        <i class="fa fa-envelope-o"/> <a href="mailto:support@datums.ai">support@datums.ai</a>
+                    </div>
+                </div>
+            </t>
+
+            <div t-if="!state.loading &amp;&amp; !state.isMaintenance" 
+                 class="o_datums_sidebar"
+                 t-att-class="{'collapsed': state.sidebarCollapsed}">
+
+                <div class="o_datums_sidebar_header">
+                    <span class="o_datums_sidebar_title">Dashboards</span>
+                    <button class="o_datums_toggle_sidebar_btn" t-on-click="toggleSidebar" aria-label="Toggle Sidebar">
+                        <i t-att-class="state.sidebarCollapsed ? 'fa fa-chevron-right' : 'fa fa-chevron-left'"/>
+                    </button>
+                </div>
+                <div class="o_datums_sidebar_content">
+                    <t t-if="state.dashboards.length > 0">
+                        <ul class="nav flex-column">
+                            <t t-foreach="state.dashboards" t-as="dash" t-key="dash.id">
+                                <li class="nav-item">
+                                    <a class="nav-link" 
+                                       t-att-class="{'active': state.currentUrl === dash.dashboard_link}"
+                                       href="#" 
+                                       t-on-click.prevent="() => this.selectDashboard(dash)">
+                                        <span class="o_datums_sidebar_badge" t-att-class="{'has-icon': dash.icon}">
+                                            <t t-if="dash.icon">
+                                                <img t-att-src="dash.icon" alt="icon"/>
+                                            </t>
+                                            <t t-else="">
+                                                <t t-esc="dash.name[0]"/>
+                                            </t>
+                                        </span>
+                                        <span class="o_datums_sidebar_item_name">
+                                            <t t-esc="dash.name"/>
+                                        </span>
+                                    </a>
+                                </li>
+                            </t>
+                        </ul>
+                    </t>
+                    <t t-else="">
+                        <div class="p-3 text-muted">No active dashboards found.</div>
+                    </t>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div t-if="!state.loading &amp;&amp; !state.isMaintenance" class="o_datums_main">
+                <t t-if="state.currentUrl">
+                    <iframe t-att-src="state.currentUrl" 
+                            frameborder="0" 
+                            allowfullscreen="true">
+                    </iframe>
+                </t>
+                <t t-elif="!state.loading">
+                    <div class="o_datums_empty_state">
+                        <i class="fa fa-pie-chart fa-4x text-muted mb-3"/>
+                        <h3>No Dashboard Selected</h3>
+                        <p>Please select a dashboard from the sidebar.</p>
+                    </div>
+                </t>
+            </div>
+
+            <!-- Instructions Overlay -->
+            <t t-if="state.showInstructions">
+                <div class="o_datums_instruction_overlay">
+                    <div class="o_datums_instruction_card">
+                        <button class="o_datums_close_btn" t-on-click="closeInstructions" aria-label="Close">
+                            <i class="fa fa-times"/>
+                        </button>
+                        <h3>datumsAI Setup Instructions</h3>
+                        <p class="text-muted mb-2">Please complete these steps to use datumsAI correctly:</p>
+                        <ol class="mb-3">
+                            <li>Go to <strong>Settings</strong> and open the <strong>datumsAI</strong> section. Add your <strong>Access Key</strong> and <strong>Secret Key</strong>.</li>
+                            <li>After activation, you will see the <strong>datumsAI</strong> app icon on the main Apps page.</li>
+                            <li>Click the <strong>datumsAI</strong> app icon to get redirected to the datumsAI dashboard page.</li>
+                        </ol>
+                        <div class="o_datums_instruction_actions">
+                            <button class="btn btn-secondary" t-on-click="openSettings">Open Settings</button>
+                            <button class="btn btn-primary" t-on-click="goHome">Go to Home</button>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_secret_keys" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.secret.keys</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+
+        <field name="arch" type="xml">
+
+            <xpath expr="//form" position="inside">
+                <app data-string="datums" string="datums" name="datums_configuration" logo="/datums/static/description/icon.png">
+                    <div id="custom_api_keys">
+                        <block title="datums Keys" name="api_configuration_block">
+                            <setting string="datums Access Key" help="Enter the datums access key">
+                                <field name="datums_access_key" style="min-width: 400px;"/>
+                            </setting>
+                            <setting string="datums Secret Key" help="Enter the datums secret key">
+                                <field name="datums_secret_key" style="min-width: 400px;"/>
+                            </setting>
+                            <div class="mt-3">
+                                <button name="action_validate_keys" 
+                                    type="object" 
+                                    string="Validate Keys"
+                                    class="oe_highlight"
+                                    />
+                                <button name="action_reset" 
+                                    type="object" 
+                                    string="Reset"
+                                    class="btn-danger ms-2"
+                                    confirm="Are you sure you want to reset all configurations? This will clear all keys and delete all stored scripts and dashboard links."
+                                    />
+                            </div>
+                            <!-- <field name="datums_validation_success" invisible="1"/>
+
+                            <div class="mt-3" invisible="not datums_validation_success">
+                                <button name="action_sync_db_structure"
+                                        type="object"
+                                        string="Sync DB Structure"
+                                        class="oe_highlight"/>
+                            </div>
+
+                            <div class="mt-3" invisible="datums_validation_success">
+                                <button type="button"
+                                        class="btn btn-secondary"
+                                        string="Sync DB Structure">
+                                </button>
+                            </div> -->
+                        </block>
+                    </div>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

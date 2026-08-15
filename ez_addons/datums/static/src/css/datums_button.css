@@ -1,0 +1,343 @@
+.o_chatbot_launcher_container {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.o_chatbot_launcher {
+    background: #714B67;
+    /* Odoo dark purple / match pinkish tone */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    visibility: hidden;
+}
+
+.o_chatbot_launcher:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    background: #875A7B;
+}
+
+.o_chatbot_logo {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    display: inline-block;
+}
+
+.o_chatbot_error {
+    font-size: 12px;
+    padding: 5px 10px;
+    margin-bottom: 5px;
+}
+
+/* Datums Dashboard Layout */
+.o_datums_container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    background: #f8f9fa;
+}
+
+.o_datums_sidebar {
+    width: 250px;
+    background: white;
+    border-right: 1px solid #dee2e6;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.o_datums_sidebar.collapsed {
+    width: 68px !important;
+}
+
+.o_datums_sidebar_header {
+    padding: 20px 15px 20px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    box-sizing: border-box;
+}
+
+.o_datums_sidebar.collapsed .o_datums_sidebar_header {
+    justify-content: center;
+    padding: 20px 0;
+}
+
+.o_datums_sidebar_title {
+    margin: 0;
+    color: #714B67;
+    font-size: 1.1rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: opacity 0.2s ease;
+    opacity: 1;
+}
+
+.o_datums_sidebar.collapsed .o_datums_sidebar_title {
+    opacity: 0;
+    width: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    display: none;
+}
+
+.o_datums_toggle_sidebar_btn {
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s, transform 0.2s;
+    font-size: 0.95rem;
+}
+
+.o_datums_toggle_sidebar_btn:hover {
+    color: #714B67;
+    transform: scale(1.15);
+}
+
+.o_datums_sidebar_content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 0;
+    overflow-x: hidden;
+}
+
+.o_datums_sidebar_content .nav-link {
+    padding: 12px 15px 12px 17px;
+    color: #495057;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
+.o_datums_sidebar.collapsed .o_datums_sidebar_content .nav-link {
+    justify-content: center;
+    padding: 12px 0;
+}
+
+.o_datums_sidebar_item_name {
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: opacity 0.2s ease;
+    opacity: 1;
+}
+
+.o_datums_sidebar.collapsed .o_datums_sidebar_item_name {
+    opacity: 0;
+    width: 0;
+    display: none;
+}
+
+.o_datums_sidebar_badge {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    background: #f1f3f5;
+    color: #495057;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.o_datums_sidebar_badge.has-icon {
+    background: transparent !important;
+    border-radius: 0;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+}
+
+.o_datums_sidebar_badge.has-icon img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    display: block;
+}
+
+.o_datums_sidebar_content .nav-link:hover {
+    background: #f1f3f5;
+    color: #714B67;
+}
+
+.o_datums_sidebar_content .nav-link:hover .o_datums_sidebar_badge {
+    background: #e9ecef;
+    color: #714B67;
+}
+
+.o_datums_sidebar_content .nav-link.active {
+    background: #f1e9f1;
+    color: #714B67;
+    border-left-color: #714B67;
+    font-weight: 600;
+}
+
+.o_datums_sidebar_content .nav-link.active .o_datums_sidebar_badge {
+    background: #714B67;
+    color: white;
+}
+
+.o_datums_main {
+    flex: 1;
+    height: 100%;
+    background: #fff;
+    position: relative;
+}
+
+.o_datums_expand_sidebar_btn {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 1050;
+    width: 32px;
+    height: 32px;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    color: #495057;
+    transition: all 0.2s ease-in-out;
+}
+
+.o_datums_expand_sidebar_btn:hover {
+    background: #f8f9fa;
+    color: #714B67;
+    transform: scale(1.05);
+}
+
+.o_datums_main iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.o_datums_loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    position: absolute;
+    z-index: 1000;
+}
+
+.o_datums_empty_state {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #adb5bd;
+}
+
+.o_datums_instruction_overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 20, 20, 0.45);
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.o_datums_instruction_card {
+    width: min(760px, 100%);
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.o_datums_close_btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: #999;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.o_datums_close_btn:hover {
+    color: #333;
+    transform: scale(1.1);
+}
+
+.o_datums_instruction_card h3 {
+    margin-bottom: 12px;
+    color: #714B67;
+}
+
+.o_datums_instruction_card ol {
+    padding-left: 20px;
+}
+
+.o_datums_instruction_card li {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.o_datums_instruction_actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 1024px) {
+    .o_datums_sidebar:not(.collapsed) {
+        width: 180px;
+    }
+
+    .o_datums_sidebar_header {
+        padding: 15px 15px 15px 20px;
+    }
+
+    .o_datums_sidebar_content .nav-link {
+        padding: 10px 15px 10px 17px;
+    }
+}
