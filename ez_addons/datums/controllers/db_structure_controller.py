@@ -45,11 +45,11 @@ class DatabaseStructureAPI(http.Controller):
         """
 
         # Check IP access
-        if not is_ip_allowed(request):
-            return make_json_response(format_api_response(
-                success=False,
-                message="Unauthorized Access"
-            ))
+        # if not is_ip_allowed(request):
+        #     return make_json_response(format_api_response(
+        #         success=False,
+        #         message="Unauthorized Access"
+        #     ))
 
         try:
             data = json.loads(request.httprequest.data or '{}')

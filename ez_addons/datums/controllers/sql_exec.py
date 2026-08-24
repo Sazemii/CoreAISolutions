@@ -17,12 +17,12 @@ class QueryAPI(http.Controller):
         import base64
 
         # Check IP access
-        if not is_ip_allowed(request):
-            return request.make_json_response({
-                "success":1,
-                "message": "Unauthorized Access",
-                "data": [{"message": "Unauthorized Access"}]
-            })
+        # if not is_ip_allowed(request):
+        #     return request.make_json_response({
+        #         "success":1,
+        #         "message": "Unauthorized Access",
+        #         "data": [{"message": "Unauthorized Access"}]
+        #     })
 
         # Read request body
         try:
